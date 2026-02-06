@@ -38,3 +38,13 @@ Completed: *Run tests, commit, push* (6/6)
 - This commit makes the **finite-family approximation** fully formal in Lean and demonstrates **explicit extreme rays** in a clean toy cone (nonnegative orthant). That’s the template we can generalize.
 <!-- ------ -->
 ---
+**Done**
+- Committed and pushed the pending Lean work: added AffineToCone.lean and updated WarpConeAqei.lean to import it.
+- `origin/main` now includes commit `009dcf7` (“Homogenize affine AQEI bounds into a cone…”).
+
+**Verified**
+- Full repo test harness passes: run_tests.sh ends with “All tests passed.” (Python + Mathematica + Lean).
+
+If you want to keep pushing toward the full conjecture next, tell me which direction you prefer: (1) formalize the “infinite family of AQEI constraints ⇒ closed” step (topological vector space + intersection of closed halfspaces), or (2) focus on constructing/characterizing more interesting extreme rays guided by the generated candidates.
+<!-- ------ -->
+---
