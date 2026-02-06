@@ -63,6 +63,22 @@ def generate_lean(json_path, output_path):
             p = c['params'] # x0, v, t0, tau
             f.write(f"  {{ x0 := {p[0]}, v := {p[1]}, t0 := {p[2]}, tau := {p[3]} }},\n")
         f.write("]\n\n")
+
+        # 6. Active Constraint Vectors (L) and Bounds (B)
+        f.write("/-- The normal vectors L for the active constraints -/\n")
+        f.write("def active_L : List (List Float) := [\n")
+        for c in constraints:
+            # Mathematica might output integers or floats. Ensure standard formatting.
+            L_vec = c['L']
+            f.write("  " + str(list(L_vec)).replace('[', '[').replace(']', ']') + ",\n")
+        f.write("]\n\n")
+
+        f.write("/-- The bounds B for the active constraints (inequality is L.a >= -B) -/\n")
+        f.write("def active_B : List Float := [\n")
+        for c in constraints:
+            B_val = c['B']
+            f.write("  " + str(float(B_val)) + ",\n")
+        f.write("]\n\n")
             
         f.write("end AQEIGenerated\n")
 
