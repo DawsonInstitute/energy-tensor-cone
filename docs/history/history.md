@@ -126,3 +126,13 @@ Completed: *Wire into imports and test* (4/4)
 If you want the next bridge after this, the natural move is to **connect `AQEI.satisfies_AQEI` to this interface** by defining a map from `(γ, s)` into an index type `ι`, and proving (as assumptions for now) that each `AQEI_functional (γ,s)` is a `ContinuousLinearMap` in the chosen coefficient/topological model.
 <!-- ------ -->
 ---
+The `warp-cone-aqei` repo has been successfully relocated and the workspace updated:
+
+✅ **Moved**: `~/Code/asciimath/energy/warp-cone-aqei` → `~/Code/asciimath/warp-cone-aqei`  
+✅ **Updated**: energy.code-workspace path from `"./warp-cone-aqei"` to `"../warp-cone-aqei"`  
+✅ **Committed & pushed**: workspace file changes to the energy repo  
+✅ **Verified**: All tests pass from the new location
+
+The repo is now correctly positioned as a sibling to `energy/`, matching the pattern of all other repos in your workspace. The terminals are stable and the full test suite passes.
+<!-- ------ -->
+---
