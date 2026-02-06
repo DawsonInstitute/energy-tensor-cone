@@ -56,3 +56,20 @@ Completed: *Run tests, commit, push* (6/6)
   - generalized `homCone_isClosed` to drop the unnecessary `Fintype` assumption
 <!-- ------ -->
 ---
+The direction most likely to yield a successful, clean theorem is:
+
+- Prove **closedness + convexity** for the admissible set as an (possibly infinite) intersection of **continuous affine half-spaces**, then
+- Use **homogenization** to recover a genuine **closed, convex cone** in one higher dimension.
+
+Reason: this part is structurally stable and formalizes well (it’s just topology + convexity of half-spaces + intersections). By contrast, “nontrivial extreme rays” becomes genuinely delicate once you leave finite-dimensional / polyhedral settings.
+
+**What I implemented to support this direction**
+- Strengthened the Lean development in AffineToCone.lean:
+  - `affineAdmissible_isClosed` (works for infinite families)
+  - `affineAdmissible_convex` (works for infinite families)
+  - generalized `homCone_isClosed` to *not* require `Fintype`
+  - `slice_one_iff` remains the bridge: affine constraints ⇔ `t=1` slice of the cone
+- Updated the running log in history.md
+- Tests still pass, and I pushed this as commit `0a2e281` on `origin/main`.
+<!-- ------ -->
+---
