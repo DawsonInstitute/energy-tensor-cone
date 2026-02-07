@@ -32,7 +32,7 @@ We formalize the convex cone of stress-energy tensors satisfying Averaged Quantu
 
 \section{Introduction}
 
-The averaged null energy condition (ANEC) and its generalizations, known as Averaged Quantum Energy Inequalities (AQEI), place lower bounds on the integrated stress-energy tensor along worldlines:
+The averaged null energy condition (ANEC) and its generalizations, known as Averaged Quantum Energy Inequalities (AQEI), place lower bounds on the integrated stress-energy tensor along worldlines \cite{ford1995,fewster2012}:
 \begin{equation}
 I_{T,\gamma,g} = \int g(t) T(\gamma(t))(u(t), u(t)) \, dt \geq -B_{\gamma,g}
 \end{equation}
@@ -44,7 +44,7 @@ where:
 \item $B_{\gamma,g}$ is a quantum-determined bound
 \end{itemize}
 
-These constraints define a convex subset of the space of all stress-energy tensors. Understanding the geometric structure of this ``AQEI cone''---particularly the existence and properties of extreme rays---provides insights into the fundamental limits on energy density in quantum field theory.
+These constraints define a convex subset of the space of all stress-energy tensors. Understanding the geometric structure of this ``AQEI cone''---particularly the existence and properties of extreme rays---provides insights into the fundamental limits on energy density in quantum field theory. The modern formulation of quantum energy inequalities was developed by Ford and Roman \cite{ford1995} and has been extensively studied by Fewster and collaborators \cite{fewster2012,fewster2019,fewster2023}.
 
 \section{Formal Framework}
 
@@ -64,7 +64,7 @@ where:
 
 \subsection{Fundamental Theorems}
 
-Using Lean 4 with Mathlib, we have formally proven:
+Using Lean 4 with Mathlib \cite{moura2021,community2020}, we have formally proven:
 
 \begin{theorem}[Closure]
 For any family of continuous linear functionals $\{L_\gamma\}_{\gamma \in \Gamma}$ and bounds $\{B_\gamma\}_{\gamma \in \Gamma}$, the admissible set $\mathcal{A}$ is closed in the product topology.
@@ -148,7 +148,7 @@ The proof is mechanically verified in \texttt{VertexVerificationRat.lean} using 
 
 \subsection{Connection to Extreme Ray Theory}
 
-A point $v$ in a polytope is an \textbf{extreme point} (vertex) if and only if it cannot be written as a non-trivial convex combination of other points in the polytope. For polytopes in $\mathbb{R}^n$ defined by linear inequalities, a point is a vertex if and only if $n$ linearly independent constraint hyperplanes pass through it.
+A point $v$ in a polytope is an \textbf{extreme point} (vertex) if and only if it cannot be written as a non-trivial convex combination of other points in the polytope. For polytopes in $\mathbb{R}^n$ defined by linear inequalities, a point is a vertex if and only if $n$ linearly independent constraint hyperplanes pass through it \cite{ziegler1995}.
 
 \begin{theorem}[Polyhedral Vertex]
 Let $P = \{x \in \mathbb{R}^n \mid \forall i, \langle L_i, x \rangle \geq -B_i\}$ be a polytope, and let $v \in P$. If there exists a subset $I$ of indices such that:
@@ -211,8 +211,9 @@ This work includes comprehensive verification protocols to ensure correctness:
 
 \paragraph{Literature Cross-Checks:}
 \begin{itemize}
-\item Results compared against Fewster (2012) for AQEI bounds
-\item Polyhedral geometry verified against Ziegler (1995)
+\item Results compared against Fewster (2012) \cite{fewster2012} for AQEI bounds
+\item Recent developments in quantum energy inequalities along stationary worldlines \cite{fewster2023} and quantum strong energy inequalities \cite{fewster2019} provide additional context
+\item Polyhedral geometry verified against Ziegler (1995) \cite{ziegler1995}
 \item All mathematical claims have literature citations
 \end{itemize}
 
@@ -248,27 +249,8 @@ The key achievement is the mechanically verified proof that:
 
 This work opens the door to systematic exploration of the AQEI cone geometry using hybrid formal/computational methods.
 
-\begin{thebibliography}{9}
-
-\bibitem{fewster}
-Fewster, C.J. (2012). 
-\textit{Lectures on quantum energy inequalities.}
-arXiv:1208.5399
-
-\bibitem{lean}
-\textit{Lean 4 Proof Assistant.}
-\url{https://lean-lang.org/}
-
-\bibitem{mathlib}
-\textit{Mathlib4: The Lean mathematical library.}
-\url{https://github.com/leanprover-community/mathlib4}
-
-\bibitem{ziegler}
-Ziegler, G.M. (1995).
-\textit{Lectures on Polytopes.}
-Graduate Texts in Mathematics, Springer.
-
-\end{thebibliography}
+\bibliographystyle{unsrt}
+\bibliography{draft}
 
 \appendix
 
