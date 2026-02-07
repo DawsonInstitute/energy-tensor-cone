@@ -102,3 +102,42 @@ This document tracks tasks that have been completed for the energy-tensor-cone p
 ---
 
 **Completion Date:** February 6, 2026
+
+---
+
+## ✅ Step 6: Advance Paper Draft and .tex Creation (COMPLETED)
+
+**Status:** Paper draft created in both Markdown and LaTeX formats.
+
+**What was done:**
+- Created comprehensive `papers/draft.md` with full paper structure including:
+  - Abstract outlining formal verification and computational exploration
+  - Introduction to AQEI and convex cone geometry
+  - Formal framework with definitions and theorems
+  - Computational search methodology and results
+  - Formal verification of vertex property using exact rational arithmetic
+  - Discussion of results, open questions, and future work
+  - Complete references and appendices
+- Created publication-ready `papers/draft.tex` with:
+  - Proper LaTeX article formatting with amsmath, amsthm packages
+  - All theorems formatted with theorem environments
+  - Mathematical equations in proper LaTeX notation
+  - Bibliography with references to Fewster, Lean 4, Mathlib4, Ziegler
+  - Appendices documenting file structure and reproducibility instructions
+- Both documents are consistent with existing `papers/aqei_cone_structure.md`
+- Paper ready for submission after final polishing and plot generation
+
+**Files Created:**
+- `papers/draft.md` - Full paper in Markdown format
+- `papers/draft.tex` - Full paper in LaTeX format ready for compilation
+
+**Verification:** Both files exist and contain complete paper structure with all required sections.
+
+**Next Steps for Publication:**
+- Generate histogram plots from Mathematica results using Python analysis script
+- Add plots to papers/ directory
+- Compile LaTeX to PDF and review formatting
+- Submit preprint to arXiv
+- Target submission to Journal of Mathematical Physics
+
+**Completion Date:** February 6, 2026
