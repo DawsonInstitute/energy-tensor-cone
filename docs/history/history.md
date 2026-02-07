@@ -446,3 +446,56 @@ $ wc -l docs/TODO.md
 Papers (draft.md and aqei-cone-formalization.tex) now include detailed "Verification and Robustness" sections documenting all validation protocols. Ready for arXiv/journal submission.
 <!-- ------ -->
 ---
+Completed tasks:
+- Integrate Zotero bibliography into aqei-cone-formalization.tex
+- Rename draft.tex to aqei-cone-formalization.tex
+- Add citations to Introduction/Discussion sections
+- Run final Lean build and tests (all pass)
+- Compile LaTeX and verify bibliography
+- Update README.md with submission status
+
+All tasks moved to TODO-completed.md. TODO.md now cleared.
+Manuscript ready for arXiv submission (math-ph, gr-qc, hep-th)."
+
+Excellent! All tasks have been completed successfully. Here's what was accomplished:
+
+## Completed Tasks
+
+### 1. **Integrated Zotero-exported bibliography**
+- Replaced manual bibliography with `\bibliographystyle{unsrt}` and `\bibliography{draft}`
+- Bibliography compiled successfully
+
+### 2. **Renamed draft.tex to permanent filename**
+- `draft.tex` → `aqei-cone-formalization.tex`
+- `draft.pdf` → `aqei-cone-formalization.pdf`
+- Updated references in history.md
+
+### 3. **Added essential citations**
+- Added ford1995, fewster2012, fewster2019, fewster2023 to Introduction
+- Added moura2021, community2020, ziegler1995 throughout text
+- Added Discussion reference to fewster2023 for stationary worldlines
+
+### 4. **Ran final Lean build and tests**
+- All tests passed ✓
+- Python tests: OK
+- Mathematica tests: OK (vertex found with 6 active constraints)
+- Lean tests: OK
+
+### 5. **Compiled LaTeX and verified bibliography**
+- Generated final PDF (265KB)
+- Full compilation cycle successful
+- All 6 bibliography entries appear correctly
+
+### 6. **Updated README.md with submission status**
+- Added status line indicating manuscript ready for arXiv
+- Added Paper section with arXiv categories and journal target
+
+## Git Commits Made
+1. "Switch to external draft.bib + integrate Zotero export with citations"
+2. "Rename draft.tex → aqei-cone-formalization.tex (permanent filename)"
+3. "Update README.md with submission status"
+4. "Complete all TODO tasks and update tracking files"
+
+The manuscript is now ready for arXiv submission (primary: math-ph, secondary: gr-qc, hep-th) and subsequent journal submission to Communications in Mathematical Physics.
+<!-- ------ -->
+---
