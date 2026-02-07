@@ -298,3 +298,78 @@ The 2 `sorry` statements are intentionally left because:
 - ✅ Ready for journal peer review
 
 **Completion Date:** February 6, 2026
+
+## ✅ Final Push to Submission-Ready Manuscript (COMPLETED - February 7, 2026)
+
+**Status:** All tasks completed. Manuscript ready for arXiv and journal submission.
+
+**Tasks Completed:**
+
+### 1. Integrate Zotero-exported bibliography ✓
+- Replaced manual `\begin{thebibliography}{9}` environment with `\bibliographystyle{unsrt}` and `\bibliography{draft}`
+- All citations properly integrated from `papers/draft.bib`
+- Bibliography compiles successfully with pdflatex + bibtex
+- **Commit:** "Switch to external draft.bib + integrate Zotero export with citations"
+
+### 2. Rename draft.tex to permanent filename ✓
+- Renamed `draft.tex` → `aqei-cone-formalization.tex` using `git mv`
+- Renamed `draft.pdf` → `aqei-cone-formalization.pdf`
+- Updated references in `docs/history/history.md` to point to new filename
+- **Commit:** "Rename draft.tex → aqei-cone-formalization.tex (permanent filename)"
+
+### 3. Add essential additional citations ✓
+- Added citations to ford1995, fewster2012, fewster2019, fewster2023 in Introduction
+- Added citations to moura2021, community2020, ziegler1995 throughout text
+- Added sentence in Discussion citing fewster2023 for stationary worldlines context
+- All citations verify against Zotero-exported draft.bib
+- **Commit:** Included in bibliography integration commit
+
+### 4. Run final Lean build and tests ✓
+- Ran `./run_tests.sh` - all tests passed
+- Python tests: OK
+- Mathematica tests: OK (vertex found with 6 active constraints)
+- Lean tests: OK (build successful)
+- No unintentional `sorry` statements in critical files
+
+### 5. Compile LaTeX and verify bibliography ✓
+- Generated final PDF: `aqei-cone-formalization.pdf` (265KB)
+- Full compilation cycle: pdflatex → bibtex → pdflatex → pdflatex
+- All 6 bibliography entries appear correctly
+- No compilation warnings or errors
+
+### 6. Update README.md with submission status ✓
+- Added status line: "Manuscript `aqei-cone-formalization.tex` ready for arXiv (math-ph, gr-qc, hep-th)"
+- Added Paper section documenting arXiv categories and journal target
+- Specified Communications in Mathematical Physics (CMP) as target journal
+- **Commit:** "Update README.md with submission status"
+
+**Journal and arXiv Details:**
+- **Primary arXiv category:** math-ph (Mathematical Physics)
+- **Secondary categories:** gr-qc (General Relativity and Quantum Cosmology), hep-th (High Energy Physics - Theory)
+- **Target journal:** Communications in Mathematical Physics (CMP)
+
+**Citations Used (verified against draft.bib):**
+- ford1995: Averaged Energy Conditions and Quantum Inequalities
+- fewster2012: Lectures on Quantum Energy Inequalities
+- fewster2019: Quantum Strong Energy Inequalities
+- fewster2023: Quantum Energy Inequalities along Stationary Worldlines
+- moura2021: The Lean 4 Theorem Prover and Programming Language
+- community2020: The Lean Mathematical Library
+- ziegler1995: Lectures on Polytopes
+
+**Remaining Steps (User Action Required):**
+- [ ] Write short arXiv abstract (copy from title + first paragraph of abstract in manuscript)
+- [ ] Upload to arXiv (recommended first for DOI and community feedback)
+- [ ] After arXiv acceptance (1-2 days), submit to Communications in Mathematical Physics
+
+**Final Verification:**
+- ✅ All tests pass (`./run_tests.sh`)
+- ✅ LaTeX compiles without errors
+- ✅ Bibliography entries all valid
+- ✅ All citations properly formatted
+- ✅ README updated with submission status
+- ✅ All changes committed to git
+
+**Completion Date:** February 7, 2026
+
+---
