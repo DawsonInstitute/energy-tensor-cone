@@ -1,6 +1,10 @@
 /-
   StressEnergy.lean
   Stress-energy tensors as symmetric bilinear forms on a LorentzSpace.
+  
+  Reference: Standard definition in relativistic field theory.
+  See: Hawking, S.W. & Ellis, G.F.R. (1973). "The Large Scale Structure of Space-Time"
+       Wald, R.M. (1984). "General Relativity"
 -/
 import Std
 import Lorentz
