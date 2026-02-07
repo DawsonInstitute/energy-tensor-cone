@@ -2,10 +2,18 @@
 
 Computational + formalization scaffold for exploring **Averaged Quantum Energy Inequality (AQEI)** constraints as an (approximate) intersection of half-spaces, and for feeding randomized search “near-misses” into a Lean 4 skeleton.
 
+**Status**: Manuscript `aqei-cone-formalization.tex` ready for arXiv (math-ph, gr-qc, hep-th)
+
 This repo is intentionally minimal:
 - **Mathematica** (`mathematica/search.m`) runs a randomized finite-Gaussian-basis search in 1+1 Minkowski and exports results to JSON.
 - **Python** (`python/orchestrator.py`, `python/analyze_results.py`) runs the search, parses JSON, and generates `lean/src/GeneratedCandidates.lean`.
-- **Lean 4** (`lean/src/*.lean`) contains the definitional skeleton (Lorentzian bilinear form, stress-energy, AQEI family, admissible set / “cone”, extreme rays).
+- **Lean 4** (`lean/src/*.lean`) contains the definitional skeleton (Lorentzian bilinear form, stress-energy, AQEI family, admissible set / "cone", extreme rays).
+
+## Paper
+
+The manuscript is available in `papers/aqei-cone-formalization.tex` and is ready for submission to:
+- **arXiv**: Primary category math-ph (Mathematical Physics), secondary categories gr-qc (General Relativity and Quantum Cosmology) and hep-th (High Energy Physics - Theory)
+- **Journal**: Communications in Mathematical Physics (CMP)
 
 ## Quickstart
 
