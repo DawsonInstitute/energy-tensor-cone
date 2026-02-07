@@ -1,39 +1,63 @@
-# TODO.md: Phase 2 - Extreme Ray Construction & Verification
+# TODO.md: Phase 3 - From Toy Polyhedra to the “Full” AQEI Cone
 
-With the base infrastructure complete, we move to the core objective: constructing and proving the existence of **nontrivial extreme rays** for a discretized AQEI model.
+## Where we actually are
 
-## Objective
-Construct an explicit polytope approximating the AQEI admissble set (by fixing a finite set of worldline constraints) and use Lean to **prove** that a specific point found by optimization is a vertex (extreme ray) of this polytope.
+- ✅ **Abstract theorem (Lean):** If an AQEI family is given as continuous linear functionals `L : ι → E →L[ℝ] ℝ` with bounds `b : ι → ℝ`, then the admissible set `⋂ i, {x | 0 ≤ L i x + b i}` is closed and convex, and homogenization gives a closed convex cone.
+- ✅ **Finite-dimensional evidence (Lean + rational arithmetic):** A discretized/polyhedral approximation (finite basis + finite constraint bank + bounding box) has a nontrivial vertex with full-rank active normals.
+- ❌ **Not yet proved:** that the *physically defined* AQEI functionals on the intended infinite-dimensional stress–energy/operator space are continuous linear maps for a specified topology, and therefore that “the full AQEI set” matches the abstract admissible set above.
+- ❌ **Not yet proved:** existence of nontrivial extreme rays in the full infinite-dimensional cone (this may require extra structure/assumptions; in infinite dimensions extreme rays can fail to exist or be hard to characterize).
 
-## Step 1: Optimization-Based Constraint Search (Mathematica) [Completed]
-**Status:** Done via `mathematica/search.m`.
-1. Generated 50 random constraints.
-2. Solved LP to find a vertex `a` (minimizing energy/hitting bounds).
-3. Exported numerical data (`vertex.json`).
-4. **Outcome**: Found a valid vertex with 3 active AQEI constraints + box constraints.
+## Phase 3 Objective
 
-## Step 2: Python Data Translation [Completed]
-**Status:** Done via `tools/generate_lean_data.py`.
-1. Implemented `tools/verify_vertex.py` to double-check the values.
-2. Generated `lean/src/AQEI_Generated_Data.lean` containing the float values for Basis, Coefficients, and Active Constraints.
+Turn the current formalization into a publishable theorem statement by making explicit assumptions (topology + continuity), and (option A) prove a correct infinite-dimensional statement under those assumptions, or (option B) revise the conjecture to a defensible finite-dimensional/projection statement and prove it cleanly.
 
-## Step 3: Lean Verification of Extremality [Completed]
-**Status:** Done via `lean/src/VertexVerification.lean`.
-1. Imported `AQEI_Generated_Data`.
-2. Implemented Gaussian elimination for `Float` matrices.
-3. Constructed the $6 \times 6$ checking matrix (3 active AQEI normals + 3 active box normals).
-4. Verified `rank = 6` via `#eval` and a reflexive theorem `active_constraints_full_rank`.
+## Step 1: Choose the model space + topology (blocking)
 
-## Step 5: Draft Publication
-**Status:** Started.
-- Created `papers/aqei_cone_structure.md` summarizing the formal results.
-- **Next Actions:**
-  - Expand Section 3 to include the specific `vertex.json` parameters.
-  - Visualize the resulting stress-energy tensor $T_{\mu\nu}(x)$ for the found vertex.
-  - Discuss the physical implications of the particular "shape" of negative energy found.
-**Task:** Create a summary Lean file `lean/src/Theorems.lean` that collects the results:
-- "The set of coefficients satisfying the discretized AQEI bounds is a closed, convex set."
-- "The point `v` is an extreme point of this set."
-- This formally establishes the "nontrivial extreme rays" property for the finite-dimensional approximation.
+Pick a concrete `E` for “stress–energy tensors” and a topology that makes the AQEI maps continuous.
 
-- Exploring specific AQEI bounds from QFT literature
+- Option 1 (functions): `E` as a space of smooth compactly supported symmetric tensor fields (Fréchet topology).
+- Option 2 (distributions): `E` as a distribution space; AQEI functionals become pairings against test functions.
+- Option 3 (operator-algebra): `E` as a Banach space of trace-class / bounded operators with weak-* topology.
+
+Deliverables:
+- A short design note in `docs/` describing the choice and why it matches AQEI literature.
+- Lean definitions: the chosen `E` typeclass instances (`TopologicalSpace`, `AddCommMonoid`, `Module`).
+
+## Step 2: Make AQEI functionals real (not placeholders)
+
+Right now `AQEI_functional` is a stub (`= 0`) and `SamplingFunction`/`Worldline` carry placeholders.
+
+Deliverables:
+- Replace the stub with either:
+  - a real integral-based definition on the chosen `E`, or
+  - an explicit axiom/structure bundling “AQEI functionals are continuous linear maps” (stated clearly as an assumption).
+- Prove (or assume, but explicitly) the `FactorsThrough` hypothesis used in `AQEIToInterface.lean`.
+
+## Step 3: State the *correct* infinite-dimensional theorem
+
+Deliverables:
+- A Lean theorem in a new file that reads like:
+  - “Given a topological vector space `E` and AQEI family `L` of continuous linear maps, the admissible set is closed and convex.”
+  - “Homogenization yields a closed convex cone.”
+This is mostly already in place, but we need to repackage it as the project’s main theorem with clear assumptions.
+
+## Step 4: Extreme rays — pick a defensible target and prove it
+
+Two realistic paths:
+
+- Path A (finite-dimensional/projection theorem):
+  - Prove: for the discretized polyhedral model, there exists a nontrivial vertex/extreme ray.
+  - Make the statement mathematically clean (no “rank check only”): define the polyhedron and prove “`v` is a vertex” from full-rank active constraints + satisfaction.
+
+- Path B (infinite-dimensional structure):
+  - Investigate whether the full cone has nontrivial extreme rays under your topology/space choice.
+  - If not generally true, revise the conjecture to “nontrivial exposed points exist for finite constraint banks / finite-dimensional slices”.
+
+Deliverables:
+- A Lean definition of `IsExtremeRay`/`IsExtremePoint` for cones/convex sets.
+- A Lean lemma connecting “full-rank active constraints” to “is a vertex” for polyhedra over `ℚ`/`ℝ`.
+
+## Step 5: Paper track (only after scope is correct)
+
+- Keep `papers/aqei_cone_structure.md` as a *technical report draft* until Step 3 and Step 4 are fully honest and theorem-backed.
+- Add a “Limitations / Assumptions” section that matches the Lean code.

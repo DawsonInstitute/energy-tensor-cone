@@ -1,3 +1,11 @@
+## 2026-02-06 Correction / Scope Note
+
+- **What is fully proven (Lean):** abstract closedness/convexity results for admissible sets defined by *continuous linear functionals* and their homogenized cone construction (see `AffineToCone.lean`, `AQEIFamilyInterface.lean`, and the bridge statement in `AQEIToInterface.lean`).
+- **What is proven for a finite approximation:** existence of a nontrivial vertex for a discretized/polyhedral model (finite basis + finite constraint bank), with the active-normal full-rank check verified in Lean using exact rationals (`VertexVerificationRat.lean`).
+- **What is NOT yet a universal theorem:** the statement about the *full* AQEI set of stress–energy tensors in an infinite-dimensional operator/function space, because we have not yet fixed the operator-space topology nor proven the physically defined AQEI functionals are continuous linear maps on that space (the bridge currently treats this as an assumption).
+
+---
+
 Completed: *Run tests, commit, push* (6/6)
 
 **Done**
@@ -332,5 +340,35 @@ I have:
 2.  **Updated Usage**: Switched from "Phase 2" implementation to "Publication" mode in TODO.md.
 
 You are ready to begin writing the paper or expanding the analysis of the specific "Warp Drive" shape found by the vertex search.
+<!-- ------ -->
+---
+**Have we proven the full conjecture (infinite-dimensional AQEI cone)?**  
+Not yet.
+
+**What we *do* have as theorems now (Lean-backed):**
+- **Closedness + convexity** for admissible sets defined by an (even infinite) family of **continuous linear functionals** with bounds, plus the **homogenization-to-cone** construction. This is the abstract convex-analytic core in:
+  - AQEIFamilyInterface.lean
+  - AffineToCone.lean
+  - bridged to the AQEI-facing statement *assuming factorization/continuity* in AQEIToInterface.lean
+- **Nontrivial “extreme-ray-like” structure for a finite approximation**: we have a discretized/polyhedral model (finite basis + finite constraint bank + bounding box) with a nontrivial vertex; we verified **full-rank active normals** (and thus isolated intersection of the supporting hyperplanes) using exact rationals in:
+  - VertexVerificationRat.lean
+  - summarized in FinalTheorems.lean
+
+**What blocks a universal claim about the “full set of tensors in an infinite-dimensional Hilbert/operator space”:**
+- In AQEI.lean, `AQEI_functional` is still a **stub** (`= 0`) and the analytic/QFT content is not implemented.
+- The key bridge assumption `FactorsThrough` (continuity/linearity of the physical AQEI functionals on a *specific* topological model space `E`) is not proved—so the abstract closed/convex cone theorem is not yet instantiated to “the full AQEI set” in the physically intended topology.
+- The “nontrivial extreme rays” part in **infinite dimensions** is subtle: depending on the cone/topology, extreme rays may not exist or may require additional structure. Right now we only have a rigorous result for a **finite polyhedral approximation**.
+
+**Can we publish “novel results” today?**
+- We can credibly write a paper as a **formalization + reproducible computational pipeline** paper:
+  - formal verification of the abstract convex/topology facts for infinite families,
+  - plus a rigorously checkable nontrivial vertex in a finite discretization.
+- We should *not* claim we proved the full physical conjecture for the infinite-dimensional AQEI set unless we first complete the topology/continuity instantiation (and possibly refine the extreme-ray claim).
+
+**What I changed / started to resolve this**
+- Tightened the scope language in the draft so it no longer overclaims the full AQEI cone result: aqei_cone_structure.md
+- Added a correction note at the top of the project log: history.md
+- Rewrote the next-step plan into Phase 3, explicitly targeting the missing topology/continuity + a clean extreme-ray theorem: TODO.md
+- Began “actioning” Step 4 by adding precise Lean definitions for extreme points/rays (foundation for a real vertex theorem, not just a rank check): ExtremeRays.lean (and confirmed `lake build` passes)
 <!-- ------ -->
 ---

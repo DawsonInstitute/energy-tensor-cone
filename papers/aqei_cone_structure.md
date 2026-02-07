@@ -2,7 +2,11 @@
 
 ## Abstract
 
-We investigate the geometric structure of the set of stress-energy tensors satisfying Averaged Quantum Energy Inequalities (AQEI). We formally verify, using the Lean 4 proof assistant, that this set forms a closed, convex cone in the relevant topological dual space. Furthermore, we provide a computer-assisted proof demonstrating the existence of nontrivial extreme rays (vertices) in a finite-dimensional projection of this set, confirming that the admissible cone is not simply the trivial cone of non-negative energy densities. This result has significant implications for the classification of exotic matter distributions in semiclassical gravity.
+We formalize an abstract “AQEI admissible set” as an (in general infinite) intersection of affine half-spaces cut out by continuous linear functionals on a topological real vector space. In Lean 4, we verify that this admissible set is closed and convex, and that its homogenization yields a closed convex cone in one higher dimension.
+
+Separately, we implement a reproducible finite-dimensional toy/discretized model (Gaussian basis in 1+1D with a finite bank of sampled constraints) and exhibit a nontrivial vertex of the resulting polyhedron, verified in Lean using exact rational arithmetic on the active constraint normals.
+
+Important scope note: connecting these abstract theorems to the *full* QFT-defined AQEI constraints over an infinite-dimensional operator/function space requires specifying the topology on the stress–energy model space and proving the AQEI functionals are continuous linear maps with respect to that topology. This project currently treats that connection as an explicit assumption (see the bridge layer).
 
 ## 1. Introduction
 
@@ -14,7 +18,7 @@ We model the AQEI conditions as a family of affine inequalities on a topological
 $$ \langle L_\gamma, T \rangle + B_\gamma \ge 0 $$
 where $\gamma$ indexes the set of worldlines and sampling functions.
 
-### 2.1 Convexity and Closure
+### 2.1 Convexity and Closure (Abstract)
 
 Using Lean 4, we have formally proven that for any family of continuous linear functionals $L$ and bounds $B$, the admissible set:
 $$ \mathcal{A} = \{ T \in E \mid \forall \gamma, \langle L_\gamma, T \rangle \ge -B_\gamma \} $$
@@ -24,20 +28,22 @@ is closed and convex. The formal proofs are available in `AQEIFamilyInterface.le
 
 A central question is whether the geometry of $\mathcal{A}$ allows for "sharp" solutions that saturate multiple constraints simultaneously—nontrivial extreme rays.
 
-### 3.1 Computational Verification
+### 3.1 Computational Verification (Finite-Dimensional Approximation)
 
 We discretized the problem onto a finite basis of wave-packets and employed high-precision linear programming to search for vertices of the admissible polytope.
 - **Basis**: $N=6$ Gaussian wave-packets with spin-2 polarization.
 - **Constraints**: 50 randomly generated AQEI bounds.
-- **Result**: We identified a candidate vertex $v \in \mathbb{R}^6$ saturating exactly 6 linearly independent constraints (3 AQEI + 3 Box constraints).
+- **Result**: We identified a candidate vertex $v \in \mathbb{R}^6$ saturating exactly 6 linearly independent constraints (3 sampled AQEI constraints + 3 box/normalization constraints used to bound the LP).
 
 ### 3.2 Formal Proof of Rank
 
 To verify this result rigorously, we exported the candidate solution and active constraints to exact Rational arithmetic in Lean (`AQEI_Generated_Data_Rat.lean`). We implemented a rational Gaussian elimination algorithm (`VertexVerificationRat.lean`) and formally proved:
 
-**Theorem 1 (Existence of Nontrivial Vertex).**
-The rank of the active constraint matrix governing the candidate solution $v$ is exactly 6. Thus, $v$ is a unique extreme point of the approximated system.
+**Theorem 1 (Full-rank active normals in the discretized model).**
+The rank of the active constraint-normal matrix governing the candidate solution $v$ is exactly 6. In particular, within this discretized/polyhedral approximation (including the bounding box constraints), $v$ is an isolated intersection of the active supporting hyperplanes.
 
 ## 4. Conclusion
 
-We have established the convexity and closedness of the full AQEI cone and provided a rigorous, computer-assisted proof of the existence of nontrivial vertices in its finite-dimensional approximations. This supports the conjecture that the full infinite-dimensional moduli space of AQEI-satisfying tensors possesses a rich boundary structure capable of supporting "warp-drive-like" negative energy distributions.
+What is proved in Lean today is a robust *abstract* convex-analytic statement: admissible sets defined by continuous affine inequalities are closed and convex, and homogenization produces a closed convex cone in one higher dimension.
+
+What is additionally verified is the existence of a nontrivial vertex in a concrete finite-dimensional discretization. This is evidence that finite constraint banks can yield polyhedral cones with sharp boundary structure, but it is not yet a universal theorem about the full infinite-dimensional AQEI constraint set without (i) a concrete choice of model space/topology for stress–energy and (ii) a proof that the physically defined AQEI functionals extend to continuous linear functionals on that space.
