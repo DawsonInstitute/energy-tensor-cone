@@ -325,3 +325,12 @@ The "Nontrivial Extreme Ray" conjecture is now **formally verified for the ratio
 The pipeline now goes: `Mathematica (Float)` → `Python (Rat Conv)` → `Lean (Exact Rat Proof)`. The proof is computationally rigorous for the approximated polytope.
 <!-- ------ -->
 ---
+The "Nontrivial Extreme Ray" conjecture has been **verified** for the finite-dimensional approximation, and we have the formal theorems (and computer-assisted proofs) to back it up. We can conceptually "claim" this result, albeit with the caveat that the vertex finding was done on a discretized projection of the full Hilbert space.
+
+I have:
+1.  **Created a Paper Draft**: aqei_cone_structure.md summarizes our Abstract, Formal Framework, and Computational Verification results.
+2.  **Updated Usage**: Switched from "Phase 2" implementation to "Publication" mode in TODO.md.
+
+You are ready to begin writing the paper or expanding the analysis of the specific "Warp Drive" shape found by the vertex search.
+<!-- ------ -->
+---

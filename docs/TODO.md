@@ -24,11 +24,13 @@ Construct an explicit polytope approximating the AQEI admissble set (by fixing a
 3. Constructed the $6 \times 6$ checking matrix (3 active AQEI normals + 3 active box normals).
 4. Verified `rank = 6` via `#eval` and a reflexive theorem `active_constraints_full_rank`.
 
-## Step 4: Final Theorem "Paper" [Completed]
-**Status:** Done via `lean/src/FinalTheorems.lean`.
-1. Summarized the convexity results.
-2. Referenced the computational vertex proof.
-3. This completes the "Phase 2" objective: We have a working pipeline to generate and verify extreme rays.
+## Step 5: Draft Publication
+**Status:** Started.
+- Created `papers/aqei_cone_structure.md` summarizing the formal results.
+- **Next Actions:**
+  - Expand Section 3 to include the specific `vertex.json` parameters.
+  - Visualize the resulting stress-energy tensor $T_{\mu\nu}(x)$ for the found vertex.
+  - Discuss the physical implications of the particular "shape" of negative energy found.
 **Task:** Create a summary Lean file `lean/src/Theorems.lean` that collects the results:
 - "The set of coefficients satisfying the discretized AQEI bounds is a closed, convex set."
 - "The point `v` is an extreme point of this set."
