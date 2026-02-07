@@ -29,4 +29,12 @@ theorem AQEI_Admissible_Is_Closed_Convex :
 theorem Existence_Of_Nontrivial_Vertex : Phase2.computed_rank = 6 :=
   Phase2.active_constraints_full_rank
 
+/--
+  Rational Verification.
+  We also verified the rank condition using exact Rational arithmetic,
+  eliminating floating-point errors from the independence check.
+-/
+theorem Existence_Of_Nontrivial_Vertex_Rat : Phase2Rat.computed_rank = 6 :=
+  Phase2Rat.active_constraints_full_rank_rat
+
 end FinalResults

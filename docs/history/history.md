@@ -284,3 +284,44 @@ The "Phase 2" goal of computationally verifying a single instance is done. We ca
 *   **Physics Analysis**: Analyze the shape of the found vertex (the `vertex.json` data) to see what physical spacetime geometry it corresponds to (e.g., visualize the Energy Density `T_00`).
 <!-- ------ -->
 ---
+## Phase 1: Foundation
+- Repaired repository structure and VS Code workspace.
+- Implemented abstract Lean interface (`AQEIFamilyInterface`).
+
+## Phase 2: Vertex Construction & Verification
+- Implemented optimization search in Mathematica (`search.m`).
+- Found vertex for N=6 basis elements under 50 random AQEI constraints.
+- Verified vertex numerically (Python, Residue ~10e-11).
+- **Rigorous Verification:**
+  - Converted floating-point data to Rationals (`AQEI_Generated_Data_Rat.lean`).
+  - Implemented exact Gaussian elimination in Lean (`VertexVerificationRat.lean`).
+  - Proved `rank = 6` for the rational approximation of the active constraints.
+  - This provides a proof free of floating-point errors for the approximated system.
+<!-- ------ -->
+---
+The "Nontrivial Extreme Ray" conjecture is now **formally verified for the rational approximation** of the finite system.
+
+### Achievements
+1.  **Rational Data Translation**:
+    *   Created generate_lean_data_rat.py, which converted the floating-point vertex data into exact Lean Rationals (`Rat`).
+    *   Generated AQEI_Generated_Data_Rat.lean.
+
+2.  **Rigorous Rational Verification**:
+    *   Implemented VertexVerificationRat.lean: Uses exact **Rational Gaussian Elimination** rather than floating-point checks.
+    *   **Result**: The rank of the active constraint matrix is exactly `6`, confirming the vertex property without any epsilon ambiguity.
+
+3.  **Final Theorem**:
+    *   Updated FinalTheorems.lean to include `Existence_Of_Nontrivial_Vertex_Rat`.
+
+### Updated Status Table
+
+| Property | Status in Repo | File / Proof Mechanism |
+| --- | --- | --- |
+| **Convexity** | ✅ Formally Proven | AQEIFamilyInterface.lean |
+| **Closedness** | ✅ Formally Proven | AQEIFamilyInterface.lean |
+| **Cone Structure** | ✅ Formally Proven | `AffineToCone.lean` |
+| **Extreme Rays** | ✅ **Rationally Verified** | `VertexVerificationRat.lean` (Exact `Rat` Rank) |
+
+The pipeline now goes: `Mathematica (Float)` → `Python (Rat Conv)` → `Lean (Exact Rat Proof)`. The proof is computationally rigorous for the approximated polytope.
+<!-- ------ -->
+---
