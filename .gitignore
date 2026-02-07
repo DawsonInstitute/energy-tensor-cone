@@ -16,3 +16,5 @@ lean/.lake/
 *.c
 *.a
 *.so
+
+papers/related/**/*
