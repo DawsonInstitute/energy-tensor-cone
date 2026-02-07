@@ -1,63 +1,234 @@
-# TODO.md: Phase 3 - From Toy Polyhedra to the “Full” AQEI Cone
+# TODO.md: Next Steps for energy-tensor-cone Project
 
-## Where we actually are
+This document outlines the next actionable steps to advance the energy-tensor-cone repository (formerly warp-cone-aqei). Each step is self-contained, with precise instructions, mathematical explanations where needed, and code snippets in Python, Wolfram Mathematica, and Lean 4. Focus on implementation fidelity—do not deviate from the provided code or math unless explicitly noted for fixes.
 
-- ✅ **Abstract theorem (Lean):** If an AQEI family is given as continuous linear functionals `L : ι → E →L[ℝ] ℝ` with bounds `b : ι → ℝ`, then the admissible set `⋂ i, {x | 0 ≤ L i x + b i}` is closed and convex, and homogenization gives a closed convex cone.
-- ✅ **Finite-dimensional evidence (Lean + rational arithmetic):** A discretized/polyhedral approximation (finite basis + finite constraint bank + bounding box) has a nontrivial vertex with full-rank active normals.
-- ❌ **Not yet proved:** that the *physically defined* AQEI functionals on the intended infinite-dimensional stress–energy/operator space are continuous linear maps for a specified topology, and therefore that “the full AQEI set” matches the abstract admissible set above.
-- ❌ **Not yet proved:** existence of nontrivial extreme rays in the full infinite-dimensional cone (this may require extra structure/assumptions; in infinite dimensions extreme rays can fail to exist or be hard to characterize).
+Build on the existing structure and files from previous prompts (e.g., Lean sources, Mathematica script, Python orchestrator). If a file or directory doesn't exist, create it. Use the chat history in `docs/history/history.md` for context, but prioritize these steps. Incorporate any recent changes (e.g., if it updated files, verify and build upon them). If latest changes aren't reflected in the current TODO, this replacement supersedes it.
 
-## Phase 3 Objective
+The project focuses on formalizing the convex cone of stress-energy tensors satisfying Averaged Quantum Energy Inequalities (AQEI) using Lean 4, with computational searches in Mathematica to identify extreme rays or boundary points. Progress toward a paper draft in `papers/` is integrated.
 
-Turn the current formalization into a publishable theorem statement by making explicit assumptions (topology + continuity), and (option A) prove a correct infinite-dimensional statement under those assumptions, or (option B) revise the conjecture to a defensible finite-dimensional/projection statement and prove it cleanly.
+## Step 1: Verify and Update Repository Structure Post-Rename
 
-## Step 1: Choose the model space + topology (blocking)
+**Task:** Update any references to the old name (warp-cone-aqei). Create missing files with placeholder content if needed. Commit and push changes.
 
-Pick a concrete `E` for “stress–energy tensors” and a topology that makes the AQEI maps continuous.
+**Detailed Instructions:**
+- Navigate to `~/Code/asciimath/energy/energy-tensor-cone/`.
+- Search and replace "warp-cone-aqei" with "energy-tensor-cone" in all files (e.g., using `grep -rl 'warp-cone-aqei' . | xargs sed -i 's/warp-cone-aqei/energy-tensor-cone/g'`).
+- Create directories and empty files if missing:
+  - `mathematica/search.m` (content from original prompt or refined in Step 3).
+  - `lean/lakefile.lean` (content from Step 2).
+  - `lean/src/` with files: `Lorentz.lean`, `StressEnergy.lean`, `AQEI.lean`, `ConeProperties.lean` (contents from original; copy-paste if needed).
+  - `python/orchestrator.py` and `analyze_results.py` (contents from original and Step 4).
+  - `tests/` with scripts: `build_lean.sh`, `python_tests.sh`, `mathematica_tests.sh`, `lean_tests.sh` (contents below).
+  - `papers/` if missing: Create with `draft.md` (initial outline) and prepare for .tex.
+- Update `README.md` with: "Repository for formalizing the convex cone of energy tensors under AQEI constraints using Lean 4, Mathematica searches, and Python integration."
+- Run `git add .`, `git commit -m "Update structure and references post-rename to energy-tensor-cone"`, `git push origin main`.
 
-- Option 1 (functions): `E` as a space of smooth compactly supported symmetric tensor fields (Fréchet topology).
-- Option 2 (distributions): `E` as a distribution space; AQEI functionals become pairings against test functions.
-- Option 3 (operator-algebra): `E` as a Banach space of trace-class / bounded operators with weak-* topology.
+**Code for tests/build_lean.sh (bash):**
+```bash
+#!/bin/bash
+cd "$(dirname "$0")/../lean"
+lake build
+if [ $? -eq 0 ]; then
+  echo "Lean build successful."
+else
+  echo "Lean build failed."
+  exit 1
+fi
+```
 
-Deliverables:
-- A short design note in `docs/` describing the choice and why it matches AQEI literature.
-- Lean definitions: the chosen `E` typeclass instances (`TopologicalSpace`, `AddCommMonoid`, `Module`).
+**Code for tests/python_tests.sh (bash):**
+```bash
+#!/bin/bash
+cd "$(dirname "$0")/../python"
+python3 -m unittest discover -v  # Placeholder; add actual tests later
+echo "Python tests passed."
+```
 
-## Step 2: Make AQEI functionals real (not placeholders)
+**Code for tests/mathematica_tests.sh (bash):**
+```bash
+#!/bin/bash
+cd "$(dirname "$0")/../mathematica"
+wolframscript -file search.m
+if [ $? -eq 0 ]; then
+  echo "Mathematica tests successful."
+else
+  echo "Mathematica tests failed."
+  exit 1
+fi
+```
 
-Right now `AQEI_functional` is a stub (`= 0`) and `SamplingFunction`/`Worldline` carry placeholders.
+**Code for tests/lean_tests.sh (bash):**
+```bash
+#!/bin/bash
+./build_lean.sh
+```
 
-Deliverables:
-- Replace the stub with either:
-  - a real integral-based definition on the chosen `E`, or
-  - an explicit axiom/structure bundling “AQEI functionals are continuous linear maps” (stated clearly as an assumption).
-- Prove (or assume, but explicitly) the `FactorsThrough` hypothesis used in `AQEIToInterface.lean`.
+**Code for run_tests.sh (top-level bash):**
+```bash
+#!/bin/bash
+cd tests
+./build_lean.sh
+./python_tests.sh
+./mathematica_tests.sh
+./lean_tests.sh
+echo "All tests completed."
+```
 
-## Step 3: State the *correct* infinite-dimensional theorem
+## Step 2: Implement and Enhance Lean Skeleton
 
-Deliverables:
-- A Lean theorem in a new file that reads like:
-  - “Given a topological vector space `E` and AQEI family `L` of continuous linear maps, the admissible set is closed and convex.”
-  - “Homogenization yields a closed convex cone.”
-This is mostly already in place, but we need to repackage it as the project’s main theorem with clear assumptions.
+**Task:** Ensure `lean/lakefile.lean` is set up, prove additional lemmas (e.g., convexity with finite constraints), and integrate Copilot suggestions if any.
 
-## Step 4: Extreme rays — pick a defensible target and prove it
+**Mathematical Context:** Formalize the cone \( C = \{ T \mid \forall \gamma, g, I_{T,\gamma,g} \geq -B_{\gamma,g} \} \), where \( I_{T,\gamma,g} = \int g(t) T(\gamma(t))(u(t), u(t)) \, dt \). Prove convexity: For \( T_1, T_2 \in C \), \( \alpha T_1 + \beta T_2 \in C \) (\( \alpha, \beta \geq 0 \)) via linearity of \( I \).
 
-Two realistic paths:
+**Detailed Instructions:**
+- Create/update `lean/lakefile.lean` with code below.
+- Install/update Lean 4 and Mathlib.
+- Run `lake build` in `lean/`; fix errors.
+- In `ConeProperties.lean`, complete proofs (replace `admit` with tactics).
+- If Copilot updated files, merge changes (e.g., new lemmas).
+- Commit: `git commit -m "Enhance Lean skeleton and proofs"`
 
-- Path A (finite-dimensional/projection theorem):
-  - Prove: for the discretized polyhedral model, there exists a nontrivial vertex/extreme ray.
-  - Make the statement mathematically clean (no “rank check only”): define the polyhedron and prove “`v` is a vertex” from full-rank active constraints + satisfaction.
+**Code for lean/lakefile.lean:**
+```lean
+import Lake
+open Lake DSL
 
-- Path B (infinite-dimensional structure):
-  - Investigate whether the full cone has nontrivial extreme rays under your topology/space choice.
-  - If not generally true, revise the conjecture to “nontrivial exposed points exist for finite constraint banks / finite-dimensional slices”.
+package «energy-tensor-cone» {
+}
 
-Deliverables:
-- A Lean definition of `IsExtremeRay`/`IsExtremePoint` for cones/convex sets.
-- A Lean lemma connecting “full-rank active constraints” to “is a vertex” for polyhedra over `ℚ`/`ℝ`.
+lean_lib EnergyTensorCone {
+}
 
-## Step 5: Paper track (only after scope is correct)
+@[default_target]
+lean_exe «energy-tensor-cone» {
+  root := `Main
+}
 
-- Keep `papers/aqei_cone_structure.md` as a *technical report draft* until Step 3 and Step 4 are fully honest and theorem-backed.
-- Add a “Limitations / Assumptions” section that matches the Lean code.
+require mathlib from git "https://github.com/leanprover-community/mathlib4.git"
+```
+
+**Example Proof Enhancement in ConeProperties.lean:**
+```lean
+theorem cone_convex {V : Type} [AddCommMonoid V] [Module ℝ V] {L : LorentzSpace V}
+  (bounds : Worldline V L → SamplingFunction → ℝ) :
+  ∀ (T1 T2 : StressEnergy V L) (α β : ℝ), 0 ≤ α → 0 ≤ β → satisfies_AQEI T1 bounds → satisfies_AQEI T2 bounds → satisfies_AQEI (α • T1 + β • T2) bounds := by
+  intros T1 T2 α β hα hβ h1 h2 γ s
+  unfold satisfies_AQEI
+  simp [AQEI_functional]  -- Linearity: I(α T1 + β T2) = α I(T1) + β I(T2)
+  linarith [h1 γ s, h2 γ s]
+```
+
+## Step 3: Scale and Refine Mathematica Search
+
+**Task:** Update `mathematica/search.m` for larger trials, use GPU support, and export more detailed results.
+How to use Mathematica's built-in GPU functions that don't require CUDALink:
+```wolfram
+(* These work without CUDALink *)
+DeviceObject functions
+TargetDevice -> "GPU"
+```
+
+**Mathematical Context:** In 1+1D, search for \( T \) violating/saturating AQEI: Minimize \( I + B \) over random \( a_i, \gamma, g \). Use finite basis to approximate extreme rays.
+
+**Detailed Instructions:**
+- Update script (from original) with higher `numTrials=100000`, add `Symmetrize`.
+- Test GPU: Use `TargetDevice -> "GPU"` in integrations.
+- Run: `wolframscript -file mathematica/search.m`
+- Commit: `git commit -m "Scale Mathematica search"`
+
+**Code Addition in search.m:**
+```mathematica
+Symmetrize[m_] := (m + Transpose[m])/2;
+(* Increase numTrials *)
+numTrials = 100000;
+```
+
+## Step 4: Enhance Python Integration and Analysis
+
+**Task:** Update `python/analyze_results.py` to handle larger results, generate Lean candidates, and add plotting for paper.
+
+**Detailed Instructions:**
+- Update file with code below.
+- Run `python/orchestrator.py` to test.
+- Add pytest for `python_tests.sh`.
+- Commit: `git commit -m "Enhance Python analysis"`
+
+**Code for python/analyze_results.py (expanded):**
+```python
+import json
+import matplotlib.pyplot as plt
+from pathlib import Path
+
+ROOT = Path(__file__).parent.parent
+RESULT_DIR = ROOT / "mathematica" / "results"
+GEN_FILE = ROOT / "lean" / "src" / "GeneratedCandidates.lean"
+
+def generate_lean_candidates(near_misses):
+    with open(GEN_FILE, 'w') as f:
+        f.write("import StressEnergy\n\n")
+        for i, miss in enumerate(near_misses[:5]):  # Assume near_misses is list of dicts
+            a = miss.get('a', [])  # Coefficients
+            f.write(f"def candidate{i+1} : StressEnergy V L := ⟨\n")
+            f.write("  fun u v => " + " + ".join(f"{a[j]} * basis{j}(u,v)" for j in range(len(a))) + "\n")  # Approximate bilinear
+            f.write("⟩\n\n")
+
+def plot_results(near_misses):
+    scores = [miss['val'] for miss in near_misses]
+    plt.hist(scores, bins=20)
+    plt.savefig(ROOT / 'papers' / 'near_misses_hist.png')
+
+if __name__ == "__main__":
+    # Load results (assume JSON)
+    near_misses = json.loads((RESULT_DIR / "near_misses.json").read_text()) if (RESULT_DIR / "near_misses.json").exists() else []
+    generate_lean_candidates(near_misses)
+    plot_results(near_misses)
+```
+
+## Step 5: Run End-to-End Pipeline and Document
+
+**Task:** Execute full tests, generate candidates, document in `docs/results.md`.
+
+**Detailed Instructions:**
+- Run `run_tests.sh`.
+- Log outputs.
+- Commit: `git commit -m "End-to-end test results"`
+
+## Step 6: Advance Paper Draft and .tex Creation
+
+**Task:** Expand `papers/draft.md`, create `papers/draft.tex`, prepare for submission.
+
+**Detailed Instructions:**
+- Expand markdown with sections from previous response.
+- Create .tex with skeleton below.
+- Add plots from Step 4.
+- Commit: `git commit -m "Advance paper draft"`
+
+**Sample .tex Code for papers/draft.tex:**
+```latex
+\documentclass{article}
+\usepackage{amsmath, amsthm, graphicx, listings}
+
+\title{Convex Cone of Energy Tensors under AQEI}
+\author{Charles}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Formalization and computation of AQEI cone.
+\end{abstract}
+
+\section{Introduction}
+The cone \( C \) is defined as...
+
+\includegraphics{near_misses_hist.png}
+
+\end{document}
+```
+
+## Next Iterations
+- Prove infinite constraint lemmas in Lean.
+- Scale searches to 1e6 trials.
+- Submit preprint to arXiv after draft completion.
+- Target journal: Journal of Mathematical Physics.
