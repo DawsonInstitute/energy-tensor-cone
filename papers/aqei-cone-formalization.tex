@@ -17,9 +17,9 @@
 
 \title{Convex Cone of Energy Tensors under AQEI:\\
 Formal Verification and Computational Exploration}
-\author{Ryan Sherrington}
-\affiliation{Dawson Institute for Advanced Physics}
-\email{rsherrington@dawsoninstitute.org}
+\author{Ryan Sherrington\\
+Dawson Institute for Advanced Physics\\
+\texttt{rsherrington@dawsoninstitute.org}}
 
 \date{February 7, 2026}
 
@@ -256,33 +256,33 @@ This work opens the door to systematic exploration of the AQEI cone geometry usi
 
 \section{File Structure}
 
-\begin{lstlisting}[basicstyle=\small\ttfamily]
+\begin{verbatim}
 energy-tensor-cone/
-├── lean/
-│   ├── lakefile.lean              
-│   └── src/
-│       ├── Lorentz.lean           
-│       ├── StressEnergy.lean      
-│       ├── AQEI.lean              
-│       ├── ConeProperties.lean    
-│       ├── AQEIFamilyInterface.lean  
-│       ├── AffineToCone.lean      
-│       ├── PolyhedralVertex.lean  
-│       ├── ExtremeRays.lean       
-│       ├── VertexVerificationRat.lean  
-│       └── FinalTheorems.lean     
-├── mathematica/
-│   ├── search.m                   
-│   └── results/                   
-├── python/
-│   ├── orchestrator.py            
-│   └── analyze_results.py         
-└── tests/
-    ├── build_lean.sh              
-    ├── python_tests.sh            
-    ├── mathematica_tests.sh       
-    └── lean_tests.sh              
-\end{lstlisting}
+  lean/
+    lakefile.lean              
+    src/
+      Lorentz.lean           
+      StressEnergy.lean      
+      AQEI.lean              
+      ConeProperties.lean    
+      AQEIFamilyInterface.lean  
+      AffineToCone.lean      
+      PolyhedralVertex.lean  
+      ExtremeRays.lean       
+      VertexVerificationRat.lean  
+      FinalTheorems.lean     
+  mathematica/
+    search.m                   
+    results/                   
+  python/
+    orchestrator.py            
+    analyze_results.py         
+  tests/
+    build_lean.sh              
+    python_tests.sh            
+    mathematica_tests.sh       
+    lean_tests.sh              
+\end{verbatim}
 
 \section{Reproducibility}
 
