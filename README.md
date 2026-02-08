@@ -6,7 +6,8 @@ Computational + formalization scaffold for exploring **Averaged Quantum Energy I
 
 **Status**: 
 - **Published at Zenodo**: [DOI 10.5281/zenodo.18522457](https://doi.org/10.5281/zenodo.18522457)
-- **Manuscript**: `aqei-cone-formalization.tex` ready for journal submission
+- **Organization**: Moved to [DawsonInstitute/energy-tensor-cone](https://github.com/DawsonInstitute/energy-tensor-cone)
+- **Manuscript**: `papers/aqei-cone-formalization-cqg.tex` prepared for Classical and Quantum Gravity (CQG) submission using IOP template
 - **arXiv submission**: Planned for math-ph (Mathematical Physics), with secondary categories gr-qc, hep-th
 
 This repo is intentionally minimal:
@@ -16,9 +17,9 @@ This repo is intentionally minimal:
 
 ## Paper
 
-The manuscript is available in `papers/aqei-cone-formalization.tex` and is ready for submission to:
+The manuscript is available in `papers/aqei-cone-formalization-cqg.tex` (IOP template) and is prepared for submission to:
 - **arXiv**: Primary category math-ph (Mathematical Physics), secondary categories gr-qc (General Relativity and Quantum Cosmology) and hep-th (High Energy Physics - Theory)
-- **Journal**: Communications in Mathematical Physics (CMP)
+- **Journal**: Classical and Quantum Gravity (CQG)
 
 ## Quickstart
 
@@ -42,13 +43,13 @@ To reproduce the full computational + formal verification pipeline:
 3. **Process results**: `cd python && python orchestrator.py`
 4. **Run full test suite**: `./run_tests.sh`
 
-See `papers/aqei-cone-formalization.tex` Appendix B for complete details.
+See `papers/aqei-cone-formalization-cqg.tex` Appendix B for complete details.
 
 ### Notes on Formal Verification
 
 - **Core theorems proven**: All 10 critical theorems (closure, convexity, homogenization, vertex characterization) are fully proven in Lean with no placeholders.
 - **Intentional `sorry` statements**: Two theorems in `ConeProperties.lean` have `sorry` placeholders because they are intentionally false as stated (AQEI constraints are affine, not homogeneous). These document why bare AQEI regions are not true cones; the correct cone formulation is proven in `AffineToCone.lean`.
-- **Publication status**: This level of formalization is standard for computational mathematics papers - core claims are mechanically verified, while extensions remain as documented future work.
+- **Publication status**: The Lean development provides mechanized proofs of core properties (convexity, extreme-ray candidates in finite models); some extensions remain as `sorry` placeholders for future work. This level of formalization is standard for computational mathematics papers in physics journals — core claims are mechanically verified, while extensions are documented as open questions.
 - **Test validation**: See `docs/theorem_verification.md` for complete proof inventory.
 
 ### Notes on Terminology

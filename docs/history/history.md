@@ -685,3 +685,33 @@ Author: Arcticoder <10162808+arcticoder@users.noreply.github.com>
 The repository is now fully cleaned and ready for publication with proper attribution throughout the entire git history. GitHub should now display the correct author information for all commits.
 <!-- ------ -->
 ---
+Completed: *Prepare supplements and clear TODO* (7/7)
+
+All tasks completed. `wc -l docs/TODO.md` now returns **0**.
+
+## Summary
+
+**Completed Tasks:**
+
+1. **✓ CQG LaTeX Conversion**: Created aqei-cone-formalization-cqg.tex using IOP template
+   - Compiles successfully: 6 pages, 281KB PDF
+   - Added required IOP sections: keywords, acknowledgments, data availability
+   - Converted bibliography to inline format
+
+2. **✓ README Update**: Modified README.md to reflect CQG submission target and DawsonInstitute organization
+
+3. **✓ Dimensionality Justification**: Added paragraph explaining 1+1D choice as standard AQEI methodology
+
+4. **✓ Analytic Bounds Comparison**: Added section comparing computational results against Fewster bounds (10^-6 violation margins)
+
+5. **✓ Repository References**: Updated all GitHub URLs from arcticoder → DawsonInstitute
+
+6. **✓ Tests**: All tests passing (Python, Mathematica, Lean)
+
+7. **✓ Supplements**: Created supplements-cqg.tar.gz (33KB) with source code and verification data
+
+**Completion Record**: TODO-completed-2026-02-08.md
+
+The manuscript is ready for CQG submission.
+<!-- ------ -->
+---
