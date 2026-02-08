@@ -749,3 +749,15 @@ All tasks completed! `wc -l docs/TODO.md` returns **0**.
 **Ready for CQG submission** - anonymized manuscript and supplements meet double-anonymous review standards.
 <!-- ------ -->
 ---
+Fixed! The LaTeX compilation error was caused by a typo in the `\end{enumerate}` command - it had a space: `\end{enumerat e}` instead of `\end{enumerate}`.
+
+**What was changed:**
+- Fixed `\end{enumerat e}` → `\end{enumerate}` on line 281 in aqei-cone-formalization-cqg.tex
+
+**Verification:**
+- LaTeX compilation now succeeds: "Output written on aqei-cone-formalization-cqg.pdf (6 pages, 282503 bytes)"
+- No errors reported
+
+The manuscript is ready for submission.
+<!-- ------ -->
+---
