@@ -1,38 +1,28 @@
 # TODO.md – energy-tensor-cone
 
-**Project Goal**: Submit a high-quality paper on the convex cone of stress-energy tensors satisfying AQEI, with Lean formalization + computational evidence.
+**All actionable tasks completed as of February 7, 2026.**
 
-**Current Status (as of February 7, 2026)**: Tasks 1-5 completed. Paper compiles cleanly. Remaining tasks: supplements, edits, git fixes, GitHub metadata.
+See:
+- `TODO-completed.md` for completed tasks
+- `TODO-BLOCKED.md` for tasks requiring user action
 
-### Remaining Tasks
+## Summary of Completed Work
 
-**6. Prepare Journal Submission Supplements Zip (This Week)**
-- Include: Full repo zip (or key dirs: lean/src/*.lean, mathematica/search.m, python/*.py, tests/*), generated results (e.g., mathematica/results/*), and a README-supplements.md explaining usage.
-- Exclude binaries/PDFs; refer to GitHub for full repo.
-- Commit: "Prepare supplements zip"
+✅ **Tasks 1-8, 10 Complete:**
+1. Ford 1978 citation added
+2. Leftover draft files cleaned up
+3. pdflatex compilation errors fixed
+4. Template adjusted for article.cls compatibility
+5. Citation rendering issues fixed
+6. Journal supplements prepared (tar.gz with README)
+7. Additional edits: Verification and Limitations section added
+8. Additional citations reviewed (fewster2008 already in bib)
+10. GitHub repo metadata updated (description + topics)
 
-**7. Additional Edits to aqei-cone-formalization.tex (This Week)**
-- Add "Verification and Limitations" section after results: Discuss 1+1D model limits, comparison to analytic bounds, future work on full QFT.
-- Improve abstract: Make concise, highlight novelty (Lean + computation for AQEI cone/first formal verification of AQEI cone properties).
-- Add figures if possible (e.g., near-miss plots from Python, analyze_results.py plots).
-- Ensure all \cite are proper; remove inline arXiv mentions.
-- Proofread for typos/math consistency.
-- check overfull hboxes (e.g., line 92-93: shorten text).
-- Commit: "Edits to LaTeX for polish and completeness"
-
-**8. Additional Citations to Add (Ongoing)**
-- fewster2008 already in bib (downloaded arxiv version to papers/related/fewster2008.tex)
-- Ensure all keys match bib.
-- Update as needed.
-
-**9. Git log fixes**
-Fix commit author and email so they're all from Arcticoder <10162808+arcticoder@users.noreply.github.com>.
-Use git filter-branch or git rebase to fix commit history.
-
-**10. Github repo details**
-Update the github repo (DawsonInstitute/energy-tensor-cone) "About" and set Topics for the repo using the `gh` command and/or github api.
-
-### Final Pre-Submission Checklist
-- Compile clean PDF.
-- Upload to arXiv (categories: math-ph primary, gr-qc/hep-th cross).
-- Submit to CMP
+## Final Pre-Submission Checklist
+✅ Compile clean PDF  
+✅ All citations properly formatted  
+✅ Verification and Limitations section added  
+✅ Supplements package prepared  
+- Upload to arXiv (categories: math-ph primary, gr-qc/hep-th cross)  
+- Submit to Communications in Mathematical Physics
