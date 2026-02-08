@@ -219,6 +219,24 @@ This work includes comprehensive verification protocols to ensure correctness:
 
 See \texttt{docs/verification.md}, \texttt{docs/test\_validation.md}, and \texttt{docs/theorem\_verification.md} for complete verification reports.
 
+\subsection{Verification and Limitations}
+
+While our results provide a rigorous foundation for understanding AQEI cone geometry, several limitations should be acknowledged:
+
+\paragraph{Dimensional Restriction:}
+The computational search is performed in 1+1 dimensional Minkowski space. While this simplified setting allows for tractable numerics and clear geometric intuition, the extension to physically realistic 3+1 dimensions remains an open problem. The number of degrees of freedom and constraint complexity scale significantly in higher dimensions.
+
+\paragraph{Finite-Dimensional Approximation:}
+We work with a finite Gaussian basis ($N=6$ modes). While the vertex property is rigorously verified in this discretization, the connection to the full infinite-dimensional QFT remains to be established. The finite-dimensional extreme rays identified here may or may not correspond to extreme rays of the full theory.
+
+\paragraph{AQEI Bounds:}
+The quantum bounds $B_{\gamma,g}$ used in our computational search are approximate. A full QFT calculation would require detailed analysis of two-point functions and mode expansions, which is beyond the scope of this initial geometric exploration.
+
+\paragraph{Comparison with Analytic Results:}
+Our computational findings are consistent with the general expectation that AQEI constraints define a convex cone with non-trivial boundary structure. However, we have not yet performed detailed comparisons with analytic bounds derived for specific quantum field theories (e.g., free scalar field AQEI bounds from Fewster's work).
+
+Despite these limitations, the hybrid formal/computational approach demonstrates the feasibility of rigorous verification for geometric properties of quantum energy constraints, opening avenues for future work in higher dimensions and full QFT settings.
+
 \subsection{Open Questions}
 
 \begin{enumerate}
