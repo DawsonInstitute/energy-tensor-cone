@@ -651,3 +651,37 @@ The git push issue has been resolved! The repository is now properly configured 
 The energy-tensor-cone project is now fully synchronized and ready for journal submission. All publication readiness tasks have been completed successfully.
 <!-- ------ -->
 ---
+Perfect! The author information has been successfully corrected across all commits in the repository. Here's what was accomplished:
+
+## ✅ Author Information Fixed
+
+**Problem**: Commits from `732c5e102400ec9fb77c4548d95dd1f784cf69f3` and earlier showed "Your Name <you@example.com>" on GitHub.
+
+**Solution**: Used `git-filter-repo` with a commit callback to rewrite author information across the entire history.
+
+**Command Used**:
+```bash
+git filter-repo --commit-callback '
+if commit.author_email == b"you@example.com":
+    commit.author_name = b"Arcticoder"
+    commit.author_email = b"10162808+arcticoder@users.noreply.github.com"
+if commit.committer_email == b"you@example.com":
+    commit.committer_name = b"Arcticoder"
+    commit.committer_email = b"10162808+arcticoder@users.noreply.github.com"
+' --force
+```
+
+**Results**:
+- ✅ All 65 commits rewritten with correct author information
+- ✅ Force push successful to GitHub
+- ✅ Repository now shows "Arcticoder" as author for all commits
+- ✅ Commit hashes changed (as expected with history rewrite)
+
+**Verification**: All commits now display:
+```
+Author: Arcticoder <10162808+arcticoder@users.noreply.github.com>
+```
+
+The repository is now fully cleaned and ready for publication with proper attribution throughout the entire git history. GitHub should now display the correct author information for all commits.
+<!-- ------ -->
+---
