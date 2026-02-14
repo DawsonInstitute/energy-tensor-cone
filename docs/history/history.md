@@ -838,3 +838,15 @@ Commits created:
 To verify locally: `cd energy-tensor-cone/papers && pdflatex -interaction=nonstopmode aqei-cone-formalization-prd.tex && bibtex aqei-cone-formalization-prd && pdflatex -interaction=nonstopmode aqei-cone-formalization-prd.tex && pdflatex -interaction=nonstopmode aqei-cone-formalization-prd.tex` now completes successfully.
 <!-- ------ -->
 ---
+Completed: *Update TODO tracking files* (3/5)
+
+- Fixed the date mismatch in TODO tracking: energy-tensor-cone/docs/TODO-completed.md now uses **February 13, 2026**.
+- Completed PRD anonymization cleanup:
+  - Deleted the anonymized CQG source energy-tensor-cone/papers/aqei-cone-formalization-cqg-anon.tex (and removed remaining local build artifacts like the anon PDF).
+  - Deleted anonymized supplements archive energy-tensor-cone/supplements/supplements-anon.zip and removed the extracted `supplements/supplements-anon/` folder.
+- Updated TODO status to mark step 3 completed in energy-tensor-cone/docs/TODO.md.
+
+New commit:
+- `d1161c4` Remove anonymized artifacts for PRD
+<!-- ------ -->
+---
