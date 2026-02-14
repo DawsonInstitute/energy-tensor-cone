@@ -924,3 +924,14 @@ Completed the remaining active items from TODO.md, plus the related bound-compar
 - Cleaned up TODO hygiene so it reflects PRD-ready status and only leaves manual pre-submission checks in energy-tensor-cone/docs/TODO.md, with completed work recorded in energy-tensor-cone/docs/TODO-completed.md. Commit: `Update TODO tracking (PRD-ready)` (f152307).
 <!-- ------ -->
 ---
+- Put “Integrate Remaining TODO-backlog Citations” back into docs/TODO.md, did the work, then moved it into docs/TODO-completed.md.
+- Added a minimal, non-disruptive sentence + citation to `hovhannisyan2024` in the intro’s “computational/numerical exploration” context.
+- Rebuilt PRD (`pdflatex → bibtex → pdflatex ×2`): clean.
+- Committed: `Integrate literature expansion citations` (785d195).
+<!-- ------ -->
+---
+- Cleared the remaining backlog entries by removing the archived literature-expansion block from energy-tensor-cone/docs/TODO-backlog.md.
+- Moved that backlog section into energy-tensor-cone/docs/TODO-completed.md as a completed/retired tracking entry.
+- Committed: `Move literature backlog to completed` (be17382).
+<!-- ------ -->
+---
