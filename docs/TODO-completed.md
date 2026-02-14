@@ -852,3 +852,17 @@ All three manuscript versions compile successfully:
 
 **Completion Date:** February 13, 2026
 
+---
+
+## ✅ Step: Archive CQG Files (COMPLETED)
+
+**Status:** CQG-specific manuscript files removed to declutter the repo.
+
+**What was done:**
+- Removed `papers/aqei-cone-formalization-cqg.tex` from version control.
+- Deleted local CQG build artifacts under `papers/aqei-cone-formalization-cqg.*` (aux/bbl/blg/log/out/pdf).
+
+**Verification:** No `papers/aqei-cone-formalization-cqg.*` files remain.
+
+**Completion Date:** February 14, 2026
+

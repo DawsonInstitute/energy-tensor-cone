@@ -14,10 +14,6 @@
 - All key items done: REVTeX used, abstract <600 chars, references in order, no tracked changes. Still needed: Ensure word count fits (PRD no strict limit, but concise); add PACS codes if required (optional but recommended for classification – e.g., 03.70.+k Quantum information, 04.60.-m Quantum gravity).
 - Commit: "Add PACS codes and confirm PRD guidelines compliance in tex"
 
-**3. Archive CQG Files**
-- Archive/delete `papers/aqei-cone-formalization-cqg.*` to declutter (git rm them); keep shared common-*.tex for refactoring.
-- Commit: "Archive CQG-specific files"
-
 **4. Refactor LaTeX Further**
 - Maintain 3 .tex versions via shared inputs (common-preamble.tex, etc.). For revisions, edit shared files; use git branches (e.g., git checkout -b prd-revision) for PRD-specific tweaks.
 - Reminder PRD doesn't support anonymized submissions.
