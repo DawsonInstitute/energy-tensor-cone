@@ -937,3 +937,16 @@ All three manuscript versions compile successfully:
 
 **Completion Date:** February 14, 2026
 
+---
+
+## ✅ Step: Clear Literature Expansion Backlog Notes (COMPLETED)
+
+**Status:** The archived literature-expansion planning section has been removed from `docs/TODO-backlog.md` so the backlog contains no actionable items.
+
+**What was done:**
+- Moved/retired the Feb 2026 literature-expansion planning notes (the referenced citations are now integrated in the manuscript and tracked as completed).
+
+**Verification:** `docs/TODO-backlog.md` no longer contains the archived planning block.
+
+**Completion Date:** February 14, 2026
+
