@@ -15,9 +15,9 @@
 - Confirmed clean build via `pdflatex → bibtex → pdflatex ×2` using `apsrev4-2`.
 - Updated the Zotero-exported BibTeX entry `kontou2024` with explicit arXiv metadata so `apsrev4-2.bst` runs without errors.
 
-**3. Update Anonymization and Supplements for PRD**
-- Remove anonymized tex/PDF; PRD doesn't allow optional anonymous review.
-- Supplements-anon.tar.gz: Remove.
+**3. Update Anonymization and Supplements for PRD (COMPLETED)**
+- Removed anonymized CQG manuscript source and build artifacts.
+- Removed anonymized supplements package.
 - Commit with appropriate commit message.
 
 **4. Refactor LaTeX for Multi-Version Maintenance (Ongoing)**

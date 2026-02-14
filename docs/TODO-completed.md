@@ -822,5 +822,17 @@ All three manuscript versions compile successfully:
 
 **Verification:** `pdflatex → bibtex → pdflatex ×2` completes successfully for `aqei-cone-formalization-prd.tex`.
 
-**Completion Date:** February 14, 2026
+**Completion Date:** February 13, 2026
+
+---
+
+## ✅ Step: Remove Anonymized PRD Artifacts (COMPLETED)
+
+**Status:** Double-anonymous CQG artifacts removed (PRD path).
+
+**What was done:**
+- Deleted `papers/aqei-cone-formalization-cqg-anon.tex` and removed its generated build outputs.
+- Deleted anonymized supplements archive (`supplements/supplements-anon.zip`) and removed extracted `supplements/supplements-anon/`.
+
+**Completion Date:** February 13, 2026
 
