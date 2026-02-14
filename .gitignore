@@ -29,3 +29,6 @@ papers/**/*.png
 papers/**/*Zone.Identifier
 papers/Cover letter CQG.*
 supplements/supplements-anon/**/*
+
+# Allow curated manuscript figures to be tracked
+!papers/figures/*.png
