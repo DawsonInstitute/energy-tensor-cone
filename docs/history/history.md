@@ -935,3 +935,26 @@ Completed the remaining active items from TODO.md, plus the related bound-compar
 - Committed: `Move literature backlog to completed` (be17382).
 <!-- ------ -->
 ---
+**Done (energy-tensor-cone)**
+
+- Completed and committed the “clarify results” manuscript update: the artifacts list now correctly states that `summary.json` comes from `search.m`/`orchestrator.py` runs and contains aggregate stats, plus the other JSON outputs.  
+  - Commit: `Clarify results dir in tex`
+
+- Polished the vertex_coefficients.png caption to match the actual certified vertex data (`a_2,a_3,a_6 \approx 100` saturate the box constraints; others are $O(1)$), rebuilt PRD, and committed.  
+  - Commit: `Polish vertex figure caption`
+
+- Updated README to explicitly say “PRD / Physical Review D” and expanded the file inventory to include the full python list + all tools scripts.  
+  - Commit: `Update README for PRD and full file lists`
+
+- Marked the “analytic Fewster bound + <5% deviation” reporting request as **BLOCKED** in TODO-BLOCKED.md (to avoid making an ungrounded claim; current repo uses a proxy bound and does not define a physical QFT stress-energy functional for that comparison).  
+  - Commit: `Move analytic-bound reporting task to blocked`
+
+- Added a real, compiling Lean snippet for convexity (`cone_convex` from AQEIFamilyInterface.lean) to README, and added an explicit manuscript bullet noting python_tests.sh covers certificate saturation + bound sanity checks.  
+  - Commit: `Enhance tests with Lean rigor example`
+
+**Validation**
+- Ran run_tests.sh: Python/Mathematica/Lean all pass.
+- Rebuilt PRD successfully and committed the updated PDF.  
+  - Commit: `Rebuild PRD PDF`
+<!-- ------ -->
+---
