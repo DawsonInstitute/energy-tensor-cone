@@ -910,3 +910,10 @@ Next up per TODO: “Additional Verification & Polish” (add an analytic bound-
 - run_tests.sh still passes end-to-end.
 <!-- ------ -->
 ---
+Archived the CQG manuscript artifacts and decluttered the repo.
+
+- Removed the CQG-specific manuscript wrapper from version control and deleted the remaining local CQG build outputs.
+- Updated TODO hygiene: removed the task from energy-tensor-cone/docs/TODO.md and recorded completion in energy-tensor-cone/docs/TODO-completed.md.
+- Committed as: `Archive CQG-specific files` (96aa5b1).
+<!-- ------ -->
+---
