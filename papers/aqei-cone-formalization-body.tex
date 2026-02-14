@@ -94,7 +94,7 @@ At a high level, the workflow is:
 \item Convert the selected candidate and its active constraints into exact rational data and certify the vertex property in Lean.
 \end{enumerate}
 
-Concretely, the repository includes representative JSON outputs (e.g., summary statistics, candidate data, and an exported vertex instance) under \texttt{mathematica/results/}, together with the Python and Lean scripts that consume them.
+Concretely, the repository includes representative JSON outputs under \texttt{mathematica/results/} (e.g., \texttt{summary.json}, \texttt{near\_misses.json}, \texttt{top\_near\_misses.json}, \texttt{violations.json}, and \texttt{vertex.json}), together with the Python and Lean scripts that consume them.
 
 \subsection{Optimization Objective}
 
@@ -118,7 +118,7 @@ This 6-constraint saturation in $\mathbb{R}^6$ strongly suggests a \textbf{verte
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.9\linewidth]{figures/vertex_coefficients.png}
-\caption{Coefficients $a_i$ of the computationally identified candidate that is later certified (in Lean) to be a vertex of the finite-dimensional feasibility polytope. Several coefficients saturate imposed box constraints, reflecting the role of auxiliary bounds used to keep the linear program numerically well-conditioned.}
+\caption{Coefficients $a_i$ of the computationally identified candidate that is later certified (in Lean) to be a vertex of the finite-dimensional feasibility polytope. Several coefficients saturate imposed box constraints (\emph{e.g.}, $a_i\approx \pm 100$), reflecting the role of auxiliary bounds used to keep the linear program bounded and numerically well-conditioned. The resulting near-binary activation pattern is consistent with a polyhedral vertex determined by a small active set of constraints.}
 \label{fig:vertex-coefficients}
 \end{figure}
 
@@ -190,6 +190,7 @@ This work includes comprehensive verification protocols to ensure correctness:
 \paragraph{Computational Validation:}
 \begin{itemize}
 \item End-to-end test suite: Python, Mathematica, Lean all passing
+\item Test harness: \texttt{./run\_tests.sh} orchestrates the end-to-end pipeline (including a fast Mathematica run); \texttt{tests/python\_tests.sh} additionally smoke-tests code generation on synthetic JSON
 \item Convexity property verified numerically in 2D and 3D toy models
 \item Data pipeline validated: Mathematica $\to$ JSON $\to$ Python $\to$ Lean
 \item Mathematica search finds 6 active constraints in 6D (proper vertex condition)

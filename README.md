@@ -7,19 +7,21 @@ Computational + formalization scaffold for exploring **Averaged Quantum Energy I
 **Status**: 
 - **Published at Zenodo**: [DOI 10.5281/zenodo.18522457](https://doi.org/10.5281/zenodo.18522457)
 - **Organization**: Moved to [DawsonInstitute/energy-tensor-cone](https://github.com/DawsonInstitute/energy-tensor-cone)
-- **Manuscript**: `papers/aqei-cone-formalization-cqg.tex` prepared for Classical and Quantum Gravity (CQG) submission using IOP template
-- **arXiv submission**: Planned for math-ph (Mathematical Physics), with secondary categories gr-qc, hep-th
+- **Manuscript (PRD target)**: REV\TeX wrapper at `papers/aqei-cone-formalization-prd.tex` with shared body `papers/aqei-cone-formalization-body.tex` (build artifact: `papers/aqei-cone-formalization-prd.pdf`)
+- **arXiv submission**: Planned (math-ph primary; secondary gr-qc, hep-th)
 
 This repo is intentionally minimal:
 - **Mathematica** (`mathematica/search.m`) runs a randomized finite-Gaussian-basis search in 1+1 Minkowski and exports results to JSON.
-- **Python** (`python/orchestrator.py`, `python/analyze_results.py`) runs the search, parses JSON, and generates `lean/src/GeneratedCandidates.lean`.
+- **Python** (`python/orchestrator.py`, `python/analyze_results.py`, `python/plot_vertex_coefficients.py`) runs the search, parses JSON, generates `lean/src/GeneratedCandidates.lean`, and produces the manuscript coefficient plot.
 - **Lean 4** (`lean/src/*.lean`) contains the definitional skeleton (Lorentzian bilinear form, stress-energy, AQEI family, admissible set / "cone", extreme rays).
 
 ## Paper
 
-The manuscript is available in `papers/aqei-cone-formalization-cqg.tex` (IOP template) and is prepared for submission to:
+The PRD/REV\TeX manuscript is available at `papers/aqei-cone-formalization-prd.tex` (wrapper) with shared content in `papers/aqei-cone-formalization-body.tex`.
+
+This paper is prepared for submission to:
 - **arXiv**: Primary category math-ph (Mathematical Physics), secondary categories gr-qc (General Relativity and Quantum Cosmology) and hep-th (High Energy Physics - Theory)
-- **Journal**: Classical and Quantum Gravity (CQG)
+- **Journal**: Physical Review D (PRD)
 
 ## Quickstart
 
@@ -43,7 +45,7 @@ To reproduce the full computational + formal verification pipeline:
 3. **Process results**: `cd python && python orchestrator.py`
 4. **Run full test suite**: `./run_tests.sh`
 
-See `papers/aqei-cone-formalization-cqg.tex` Appendix B for complete details.
+See the \emph{Reproducibility} appendix in the manuscript for complete details.
 
 ### Notes on Formal Verification
 

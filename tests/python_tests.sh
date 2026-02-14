@@ -33,4 +33,43 @@ PY
 
 rm -rf "$TMP_DIR"
 
+python - <<'PY'
+import json
+import math
+from pathlib import Path
+
+vertex_path = Path("mathematica/results/vertex.json")
+assert vertex_path.exists(), "mathematica/results/vertex.json missing"
+data = json.loads(vertex_path.read_text())
+
+num_basis = int(data["numBasis"])
+a = data["a"]
+active_indices = data.get("activeIndices", [])
+constraints = data.get("constraints", [])
+
+assert len(a) == num_basis
+assert isinstance(active_indices, list)
+assert isinstance(constraints, list)
+assert len(active_indices) == len(constraints) == 3, "expected 3 active AQEI constraints"
+
+pi_quarter = math.pi ** 0.25
+for idx, c in zip(active_indices, constraints):
+  L = c["L"]
+  B = float(c["B"])
+  x0, v, t0, tau = c["params"]
+  tau = float(tau)
+
+  La = sum(float(li) * float(ai) for li, ai in zip(L, a))
+  slack = La + B
+  assert abs(slack) < 1e-9, f"active constraint not saturated: idx={idx} slack={slack}"
+
+  # search.m uses Bmodel(g) = 0.1 * sqrt(∫ g(t)^2 dt); for an untruncated Gaussian,
+  # ∫ g^2 = tau * sqrt(pi), hence B = 0.1 * sqrt(tau) * pi^(1/4)
+  B_expected = 0.1 * math.sqrt(tau) * pi_quarter
+  rel_err = abs(B - B_expected) / max(1e-12, abs(B_expected))
+  assert rel_err < 5e-3, f"Bmodel mismatch: idx={idx} B={B} expected={B_expected} rel_err={rel_err}"
+
+print("Vertex certificate tests: OK")
+PY
+
 echo "Python tests: OK"
