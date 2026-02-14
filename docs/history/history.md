@@ -882,3 +882,17 @@ Updated the history log and committed it.
 Next up per TODO: “Additional Verification & Polish” (add an analytic bound-comparison figure/text) unless you want me to prioritize further LaTeX multi-version refactoring.
 <!-- ------ -->
 ---
+**What changed**
+- Refactored all three manuscript variants to share one extracted body via aqei-cone-formalization-body.tex:
+  - aqei-cone-formalization.tex now sets `\AQEIBibStyle=unsrt` and `\input{...body...}`.
+  - aqei-cone-formalization-prd.tex now sets `\AQEIBibStyle=apsrev4-2` and `\input{...body...}`.
+  - aqei-cone-formalization-cqg.tex now inputs the shared body; the old duplicated content is preserved but disabled under an `\iffalse...\fi` guard (so builds use the shared body without requiring a huge delete diff).
+- Shortened the active TODO list and moved long planning text out:
+  - TODO.md is now just the active work + submission checklist.
+  - TODO-backlog.md now holds the archived literature/reference planning section.
+  - TODO-completed.md now records the multi-version LaTeX refactor as completed.
+
+**Validation**
+- run_tests.sh still passes end-to-end after the refactor and TODO edits.
+<!-- ------ -->
+---

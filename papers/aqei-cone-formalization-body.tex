@@ -1,31 +1,3 @@
-\documentclass{iopjournal}
-
-\input{common-preamble.tex}
-\input{common-theorems.tex}
-
-\begin{document}
-
-\articletype{Paper}
-
-\title{Convex Cone of Energy Tensors under AQEI: Formal Verification and Computational Exploration}
-
-\author{Ryan Sherrington$^{1}$}
-
-\affil{$^1$Dawson Institute for Advanced Physics}
-
-\email{rsherrington@dawsoninstitute.org}
-
-\keywords{quantum energy inequalities, averaged null energy condition, formal verification, Lean theorem prover, convex geometry, stress-energy tensor}
-
-\begin{abstract}
-We formalize the convex cone of stress-energy tensors satisfying Averaged Quantum Energy Inequalities (AQEI) using Lean 4, with computational searches in Mathematica to identify extreme rays or boundary points. We prove that the admissible set defined by continuous affine inequalities is closed and convex, and that its homogenization yields a closed convex cone. In a finite-dimensional discretization using Gaussian wave-packets in 1+1D Minkowski space, we identify and formally verify a nontrivial vertex using exact rational arithmetic.
-\end{abstract}
-
-\def\AQEIBibStyle{unsrt}
-\input{aqei-cone-formalization-body.tex}
-
-\iffalse
-
 \section{Introduction}
 
 The averaged null energy condition (ANEC) and its generalizations, known as Averaged Quantum Energy Inequalities (AQEI), place lower bounds on the integrated stress-energy tensor along worldlines \cite{ford1995,fewster2012}:
@@ -41,6 +13,12 @@ where:
 \end{itemize}
 
 These constraints define a convex subset of the space of all stress-energy tensors. Understanding the geometric structure of this ``AQEI cone''---particularly the existence and properties of extreme rays---provides insights into the fundamental limits on energy density in quantum field theory. The modern formulation of quantum energy inequalities originates with Ford's investigation of quantum coherence effects \cite{ford1978} and was further developed by Ford and Roman \cite{ford1995}, and has been extensively studied by Fewster and collaborators \cite{fewster2012,fewster2019,fewster2023}.
+
+Worldline quantum inequalities provide explicit and general lower bounds for suitably smeared energy densities along timelike curves; see, e.g., Fewster's general framework and ``difference inequality'' formulations \cite{fewster2000}. Variants and refinements include bounds for non-minimally coupled scalar fields \cite{fewster2008}, as well as curved-spacetime stability results demonstrating that flat-spacetime inequalities persist (with controlled corrections) in spacetimes with small curvature \cite{kontou2015}. These results have direct implications for the feasibility of exotic spacetime geometries: for instance, quantum inequalities constrain traversable wormhole geometries \cite{ford1996}, and recent work continues to sharpen such restrictions \cite{kontou2024}.
+
+Alongside analytic developments, there is growing interest in computational and numerical exploration of quantum energy inequalities beyond the simplest free-field settings. Recent numerical investigations in integrable models at the two-particle level \cite{mandrysch2024} and in models with multiple particle species and bound states \cite{bostelmann2024} underscore that QEI/AQEI phenomena can be probed quantitatively in controlled nontrivial theories.
+
+Our contribution focuses on the convex-geometric viewpoint: AQEI constraints define an intersection of affine half-spaces, hence a closed convex admissible set, whose homogenization yields a closed convex cone. This perspective draws on standard convex-analytic foundations \cite{rockafellar1970} and polyhedral geometry \cite{ziegler1995}, and supports a hybrid workflow in which (i) computational search proposes boundary candidates, and (ii) formal proof certifies geometric properties of the resulting finite-dimensional models.
 
 \section{Formal Framework}
 
@@ -105,7 +83,18 @@ T = \sum_{i=1}^6 a_i \, T_{\text{basis},i}
 \end{equation}
 where the coefficients $a_i$ are optimization variables.
 
-The restriction to 1+1 dimensions is a deliberate methodological choice reflecting the current state of AQEI research. Most foundational work in quantum energy inequalities begins in spacetimes of low dimensionality \cite{fewster2012,ford1995}, where analytic calculations are tractable and geometric intuition is clearest. Our finite-basis computational approach combined with formal verification represents a novel proof-of-concept methodology, demonstrating that extreme ray characterization is achievable through hybrid formal/computational methods. Extension to physically realistic 3+1 dimensions, while desirable for direct phenomenological application, would require substantially larger computational resources and more sophisticated basis function strategies. The present work establishes the methodological framework and invites natural follow-up investigations in higher dimensions.
+\subsection{Computational Methodology and Outputs}
+
+The computational stage is designed to be auditable and to produce artifacts that can be independently re-checked.
+At a high level, the workflow is:
+\begin{enumerate}
+\item Sample AQEI constraints (worldlines + sampling parameters) and assemble them into linear inequalities.
+\item Solve linear programs over the coefficient vector $a \in \mathbb{R}^6$ to search for near-boundary points.
+\item Export candidate points and active constraints to JSON for downstream analysis.
+\item Convert the selected candidate and its active constraints into exact rational data and certify the vertex property in Lean.
+\end{enumerate}
+
+Concretely, the repository includes representative JSON outputs (e.g., summary statistics, candidate data, and an exported vertex instance) under \texttt{mathematica/results/}, together with the Python and Lean scripts that consume them.
 
 \subsection{Optimization Objective}
 
@@ -125,6 +114,13 @@ The search identified multiple near-miss candidates. One particular configuratio
 \end{itemize}
 
 This 6-constraint saturation in $\mathbb{R}^6$ strongly suggests a \textbf{vertex} of the polytope.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.9\linewidth]{figures/vertex_coefficients.png}
+\caption{Coefficients $a_i$ of the computationally identified candidate that is later certified (in Lean) to be a vertex of the finite-dimensional feasibility polytope. Several coefficients saturate imposed box constraints, reflecting the role of auxiliary bounds used to keep the linear program numerically well-conditioned.}
+\label{fig:vertex-coefficients}
+\end{figure}
 
 \section{Formal Verification of Vertex Property}
 
@@ -215,34 +211,29 @@ This work includes comprehensive verification protocols to ensure correctness:
 \item All mathematical claims have literature citations
 \end{itemize}
 
-See repository documentation for complete verification reports.
+See \texttt{docs/verification.md}, \texttt{docs/test\_validation.md}, and \texttt{docs/theorem\_verification.md} for complete verification reports.
 
-\subsection{Limitations and Connection to Full QFT}
+\subsection{Verification and Limitations}
 
-While our results provide a rigorous foundation for understanding AQEI cone geometry, several limitations and future directions should be acknowledged:
+While our results provide a rigorous foundation for understanding AQEI cone geometry, several limitations should be acknowledged:
 
 \paragraph{Dimensional Restriction:}
-The computational search is performed in 1+1 dimensional Minkowski space. This choice follows standard practice in AQEI literature \cite{fewster2012,ford1995}, where low-dimensional spacetimes permit analytic tractability and clear geometric visualization. Extension to physically realistic 3+1 dimensions represents a natural but computationally intensive future direction.
+The computational search is performed in 1+1 dimensional Minkowski space. While this simplified setting allows for tractable numerics and clear geometric intuition, the extension to physically realistic 3+1 dimensions remains an open problem. The number of degrees of freedom and constraint complexity scale significantly in higher dimensions.
 
-\paragraph{Finite-Dimensional Approximation and QFT Connection:}
-We work with a finite Gaussian basis ($N=6$ modes). The formal question---whether finite-dimensional extreme rays identified here correspond to extreme rays in the full infinite-dimensional quantum field theory---remains open. Establishing this connection rigorously would require:
-\begin{itemize}
-\item Proving that AQEI functionals defined via operator expectations in QFT are continuous linear maps on a suitable topology of stress-energy configurations
-\item Demonstrating convergence of finite-dimensional approximations to infinite-dimensional limiting objects
-\item Characterizing how the geometry of admissible sets behaves under this limiting process
-\end{itemize}
-
-These questions are beyond the scope of the present work, which focuses on establishing the hybrid formal/computational methodology and demonstrating its viability in a well-defined finite-dimensional setting. The finite-dimensional framework provides a rigorous proof-of-concept showing that extreme ray characterization is computationally and formally tractable. It does not claim to exhaust the infinite-dimensional theory, but rather establishes foundational tools and invites systematic investigation of the infinite-dimensional limit.
+\paragraph{Finite-Dimensional Approximation:}
+We work with a finite Gaussian basis ($N=6$ modes). While the vertex property is rigorously verified in this discretization, the connection to the full infinite-dimensional QFT remains to be established. The finite-dimensional extreme rays identified here may or may not correspond to extreme rays of the full theory.
 
 \paragraph{AQEI Bounds:}
 The quantum bounds $B_{\gamma,g}$ used in our computational search are approximate. A full QFT calculation would require detailed analysis of two-point functions and mode expansions, which is beyond the scope of this initial geometric exploration.
 
 \paragraph{Comparison with Analytic Results:}
-To situate our computational findings within the broader AQEI lit erature, we briefly compare against known analytic bounds. For the free massless scalar field in 1+1 Minkowski space, Fewster and Eveson \cite{fewster2012} derive explicit AQEI bounds of the form:
+Our computational findings are consistent with the general expectation that AQEI/QEI constraints define admissible regions with non-trivial boundary structure. Analytically, worldline QEIs provide bounds of the schematic form
 \begin{equation}
-I_{T,\gamma,g} \geq -\frac{1}{24\pi \tau^2}
+\inf_\omega \int d\tau\, (g(\tau))^2\,\rho_\omega(\tau) \ge -\frac{1}{\pi}\int_0^\infty du\,|\widehat{g}(u)|^2\,Q(u)
 \end{equation}
-where $\tau$ characterizes the support width of the sampling function $g$. Our near-miss candidates from the Mathematica search exhibit violation margins of order $10^{-6}$ (in dimensionless units), consistent with approaching but not exceeding these theoretical bounds. The vertex configuration we verify saturates 6 constraints simultaneously, suggesting it lies on a lower-dimensional face of the AQEI cone where multiple bounds become active. While we have not performed exhaustive comparisons across all sampling functions and worldlines, the order-of-magnitude agreement between our numerical near-misses and established analytic bounds provides confidence in the computational methodology.
+for appropriate states $\omega$, sampling functions $g$, and a model-dependent weight $Q$; see \cite{fewster2000} for a general formulation and discussion of difference inequalities. In curved spacetimes, results such as \cite{kontou2015} support the use of flat-spacetime inequalities as a benchmark in regimes of small curvature.
+
+In this paper we do not attempt a full analytic-to-numeric error budget (e.g., computing the exact $Q(u)$ corresponding to our discretized Gaussian-mode model). Rather, we use the analytic literature to justify the constraint form and to motivate the computational search as a boundary-finding tool. Establishing tighter quantitative comparisons in specific field models (and connecting them to geometric features such as extreme rays) is a natural next step.
 
 Despite these limitations, the hybrid formal/computational approach demonstrates the feasibility of rigorous verification for geometric properties of quantum energy constraints, opening avenues for future work in higher dimensions and full QFT settings.
 
@@ -261,7 +252,6 @@ Despite these limitations, the hybrid formal/computational approach demonstrates
 \item Investigate different sampling function families
 \item Explore connections to quantum null energy condition (QNEC)
 \item Scale computational searches to larger basis sets (thousands of modes)
-\item Establish rigorous convergence theory linking finite and infinite-dimensional cone geometries
 \end{itemize}
 
 \section{Conclusion}
@@ -277,21 +267,60 @@ The key achievement is the mechanically verified proof that:
 
 This work opens the door to systematic exploration of the AQEI cone geometry using hybrid formal/computational methods.
 
-\ack{The author thanks the Lean community for Mathlib4 development and the open-source computational mathematics ecosystem.}
+\section*{Data Availability}
 
-\data{All code, formal proofs, computational data, and supplementary materials for this work are publicly available:
+All code, formal proofs, computational data, and supplementary materials for this work are publicly available:
 \begin{itemize}
 \item \textbf{GitHub repository}: \url{https://github.com/DawsonInstitute/energy-tensor-cone} — complete source code, Lean proofs, Mathematica search scripts, and test suites
-\item \textbf{Zenodo archive}: DOI 10.5281/zenodo.18522457 — persistent versioned snapshot with manuscript, supplements, and reproducibility documentation
+\item \textbf{Zenodo archive}: DOI 10.5281/zenodo.18522457 (restricted during review / revision) — persistent versioned snapshot with manuscript, supplements, and reproducibility documentation
 \item \textbf{Lean formalization}: All 10 core theorems mechanically verified with zero unintentional \texttt{sorry} placeholders
 \item \textbf{Computational results}: Raw JSON outputs from Mathematica search, Python analysis scripts, and generated Lean candidate files included in repository
 \end{itemize}
 
-The complete pipeline is reproducible via \texttt{./run\_tests.sh}. See repository documentation for detailed instructions.}
+The complete pipeline is reproducible via \texttt{./run\_tests.sh}. See Appendix~\ref{sec:reproducibility} for detailed instructions.
 
-\bibliographystyle{unsrt}
+\bibliographystyle{\AQEIBibStyle}
 \bibliography{aqei-cone-formalization}
 
-\fi
+\appendix
 
-\end{document}
+\section{Key Files}
+\label{sec:keyfiles}
+
+The computational and formal verification pipeline consists of:
+\begin{itemize}
+\item \textbf{Lean proofs}: \texttt{lean/src/FinalTheorems.lean} (main vertex theorem), \texttt{AffineToCone.lean} (homogenization), \texttt{PolyhedralVertex.lean} (extreme point characterization), \texttt{VertexVerificationRat.lean} (exact rational determinant)
+\item \textbf{Computational search}: \texttt{mathematica/search.m} (randomized Gaussian-basis LP solver)
+\item \textbf{Data processing}: \texttt{python/orchestrator.py}, \texttt{python/analyze\_results.py} (JSON parsing and Lean code generation)
+\item \textbf{Test harness}: \texttt{run\_tests.sh} (end-to-end validation)
+\end{itemize}
+
+Complete file structure and detailed documentation available at \url{https://github.com/DawsonInstitute/energy-tensor-cone}.
+
+\section{Reproducibility}
+\label{sec:reproducibility}
+
+All code and proofs are available at the project repository.
+
+To reproduce the results:
+\begin{lstlisting}[language=bash, basicstyle=\small\ttfamily]
+# 1. Build Lean proofs
+cd lean && lake build
+
+# 2. Run Mathematica search
+cd mathematica && wolframscript -file search.m
+
+# 3. Process results and generate Lean candidates
+cd python && python orchestrator.py
+
+# 4. Run full test suite
+./run_tests.sh
+\end{lstlisting}
+
+\noindent Requirements:
+\begin{itemize}
+\item Lean 4 (v4.14.0 or later)
+\item Wolfram Mathematica (or wolframscript)
+\item Python 3.8+
+\item Libraries: matplotlib, json (stdlib)
+\end{itemize}

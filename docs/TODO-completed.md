@@ -144,6 +144,22 @@ This document tracks tasks that have been completed for the energy-tensor-cone p
 
 ---
 
+## ✅ Step 7: PRD Pivot + Multi-Version LaTeX Refactor (COMPLETED)
+
+**Status:** PRD/REVTeX wrapper builds cleanly and all manuscript variants share a single extracted body file.
+
+**What was done:**
+- Added a shared manuscript body file at `papers/aqei-cone-formalization-body.tex` (starting at Introduction through appendices).
+- Refactored `papers/aqei-cone-formalization.tex` (article) into a thin wrapper that sets `\AQEIBibStyle` and inputs the shared body.
+- Refactored `papers/aqei-cone-formalization-prd.tex` (REVTeX/PRD) into a thin wrapper that sets `\AQEIBibStyle=apsrev4-2` and inputs the shared body.
+- Updated `papers/aqei-cone-formalization-cqg.tex` to input the shared body while preserving the old in-file duplicate body under an `\iffalse...\fi` guard.
+
+**Verification:** `./run_tests.sh` passes after refactor.
+
+**Completion Date:** February 14, 2026
+
+---
+
 ## ✅ Verification Item 1: Cross-Check Mathematical Definitions Against Literature (COMPLETED)
 
 **Status:** All core definitions verified and documented.
