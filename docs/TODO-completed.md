@@ -993,3 +993,16 @@ All three manuscript versions compile successfully:
 
 **Completion Date:** February 14, 2026
 
+---
+
+## ✅ Step: Polish Vertex Figure Caption (COMPLETED)
+
+**Status:** Vertex coefficient figure caption now matches the observed coefficient pattern.
+
+**What was done:**
+- Updated the caption for `figures/vertex_coefficients.png` in `papers/aqei-cone-formalization-body.tex` to explicitly note that $a_2,a_3,a_6\approx 100$ saturate the imposed box constraints, while the remaining coefficients are $O(1)$.
+
+**Verification:** PRD build cycle (`pdflatex → bibtex → pdflatex ×2`) completes successfully.
+
+**Completion Date:** February 14, 2026
+
