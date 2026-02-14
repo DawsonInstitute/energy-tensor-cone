@@ -923,3 +923,17 @@ All three manuscript versions compile successfully:
 
 **Completion Date:** February 14, 2026
 
+---
+
+## ✅ Step: Integrate Literature Expansion Citations (COMPLETED)
+
+**Status:** TODO-backlog literature items are explicitly woven into the manuscript text (not just present in BibTeX).
+
+**What was done:**
+- Ensured the manuscript explicitly cites the backlog items across AQEI/QEI bounds (Fewster/Ford/Kontou), convexity/cones (Rockafellar/Ziegler), and formal methods context (Lean/Mathlib).
+- Added an explicit citation to the remaining backlog item in the quantum work/fluctuation constraints context.
+
+**Verification:** PRD build cycle (`pdflatex → bibtex → pdflatex ×2`) completes successfully.
+
+**Completion Date:** February 14, 2026
+
