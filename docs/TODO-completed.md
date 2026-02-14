@@ -963,3 +963,19 @@ All three manuscript versions compile successfully:
 
 **Completion Date:** February 14, 2026
 
+---
+
+## ✅ Step: PRD Polishes (PACS + Bound Comparison Math/Code) (COMPLETED)
+
+**Status:** PRD wrapper and methodology updated to better emphasize rigor and analytic-bound benchmarking.
+
+**What was done:**
+- Updated PRD PACS codes.
+- Tightened PRD abstract to emphasize Lean verification + computational near-miss search + analytic benchmarking.
+- Added an explicit Fourier-space benchmark inequality (Fewster general worldline framework) to the Methodology section.
+- Added a dependency-light Fourier benchmark helper in `python/analyze_results.py`.
+
+**Verification:** PRD build cycle (`pdflatex → bibtex → pdflatex ×2`) completes successfully.
+
+**Completion Date:** February 14, 2026
+

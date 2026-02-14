@@ -42,7 +42,13 @@ For transparency, we also use a simple proxy bound functional
 B_{\gamma,g}=B_{\mathrm{model}}(g):=0.1\,\|g\|_{L^2([-d,d])},
 \end{equation}
 as implemented in the Mathematica generator (with integration domain half-width $d$).
-Analytic QEIs often yield derivative-based bounds (for example, Fewster's general framework \cite{fewster2000}), which have different scaling behavior; Figure~\ref{fig:bound-comparison} compares the proxy bound used in our search to a representative analytic scaling for Gaussian sampling.
+Analytic QEIs often yield bounds that can be written in Fourier space; in Fewster's general worldline framework one obtains a state-independent inequality of the form
+\begin{equation}
+\int d\tau\,|g(\tau)|^2\,\langle :T:\rangle_\omega(\tau,\tau)
+\ge
+-\int_0^\infty \frac{d\alpha}{\pi}\,\widehat{(g\otimes g)\,\langle T\rangle_{\omega_0}}(-\alpha,\alpha),
+\end{equation}
+for suitable reference state $\omega_0$ and sampling $g$ \cite{fewster2000}. In contrast, our computational search uses the proxy bound $B_{\mathrm{model}}$ above; Figure~\ref{fig:bound-comparison} compares $B_{\mathrm{model}}$ to a representative analytic scaling for Gaussian sampling.
 
 \begin{figure}[t]
 \centering

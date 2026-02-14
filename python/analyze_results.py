@@ -2,6 +2,39 @@ import json
 from pathlib import Path
 
 
+def fourier_inverse_square_benchmark(g_samples: list[float], dt: float) -> float:
+    """Toy Fourier-space benchmark integral with an inverse-square weight.
+
+    This is *not* a full implementation of a model-specific QEI bound, which
+    requires additional state/field data. It exists to support numerical
+    sanity-checks and figure generation that compare proxy bounds against a
+    representative inverse-frequency weighting.
+
+    Returns a nonnegative scalar.
+    """
+
+    if dt <= 0:
+        raise ValueError("dt must be positive")
+    if not g_samples:
+        raise ValueError("g_samples must be non-empty")
+
+    try:
+        import numpy as np
+    except Exception as e:  # pragma: no cover
+        raise RuntimeError("numpy is required for Fourier benchmark") from e
+
+    g = np.asarray(g_samples, dtype=float)
+    n = int(g.shape[0])
+    freqs = np.fft.fftfreq(n, d=float(dt))
+    g_hat = np.fft.fft(g)
+
+    eps = 1e-12
+    weight = 1.0 / (freqs * freqs + eps)
+    # Discrete sum as a rough stand-in for a continuum integral.
+    val = (1.0 / (2.0 * np.pi)) * float(np.sum(np.abs(g_hat) ** 2 * weight))
+    return max(0.0, val)
+
+
 def _as_lean_string(s: str) -> str:
     return '"' + s.replace('\\', '\\\\').replace('"', '\\"') + '"'
 

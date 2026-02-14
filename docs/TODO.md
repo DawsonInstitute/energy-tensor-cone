@@ -4,35 +4,6 @@
 
 ### Priority Tasks
 
-**1. Final PRD Readiness Confirmation and Minor Additions**
-- Add these minor tasks for polish:
-  - Update abstract to emphasize rigor: "We formally verify convexity of the AQEI-admissible cone in Lean 4, with computational near-miss searches in a Gaussian basis approximating infinite constraints, rigorously compared to analytic bounds (e.g., Fewster's scalar field QEIs)."
-  - Add PACS codes to tex preamble: `\pacs{03.70.+k, 04.60.-m, 04.62.+v}` (quantum information, quantum gravity, QFT in curved space).
-- Sample LaTeX update (add to `aqei-cone-formalization-body.tex` methodology section for bound comparison):
-  ```latex
-  \section{Methodology and Bound Comparisons}
-  To verify rigor, we compare computational integrals \( I_{T,\gamma,g} \) to Fewster's analytic bound for free scalar fields:
-  \begin{equation}
-  B_{\gamma,g} = \frac{1}{2\pi} \int_{-\infty}^{\infty} \frac{| \hat{g}(\omega) |^2}{\omega^2} d\omega,
-  \end{equation}
-  where \( \hat{g} \) is the Fourier transform of sampling \( g(t) \). In Python, we approximate:
-  \end{equation}
-  ```
-- Corresponding Python code (add to `python/analyze_results.py` for bound computation):
-  ```python
-  import numpy as np
-  from scipy.fft import fft, fftfreq
-
-  def fewster_bound(g_samples, dt):
-      # g_samples: array of g(t) values; dt: time step
-      N = len(g_samples)
-      freq = fftfreq(N, d=dt)
-      g_hat = fft(g_samples)
-      return (1 / (2 * np.pi)) * np.sum(np.abs(g_hat)**2 / (freq**2 + 1e-10))  # Avoid div by zero
-  # Example: Load g from JSON, compute B, compare to I
-  ```
-- Commit: "PRD polishes: Add PACS, bound comparison math/code"
-
 **2. Clarify mathematica/results in Manuscript**
 - Update tex (line 97) for clarity: "...representative JSON outputs (e.g., summary.json from orchestrator.py runs, including violation counts and near-miss data) under mathematica/results/...".
 - Commit: "Clarify results dir in tex"
