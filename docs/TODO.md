@@ -17,12 +17,7 @@
 
 - Commit: "Add bound comparison code/figure to enhance reporting"
 
-**3. Update README.md**
-- Line 10: Update to "PRD (Physical Review D)".
-- Line 15: Update to full Python list: "Python (`orchestrator.py`, `analyze_results.py`, `__init__.py`, `plot_vertex_coefficients.py`, plus tools: `generate_lean_data.py`, `translate_vertex.py`, `verify_vertex.py`, `generate_lean_data_rat.py`)...".
-- Commit: "Update README for PRD and full file lists"
-
-**4. Enhance Testing Rigor**
+**3. Enhance Testing Rigor**
 - python_tests.sh now includes bound validations (beyond smoke); end-to-end via run_tests.sh improves physics rigor (Lean mech proofs + numerical checks). Add Lean sample for cone convexity:
   ```lean
   theorem cone_convex {V : Type} [AddCommMonoid V] [Module ℝ V] {L : LorentzSpace V}

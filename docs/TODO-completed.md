@@ -1006,3 +1006,17 @@ All three manuscript versions compile successfully:
 
 **Completion Date:** February 14, 2026
 
+---
+
+## ✅ Step: Update README for PRD and Full File Lists (COMPLETED)
+
+**Status:** README now reflects PRD targeting and the current repository file inventory.
+
+**What was done:**
+- Updated `README.md` to explicitly name PRD (Physical Review D) as the intended journal target.
+- Expanded the file inventory to include the full `python/` script list (including plotting helpers) and the `tools/` scripts (`generate_lean_data.py`, `generate_lean_data_rat.py`, `translate_vertex.py`, `verify_vertex.py`).
+
+**Verification:** Repository documentation matches the on-disk layout.
+
+**Completion Date:** February 14, 2026
+
