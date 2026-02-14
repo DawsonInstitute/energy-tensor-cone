@@ -824,3 +824,17 @@ Perfect! I've updated both CQG manuscript files to use the Zotero-exported aqei-
 I also removed the unused common-bib.tex file since it's no longer needed. The PDFs have been recompiled successfully with BibTeX, ensuring the bibliography is properly generated from your Zotero export. This maintains consistency across all manuscript versions and makes it easier to manage references through Zotero.
 <!-- ------ -->
 ---
+PRD/REVTeX build is now clean and repeatable.
+
+- Fixed the BibTeX failure under `apsrev4-2` by repairing the `kontou2024` entry in energy-tensor-cone/papers/aqei-cone-formalization.bib (added `journal` + arXiv metadata so BibTeX exits 0).
+- Added/tracked the PRD wrapper manuscript energy-tensor-cone/papers/aqei-cone-formalization-prd.tex.
+- Updated energy-tensor-cone/.gitignore to ignore REVTeX-generated `*Notes.bib`.
+- Updated TODO tracking to reflect completion in energy-tensor-cone/docs/TODO.md and energy-tensor-cone/docs/TODO-completed.md.
+
+Commits created:
+- `b20c392` Add PRD REVTeX build + fix arXiv bib
+- `2a4e5ff` Update TODO status for PRD build
+
+To verify locally: `cd energy-tensor-cone/papers && pdflatex -interaction=nonstopmode aqei-cone-formalization-prd.tex && bibtex aqei-cone-formalization-prd && pdflatex -interaction=nonstopmode aqei-cone-formalization-prd.tex && pdflatex -interaction=nonstopmode aqei-cone-formalization-prd.tex` now completes successfully.
+<!-- ------ -->
+---
