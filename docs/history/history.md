@@ -896,3 +896,17 @@ Next up per TODO: “Additional Verification & Polish” (add an analytic bound-
 - run_tests.sh still passes end-to-end after the refactor and TODO edits.
 <!-- ------ -->
 ---
+**Verification & bound comparison added**
+- Updated the shared manuscript body to make the “analytic bound comparison” concrete in terms of what the code actually does: aqei-cone-formalization-body.tex
+  - Documents the Gaussian sampling family used in search.m.
+  - States the proxy bound used in the search, $B_{\text{model}}(g)=\kappa\|g\|_{L^2}$ with $\kappa=0.1$, and the scaling $B_{\text{model}}\propto \sqrt{\tau}$.
+  - Adds Table “Active AQEI constraints at the computed vertex” with real numbers computed from vertex.json, showing the three AQEI constraints saturate to roundoff ($\sim10^{-15}$ slack), and ties this to the “3 AQEI + 3 box constraints” vertex condition.
+
+**PRD build hygiene**
+- Fixed the REVTeX wrapper to restore title/author rendering by adding `\maketitle`: aqei-cone-formalization-prd.tex
+
+**Validation**
+- `pdflatex → bibtex → pdflatex ×2` for the PRD wrapper succeeds cleanly.
+- run_tests.sh still passes end-to-end.
+<!-- ------ -->
+---

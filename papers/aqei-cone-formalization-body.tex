@@ -226,12 +226,40 @@ We work with a finite Gaussian basis ($N=6$ modes). While the vertex property is
 \paragraph{AQEI Bounds:}
 The quantum bounds $B_{\gamma,g}$ used in our computational search are approximate. A full QFT calculation would require detailed analysis of two-point functions and mode expansions, which is beyond the scope of this initial geometric exploration.
 
+In our 1+1D proof-of-concept implementation (Appendix~\ref{sec:keyfiles}), the randomized constraint generator uses a Gaussian sampling family
+\begin{equation}
+g(t;t_0,\tau)=\exp\bigl(-(t-t_0)^2/(2\tau^2)\bigr)
+\end{equation}
+and a simple proxy bound
+\begin{equation}
+B_{\text{model}}(g)=\kappa\,\lVert g \rVert_{L^2},\qquad \kappa=0.1,
+\end{equation}
+so that $L_{\gamma,g}(a)\ge -B_{\text{model}}(g)$ defines an affine half-space. For an untruncated Gaussian, $\lVert g\rVert_{L^2}^2=\int_{-\infty}^{\infty} e^{-(t-t_0)^2/\tau^2}\,dt=\tau\sqrt{\pi}$, hence $B_{\text{model}}(g)\propto \sqrt{\tau}$.
+In the code we sample $\tau\in[0.2,0.8]$ (with a finite integration window), giving a consistent, parameter-dependent family of lower bounds that is sufficient to test the convex-geometric and certification pipeline.
+
 \paragraph{Comparison with Analytic Results:}
 Our computational findings are consistent with the general expectation that AQEI/QEI constraints define admissible regions with non-trivial boundary structure. Analytically, worldline QEIs provide bounds of the schematic form
 \begin{equation}
 \inf_\omega \int d\tau\, (g(\tau))^2\,\rho_\omega(\tau) \ge -\frac{1}{\pi}\int_0^\infty du\,|\widehat{g}(u)|^2\,Q(u)
 \end{equation}
 for appropriate states $\omega$, sampling functions $g$, and a model-dependent weight $Q$; see \cite{fewster2000} for a general formulation and discussion of difference inequalities. In curved spacetimes, results such as \cite{kontou2015} support the use of flat-spacetime inequalities as a benchmark in regimes of small curvature.
+
+While $B_{\text{model}}(g)$ is not a substitute for a field-theoretic $Q(u)$, it does preserve the key structural feature emphasized in the analytic literature: the bound depends on the sampling profile and its scale, and yields a family of affine constraints indexed by worldline/sampling parameters. Concretely, for the vertex found by the linear program, the three active AQEI constraints are saturated to numerical precision:
+
+\begin{table}[t]
+\centering
+\begin{tabular}{rrrrr}
+\hline
+Constraint & $\tau$ & $B_{\gamma,g}$ & $L\!\cdot\!a$ & $L\!\cdot\!a + B_{\gamma,g}$ \\
+\hline
+23 & 0.64595 & 0.10700 & -0.10700 & $-2.76\times 10^{-15}$ \\
+27 & 0.64467 & 0.10689 & -0.10689 & $-6.70\times 10^{-15}$ \\
+50 & 0.68728 & 0.11037 & -0.11037 & $\phantom{-}3.25\times 10^{-15}$ \\
+\hline
+\end{tabular}
+\caption{Active AQEI constraints at the computed vertex. Values are computed from the exported certificate data in \texttt{mathematica/results/vertex.json}. The slack $L\!\cdot\!a + B_{\gamma,g}$ is (up to floating-point roundoff) zero, indicating saturation of three AQEI half-spaces. Together with three active box constraints (used to bound the linear program domain), this yields a 6-hyperplane intersection in $\mathbb{R}^6$, consistent with the vertex certificate formalized in Lean.}
+\label{tab:active-aqei-constraints}
+\end{table}
 
 In this paper we do not attempt a full analytic-to-numeric error budget (e.g., computing the exact $Q(u)$ corresponding to our discretized Gaussian-mode model). Rather, we use the analytic literature to justify the constraint form and to motivate the computational search as a boundary-finding tool. Establishing tighter quantitative comparisons in specific field models (and connecting them to geometric features such as extreme rays) is a natural next step.
 
