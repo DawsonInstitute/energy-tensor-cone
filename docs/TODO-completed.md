@@ -950,3 +950,16 @@ All three manuscript versions compile successfully:
 
 **Completion Date:** February 14, 2026
 
+---
+
+## ✅ Step: Delete TODO-backlog.md (COMPLETED)
+
+**Status:** Backlog file removed; all work is tracked via `docs/TODO.md`, `docs/TODO-completed.md`, and `docs/TODO-BLOCKED.md`.
+
+**What was done:**
+- Deleted `docs/TODO-backlog.md`.
+
+**Verification:** File removed from repository.
+
+**Completion Date:** February 14, 2026
+
