@@ -16,6 +16,32 @@ This repo is intentionally minimal:
 - **Tools** (`tools/generate_lean_data.py`, `tools/generate_lean_data_rat.py`, `tools/translate_vertex.py`, `tools/verify_vertex.py`) provide data translation and independent numerical checks for the exported vertex/certificate artifacts.
 - **Lean 4** (`lean/src/*.lean`) contains the definitional skeleton (Lorentzian bilinear form, stress-energy, AQEI family, admissible set / "cone", extreme rays).
 
+## Repository Layout
+
+```
+energy-tensor-cone/
+├── README.md
+├── run_tests.sh
+├── lean/
+│   ├── lakefile.lean
+│   └── src/
+│       ├── Lorentz.lean          # Lorentzian spaces, timelike defs
+│       ├── StressEnergy.lean     # Symmetric bilinear T
+│       ├── AQEI.lean             # Worldline integrals I_{T,γ,g}
+│       ├── ConeProperties.lean   # Convexity, extreme rays
+│       ├── FinalTheorems.lean    # Proven lemmas (no sorry)
+│       └── GeneratedCandidates.lean  # From Mathematica
+├── mathematica/
+│   ├── search.m                  # Gaussian basis Monte-Carlo
+│   └── results/                  # JSON outputs (summary.json, vertex.json)
+├── python/
+│   ├── orchestrator.py           # Run search + Lean gen
+│   ├── analyze_results.py        # Bound comparisons, plots
+│   └── plot_vertex_coefficients.py
+├── tests/                        # Full suite
+└── supplements/                  # Archived for journal
+```
+
 ## Paper
 
 The PRD/REV\TeX manuscript is available at `papers/aqei-cone-formalization-prd.tex` (wrapper) with shared content in `papers/aqei-cone-formalization-body.tex`.
@@ -69,3 +95,7 @@ theorem cone_convex (L : Family E ι) (b : Bounds ι) :
 
 - The Mathematica search defaults to `numTrials=20000`, but tests override with `AQEI_NUM_TRIALS` to keep runs fast.
 - With a nonzero bound term $B_{\gamma,g}$, the admissible region is typically **convex** but not literally a cone under positive scaling unless extra homogeneity assumptions are imposed. The homogenized cone construction (proven in `AffineToCone.lean`) resolves this by embedding the affine constraints in a higher-dimensional space.
+
+## License
+
+Licensed under MIT (see LICENSE).
