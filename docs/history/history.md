@@ -958,3 +958,29 @@ Completed the remaining active items from TODO.md, plus the related bound-compar
   - Commit: `Rebuild PRD PDF`
 <!-- ------ -->
 ---
+All tasks have been completed and committed to the repository, ensuring the project is fully prepared for PRD submission and publication.
+
+### Completed Tasks
+
+1.  **Clean Up:** Removed `papers/acknowledgments-post-review.txt` and integrated the text into aqei-cone-formalization-body.tex. Deleted `supplements/supplements-cqg.tar.gz`.
+2.  **Synchronize Manuscript:** Updated the abstract in aqei-cone-formalization.tex to match the PRD version.
+3.  **Fix Captions:** Updated the caption for Figure 2 in aqei-cone-formalization-body.tex to clarify the bound comparison.
+4.  **Update Lean Data:** Ran the Python orchestrator to regenerate GeneratedCandidates.lean, populating it with the candidate data.
+5.  **Repo Layout:** Added the project file structure to README.md.
+6.  **License:** Created an MIT LICENSE file and added a reference to it in README.md.
+7.  **Supplements Refresh:** Created refresh-supplements.sh to package the artifacts and updated README-supplements.md.
+8.  **Completeness Checks:** Appended `#print axioms <TheoremName>` to the end of all `lean/src/*.lean` files (AQEI.lean, AffineToCone.lean, ConeProperties.lean, FinalTheorems.lean, Lorentz.lean, StressEnergy.lean, GeneratedCandidates.lean).
+
+### Verification
+
+You can verify the theorem completeness checks by running the build:
+```bash
+cd lean
+lake build
+```
+This will now output the axioms used by each major theorem at the end of the build process.
+
+### Git Status
+All changes have been committed in logical atomic units. The working tree is clean.
+<!-- ------ -->
+---
