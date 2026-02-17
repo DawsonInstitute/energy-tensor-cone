@@ -318,7 +318,8 @@ The "Phase 2" goal of computationally verifying a single instance is done. We ca
 
 ## Phase 2: Vertex Construction & Verification
 - Implemented optimization search in Mathematica (`search.m`).
-- Found vertex for N=6 basis elements under 50 random AQEI constraints.
+- Found vertex initially for N=6 basis elements under 50 random AQEI constraints.
+- **2026-02-16**: Scaled to N=100 basis elements with 500 constraints for richer polytope exploration.
 - Verified vertex numerically (Python, Residue ~10e-11).
 - **Rigorous Verification:**
   - Converted floating-point data to Rationals (`AQEI_Generated_Data_Rat.lean`).

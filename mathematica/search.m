@@ -11,10 +11,16 @@
 ClearAll["Global`*"];
 
 (* Parameters *)
-numBasis = 6;
-numConstraints = 50; (* Number of random worldline constraints *)
+numBasis = 100;  (* Scaled up from 6 for richer geometric exploration *)
+numConstraints = 500; (* Scaled proportionally - more constraints for larger polytope *)
 domain = 5.0;
 σ = 0.5;
+
+(* Note: N=100 with 500 constraints significantly increases computational time.
+   Constraint generation involves ~500 NIntegrate calls over the domain for each
+   of 100 basis elements. Consider reducing numConstraints for faster iteration
+   or enabling parallel evaluation. For testing, numBasis=20, numConstraints=100
+   provides a reasonable intermediate scale. *)
 
 (* Better seed: Timestamp + large prime for high entropy.
    Multiplying by a large prime (10000019) ensures better scrambling

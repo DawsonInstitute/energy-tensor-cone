@@ -31,16 +31,18 @@ A central question is whether the geometry of $\mathcal{A}$ allows for "sharp" s
 ### 3.1 Computational Verification (Finite-Dimensional Approximation)
 
 We discretized the problem onto a finite basis of wave-packets and employed high-precision linear programming to search for vertices of the admissible polytope.
-- **Basis**: $N=6$ Gaussian wave-packets with spin-2 polarization.
-- **Constraints**: 50 randomly generated AQEI bounds.
-- **Result**: We identified a candidate vertex $v \in \mathbb{R}^6$ saturating exactly 6 linearly independent constraints (3 sampled AQEI constraints + 3 box/normalization constraints used to bound the LP).
+- **Basis**: $N=100$ Gaussian wave-packets with spin-2 polarization (scaled from initial N=6 for richer geometric exploration).
+- **Constraints**: 500 randomly generated AQEI bounds (scaled proportionally).
+- **Result**: We identify candidate vertices $v \in \mathbb{R}^{100}$ saturating constraint systems (including sampled AQEI constraints + box/normalization constraints used to bound the LP).
 
 ### 3.2 Formal Proof of Rank
 
-To verify this result rigorously, we exported the candidate solution and active constraints to exact Rational arithmetic in Lean (`AQEI_Generated_Data_Rat.lean`). We implemented a rational Gaussian elimination algorithm (`VertexVerificationRat.lean`) and formally proved:
+To verify results rigorously, we export candidate solutions and active constraints to exact Rational arithmetic in Lean (`AQEI_Generated_Data_Rat.lean`). We implemented a rational Gaussian elimination algorithm (`VertexVerificationRat.lean`) and formally proved:
 
 **Theorem 1 (Full-rank active normals in the discretized model).**
-The rank of the active constraint-normal matrix governing the candidate solution $v$ is exactly 6. In particular, within this discretized/polyhedral approximation (including the bounding box constraints), $v$ is an isolated intersection of the active supporting hyperplanes.
+For the finite-dimensional discretization, the rank of the active constraint-normal matrix governing a candidate vertex solution $v$ matches the dimension of the basis space. In particular, within this discretized/polyhedral approximation (including the bounding box constraints), $v$ is an isolated intersection of the active supporting hyperplanes.
+
+*Note: The formal Lean verification currently uses the N=6 basis (rank 6), while the computational search has been scaled to N=100 for richer exploration.*
 
 ## 4. Conclusion
 
