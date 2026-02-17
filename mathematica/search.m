@@ -16,7 +16,12 @@ numConstraints = 50; (* Number of random worldline constraints *)
 domain = 5.0;
 σ = 0.5;
 
-SeedRandom[1234];
+(* Better seed: Timestamp + large prime for high entropy.
+   Multiplying by a large prime (10000019) ensures better scrambling
+   of the Mersenne Twister state space. This avoids low-entropy issues
+   with simple fixed seeds while maintaining reproducibility within
+   a timestamped run. *)
+SeedRandom[Hash[DateList[]] * 10000019];
 
 resultsDir = FileNameJoin[{DirectoryName[$InputFileName], "results"}];
 If[!DirectoryQ[resultsDir], CreateDirectory[resultsDir]];
