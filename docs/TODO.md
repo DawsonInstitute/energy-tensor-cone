@@ -37,8 +37,6 @@
     - **Why Float Issue**: Floats are untrusted (non-associative); use as *witnesses* for `Rat` proofs. `Rat` satisfies axioms; `Real` for abstracts.
   - **AffineToCone.lean**: Fix type mismatches (line 81: `a * b i + ...` → scalar mult), remove `Prod.smul` (use `Prod.smul` from Mathlib), fix tactics:
     ```lean
-    -- lean/src/AffineToCone.lean:81 (example fix)
-    exact ⟨h_y_eq_x, h_z_eq_x, 0⟩  -- Remove erroneous '1'
     -- Line 150: Use 'Prod.smul' from Mathlib.Data.Prod.Basic
     ```
     - Rebuild: `lake env lean src/AffineToCone.lean`

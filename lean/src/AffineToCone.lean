@@ -306,4 +306,3 @@ end AffineToCone
 #print axioms homCone_convex
 #print axioms homCone_smul_nonneg
 #print axioms orthant_basis_extreme
-

@@ -1,0 +1,3 @@
+import PolyhedralVertex
+
+#check PolyhedralGeometry.full_rank_active_implies_vertex
