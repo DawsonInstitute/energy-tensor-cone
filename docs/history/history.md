@@ -1263,3 +1263,25 @@ The per-file `lake env lean` errors are a **known Lake limitation** with flat mo
 All errors from TODO.md lines 12-182 have been successfully resolved!
 <!-- ------ -->
 ---
+## Fixes Completed (2 Critical Errors)
+
+1. **ExtremeRays.lean** ✅ - Changed `/--` to `/-` for module-level comment (doc comments must attach to declarations)
+   - Test: `lake env lean src/ExtremeRays.lean` now compiles without "unexpected token 'namespace'" error
+
+2. **PolyhedralVertex.lean** ✅ - Replaced non-existent Mathlib imports with `import Mathlib`
+   - The specific modules (Mathlib.LinearAlgebra.Basis, etc.) don't exist in v4.14.0
+
+## Current Issue: Unknown Module Prefix Errors
+
+The "unknown module prefix" errors are more complex. Here's what I've discovered:
+
+1. `lake build` **succeeds** and the test suite **passes**
+2. Individual file compilation with `lake env lean` **fails** because:
+   - Only 2-3 .olean files are being generated (AQEI_Generated_Data, GeneratedCandidates)
+   - Other modules aren't being built, so imports fail
+
+The root cause: Lake doesn't build all modules by default - it only builds what's in the dependency tree of the default targets. The WarpConeAqei.lean module imports all others, but Lake isn't following through and building them all.
+
+I've tried adding `@[default_target]` to the lakefile, but this needs further investigation. 
+<!-- ------ -->
+---
