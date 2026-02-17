@@ -6,7 +6,7 @@ Computational + formalization scaffold for exploring **Averaged Quantum Energy I
 
 **Status**: 
 - **Published at Zenodo**: [DOI 10.5281/zenodo.18522457](https://doi.org/10.5281/zenodo.18522457)
-- **Organization**: Moved to [DawsonInstitute/energy-tensor-cone](https://github.com/DawsonInstitute/energy-tensor-cone)
+- **Organization**: [DawsonInstitute/energy-tensor-cone](https://github.com/DawsonInstitute/energy-tensor-cone)
 - **Manuscript (PRD / Physical Review D target)**: REV\TeX wrapper at `papers/aqei-cone-formalization-prd.tex` with shared body `papers/aqei-cone-formalization-body.tex` (build artifact: `papers/aqei-cone-formalization-prd.pdf`)
 - **arXiv submission**: Planned (math-ph primary; secondary gr-qc, hep-th)
 
@@ -16,30 +16,81 @@ This repo is intentionally minimal:
 - **Tools** (`tools/generate_lean_data.py`, `tools/generate_lean_data_rat.py`, `tools/translate_vertex.py`, `tools/verify_vertex.py`) provide data translation and independent numerical checks for the exported vertex/certificate artifacts.
 - **Lean 4** (`lean/src/*.lean`) contains the definitional skeleton (Lorentzian bilinear form, stress-energy, AQEI family, admissible set / "cone", extreme rays).
 
-## Repository Layout
+## Repository Layout (Complete)
 
 ```
 energy-tensor-cone/
-├── README.md
-├── run_tests.sh
-├── lean/
-│   ├── lakefile.lean
+├── README.md                          # Overview, replication
+├── LICENSE                            # MIT
+├── run_tests.sh                       # Full pipeline (Lean + Python + Mathematica)
+├── supplements/                       # Journal archive
+│   ├── energy-tensor-cone-supplements.tar.gz
+│   └── README-supplements.md          # Inclusion/exclusion rules
+├── docs/                              # Internal tracking
+│   ├── TODO.md
+│   ├── TODO-completed.md
+│   ├── TODO-BLOCKED.md
+│   ├── history/
+│   │   └── history.md
+│   ├── verification.md
+│   ├── test_validation.md
+│   └── theorem_verification.md
+├── lean/                              # Formal core (17 .lean files)
+│   ├── lakefile.lean                  # Build config
+│   ├── lake-manifest.json             # Dependency lock
 │   └── src/
-│       ├── Lorentz.lean          # Lorentzian spaces, timelike defs
-│       ├── StressEnergy.lean     # Symmetric bilinear T
-│       ├── AQEI.lean             # Worldline integrals I_{T,γ,g}
-│       ├── ConeProperties.lean   # Convexity, extreme rays
-│       ├── FinalTheorems.lean    # Proven lemmas (no sorry)
-│       └── GeneratedCandidates.lean  # From Mathematica
-├── mathematica/
-│   ├── search.m                  # Gaussian basis Monte-Carlo
-│   └── results/                  # JSON outputs (summary.json, vertex.json)
-├── python/
-│   ├── orchestrator.py           # Run search + Lean gen
-│   ├── analyze_results.py        # Bound comparisons, plots
-│   └── plot_vertex_coefficients.py
-├── tests/                        # Full suite
-└── supplements/                  # Archived for journal
+│       ├── Lorentz.lean               # LorentzSpace, is_timelike
+│       ├── StressEnergy.lean          # T bilinear, energy_density
+│       ├── AQEI.lean                  # I_{T,γ,g} functionals
+│       ├── ConeProperties.lean        # Convexity, extreme rays (intentional sorry for false theorems)
+│       ├── FinalTheorems.lean         # Main theorems (Candidate_Is_Extreme_Point)
+│       ├── GeneratedCandidates.lean   # Data from Mathematica (Float, for visualization)
+│       ├── AQEI_Generated_Data.lean   # Float data structure
+│       ├── AQEI_Generated_Data_Rat.lean # Rational data (for proofs)
+│       ├── AQEIFamilyInterface.lean   # Abstract interface: closure, convexity
+│       ├── AQEIToInterface.lean       # Bridge to physics definitions
+│       ├── AffineToCone.lean          # Homogenization theorems
+│       ├── ExtremeRays.lean           # Extreme point definitions
+│       ├── FiniteToyModel.lean        # Finite-dimensional examples
+│       ├── PolyhedralVertex.lean      # Polyhedral vertex theorems
+│       ├── VertexVerification.lean    # Float-based checks
+│       ├── VertexVerificationRat.lean # Rational verification (determinant ≠ 0)
+│       └── WarpConeAqei.lean          # Module imports
+├── mathematica/                       # Search engine
+│   ├── search.m                       # Monte-Carlo LP solver
+│   └── results/                       # JSON outputs
+│       ├── summary.json               # Aggregate statistics
+│       ├── near_misses.json           # Candidates near boundary
+│       ├── top_near_misses.json       # Top k candidates
+│       ├── violations.json            # Constraint violations
+│       └── vertex.json                # Certified vertex
+├── python/                            # Glue + analysis
+│   ├── __init__.py
+│   ├── orchestrator.py                # Run search + Lean gen
+│   ├── analyze_results.py             # Bounds, plots, Lean export
+│   ├── plot_vertex_coefficients.py    # Generate vertex figure
+│   ├── plot_bound_comparison.py       # Generate bound figure
+│   └── tools/                         # Data translation utilities
+│       ├── generate_lean_data.py      # Float → Lean
+│       ├── generate_lean_data_rat.py  # Rat → Lean
+│       ├── translate_vertex.py        # Vertex data conversion
+│       └── verify_vertex.py           # Independent numerical checks
+├── tests/                             # Test suite (4 scripts)
+│   ├── build_lean.sh                  # lake build
+│   ├── python_tests.sh                # Smoke + bound validation
+│   ├── mathematica_tests.sh           # Search execution
+│   └── lean_tests.sh                  # Lean build + axiom checks
+├── papers/                            # Manuscript files
+│   ├── aqei-cone-formalization-body.tex      # Shared manuscript body
+│   ├── aqei-cone-formalization.tex           # Article.cls version
+│   ├── aqei-cone-formalization-prd.tex       # REVTeX/PRD version
+│   ├── aqei-cone-formalization.bib           # Bibliography
+│   ├── iopjournal.cls                         # IOP journal class
+│   └── figures/
+│       ├── bound_comparison.png              # Bound scaling figure
+│       └── vertex_coefficients.png           # Vertex coefficient figure
+└── scripts/
+    └── refresh-supplements.sh         # Package artifacts for journal
 ```
 
 ## Paper
@@ -67,7 +118,18 @@ This runs:
 
 To reproduce the full computational + formal verification pipeline:
 
-1. **Build Lean proofs**: `cd lean && lake build`
+```bash
+# From repository root
+cd python
+python -m pip install -e .  # Install as module (fixes ModuleNotFoundError)
+python orchestrator.py      # Full search + analysis pipeline
+cd ..
+./run_tests.sh              # Verify all components
+```
+
+Alternatively, run individual steps:
+
+1. **Build Lean proofs**: `cd lean && lake build `
 2. **Run Mathematica search**: `cd mathematica && wolframscript -file search.m`
 3. **Process results**: `cd python && python orchestrator.py`
 4. **Run full test suite**: `./run_tests.sh`
@@ -76,7 +138,7 @@ See the \emph{Reproducibility} appendix in the manuscript for complete details.
 
 ### Notes on Formal Verification
 
-- **Core theorems proven**: All 10 critical theorems (closure, convexity, homogenization, vertex characterization) are fully proven in Lean with no placeholders.
+- **Core theorems proven**: 35 theorems proven across the Lean codebase, including closure/convexity results (AQEIFamilyInterface.lean), homogenization theorems (AffineToCone.lean), vertex characterization (PolyhedralVertex.lean, VertexVerificationRat.lean), and the main certificate theorem (FinalTheorems.Candidate_Is_Extreme_Point). No unintentional `sorry` placeholders in proven results.
 - **Intentional `sorry` statements**: Two theorems in `ConeProperties.lean` have `sorry` placeholders because they are intentionally false as stated (AQEI constraints are affine, not homogeneous). These document why bare AQEI regions are not true cones; the correct cone formulation is proven in `AffineToCone.lean`.
 - **Publication status**: The Lean development provides mechanized proofs of core properties (convexity, extreme-ray candidates in finite models); some extensions remain as `sorry` placeholders for future work. This level of formalization is standard for computational mathematics papers in physics journals — core claims are mechanically verified, while extensions are documented as open questions.
 - **Test validation**: See `docs/theorem_verification.md` for complete proof inventory.
