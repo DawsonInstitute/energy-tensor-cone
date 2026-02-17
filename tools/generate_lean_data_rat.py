@@ -27,13 +27,13 @@ def generate_lean_rat(json_path, output_path):
     active_indices = data['activeIndices']
 
     with open(output_path, 'w') as f:
-        f.write("/-- \n")
+        f.write("import Mathlib.Data.Rat.Defs\n")
+        f.write("import Mathlib.Data.Rat.Cast.Defs\n\n")
+        f.write("/- \n")
         f.write("  AQEI_Generated_Data_Rat.lean\n")
         f.write("  Auto-generated from Phase 2 Optimization.\n")
         f.write("  Converted to exact Rationals for rigorous verification.\n")
         f.write("-/\n\n")
-        f.write("import Mathlib.Data.Rat.Defs\n")
-        f.write("import Mathlib.Data.Rat.Cast.Defs\n\n")
         
         f.write("namespace AQEIGeneratedRat\n\n")
 
@@ -63,7 +63,12 @@ def generate_lean_rat(json_path, output_path):
             f.write(f"  {float_to_lean_rat(B_val)},\n")
         f.write("]\n\n")
         
-        f.write("end AQEIGeneratedRat\n")
+        f.write("end AQEIGeneratedRat\n\n")
+        
+        # Add axiom checks
+        f.write("#print axioms AQEIGeneratedRat.coefficients\n")
+        f.write("#print axioms AQEIGeneratedRat.active_L\n")
+        f.write("#print axioms AQEIGeneratedRat.active_B\n")
 
     print(f"Generated {output_path}")
 

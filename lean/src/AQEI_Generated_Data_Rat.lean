@@ -1,11 +1,11 @@
-/-- 
+import Mathlib.Data.Rat.Defs
+import Mathlib.Data.Rat.Cast.Defs
+
+/- 
   AQEI_Generated_Data_Rat.lean
   Auto-generated from Phase 2 Optimization.
   Converted to exact Rationals for rigorous verification.
 -/
-
-import Mathlib.Data.Rat.Defs
-import Mathlib.Data.Rat.Cast.Defs
 
 namespace AQEIGeneratedRat
 
@@ -59,4 +59,3 @@ end AQEIGeneratedRat
 #print axioms AQEIGeneratedRat.coefficients
 #print axioms AQEIGeneratedRat.active_L
 #print axioms AQEIGeneratedRat.active_B
-

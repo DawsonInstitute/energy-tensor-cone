@@ -65,8 +65,9 @@ def generate_lean_candidates(results_dir: Path, out_file: Path, top_k: int = 5) 
     out_file.parent.mkdir(parents=True, exist_ok=True)
 
     lines: list[str] = []
-    lines.append("/-- Auto-generated from Mathematica results. -/")
     lines.append("import Std")
+    lines.append("")
+    lines.append("/- Auto-generated from Mathematica results. -/")
     lines.append("")
     lines.append("structure Candidate where")
     lines.append("  score : Float")

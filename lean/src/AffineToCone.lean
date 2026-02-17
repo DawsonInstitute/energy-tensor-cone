@@ -78,8 +78,12 @@ theorem affineAdmissible_convex (L : ι → E →L[ℝ] ℝ) (b : ι → ℝ) :
     -- Rewrite the target using linearity and `hac : a + c = 1`.
     --
     -- `b = (a+c)*b` so we can distribute it across the convex combination.
-    simpa [map_add, map_smul, smul_eq_mul, mul_add, add_mul, mul_assoc, mul_left_comm, mul_comm, hac,
-      add_assoc, add_left_comm, add_comm] using this
+    have key : a * b i + c * b i = b i := by rw [← add_mul, hac, one_mul]
+    calc 0 ≤ a * ((L i) x + b i) + c * ((L i) y + b i) := this
+      _ = a * (L i) x + a * b i + (c * (L i) y + c * b i) := by ring
+      _ = a * (L i) x + (c * (L i) y + (a * b i + c * b i)) := by ring
+      _ = a * (L i) x + (c * (L i) y + b i) := by rw [key]
+      _ = (L i) (a • x + c • y) + b i := by simp [map_add, map_smul, smul_eq_mul]; ring
   -- Intersection of convex sets is convex.
   have : AffineAdmissible (E := E) L b = ⋂ i : ι, {x : E | 0 ≤ (L i) x + b i} := by
     ext x
@@ -147,7 +151,7 @@ theorem homCone_convex
   · -- t coordinate
     have : 0 ≤ a * p.2 + c * q.2 :=
       add_nonneg (mul_nonneg ha hp.1) (mul_nonneg hc hq.1)
-    simpa [Prod.snd_add, Prod.snd_smul, Pi.add_apply, smul_eq_mul, hac, add_comm, add_left_comm, add_assoc] using this
+    simpa [Prod.snd_add, Pi.add_apply, smul_eq_mul, hac, add_comm, add_left_comm, add_assoc] using this
   · intro i
     -- Use linearity of L and distributivity.
     -- Define shorthand for the constraint expression.
@@ -167,7 +171,7 @@ theorem homCone_convex
     --
     -- We'll do it in a single `simpa` step.
     simpa [HomCone, Pi.add_apply, Pi.smul_apply, smul_eq_mul, mul_add, add_mul, mul_assoc, mul_left_comm, mul_comm,
-      map_add, map_smul, hac, Prod.fst_add, Prod.fst_smul, Prod.snd_add, Prod.snd_smul, add_assoc, add_left_comm,
+      map_add, map_smul, hac, Prod.fst_add, Prod.snd_add, add_assoc, add_left_comm,
       add_comm] using this
 
 /-- Cone property: closed under scaling by a nonnegative scalar. -/
@@ -177,12 +181,12 @@ theorem homCone_smul_nonneg
   intro p α hp hα
   refine ⟨?_, ?_⟩
   · -- t coordinate scales
-    simpa [Prod.snd_smul, smul_eq_mul, mul_nonneg] using (mul_nonneg hα hp.1)
+    simpa [smul_eq_mul, mul_nonneg] using (mul_nonneg hα hp.1)
   · intro i
     -- Constraint scales linearly.
     -- (L i) (α•x) + (α*t)*b = α*((L i) x + t*b)
     have : 0 ≤ α * ((L i) p.1 + p.2 * b i) := mul_nonneg hα (hp.2 i)
-    simpa [Prod.fst_smul, Prod.snd_smul, smul_eq_mul, map_smul, mul_add, add_mul, mul_assoc, mul_left_comm, mul_comm] using this
+    simpa [smul_eq_mul, map_smul, mul_add, add_mul, mul_assoc, mul_left_comm, mul_comm] using this
 
 end General
 
@@ -207,7 +211,7 @@ def IsExtremeRay {X : Type} [AddCommMonoid X] [Module ℝ X] (C : Set X) (r : X)
   r ≠ 0 ∧ r ∈ C ∧
     ∀ x y,
       x ∈ C → y ∈ C → r = x + y →
-        (∃ (λ : ℝ), 0 ≤ λ ∧ x = λ • r) ∧ (∃ (μ : ℝ), 0 ≤ μ ∧ y = μ • r)
+        (∃ (lam : ℝ), 0 ≤ lam ∧ x = lam • r) ∧ (∃ (μ : ℝ), 0 ≤ μ ∧ y = μ • r)
 
 /-- Extreme ray along a coordinate axis at `t=0`: `(e_i, 0)` is an extreme ray of the cone `x ≥ 0, t ≥ 0`. -/
 theorem orthant_basis_extreme {n : Nat} (i : Fin n) :
@@ -230,46 +234,54 @@ theorem orthant_basis_extreme {n : Nat} (i : Fin n) :
     have hx0 : ∀ j : Fin n, j ≠ i → x.1 j = 0 := by
       intro j hj
       have hsum : x.1 j + y.1 j = (basisVec (n := n) i) j := by
-        have : (x + y).1 j = (basisVec (n := n) i, (0 : ℝ)).1 j := by simpa [hxy]
+        have : (x + y).1 j = (basisVec (n := n) i, (0 : ℝ)).1 j := by
+          have := congrArg (fun p => p.1 j) hxy.symm
+          exact this
         simpa [Prod.fst_add, Pi.add_apply] using this
       have hb : (basisVec (n := n) i) j = 0 := by simp [basisVec, hj]
-      have hsum0 : x.1 j + y.1 j = 0 := by simpa [hb] using hsum
+      rw [hb] at hsum
       have xle0 : x.1 j ≤ 0 := by
         calc
           x.1 j ≤ x.1 j + y.1 j := le_add_of_nonneg_right (hy.2 j)
-          _ = 0 := hsum0
+          _ = 0 := hsum
       exact le_antisymm xle0 (hx.2 j)
 
     have hy0 : ∀ j : Fin n, j ≠ i → y.1 j = 0 := by
       intro j hj
       have hsum : x.1 j + y.1 j = (basisVec (n := n) i) j := by
-        have : (x + y).1 j = (basisVec (n := n) i, (0 : ℝ)).1 j := by simpa [hxy]
+        have : (x + y).1 j = (basisVec (n := n) i, (0 : ℝ)).1 j := by
+          have := congrArg (fun p => p.1 j) hxy.symm
+          exact this
         simpa [Prod.fst_add, Pi.add_apply] using this
       have hb : (basisVec (n := n) i) j = 0 := by simp [basisVec, hj]
-      have hsum0 : x.1 j + y.1 j = 0 := by simpa [hb] using hsum
+      rw [hb] at hsum
       have yle0 : y.1 j ≤ 0 := by
         calc
           y.1 j ≤ x.1 j + y.1 j := le_add_of_nonneg_left (hx.2 j)
-          _ = 0 := hsum0
+          _ = 0 := hsum
       exact le_antisymm yle0 (hy.2 j)
 
     -- Also t-components: 0 = x.2 + y.2, with both ≥ 0, hence x.2 = 0 and y.2 = 0.
     have xt0 : x.2 = 0 := by
-      have : (basisVec (n := n) i, (0 : ℝ)).2 = (x + y).2 := by simpa [hxy]
-      have hsum0 : x.2 + y.2 = 0 := by simpa [Prod.snd_add] using this.symm
+      have : (x + y).2 = 0 := by
+        have := congrArg (fun p => p.2) hxy.symm
+        simpa [Prod.snd] using this
+      have hsum : x.2 + y.2 = 0 := by simpa [Prod.snd_add] using this
       have xle0 : x.2 ≤ 0 := by
         calc
           x.2 ≤ x.2 + y.2 := le_add_of_nonneg_right hy.1
-          _ = 0 := hsum0
+          _ = 0 := hsum
       exact le_antisymm xle0 hx.1
 
     have yt0 : y.2 = 0 := by
-      have : (basisVec (n := n) i, (0 : ℝ)).2 = (x + y).2 := by simpa [hxy]
-      have hsum0 : x.2 + y.2 = 0 := by simpa [Prod.snd_add] using this.symm
+      have : (x + y).2 = 0 := by
+        have := congrArg (fun p => p.2) hxy.symm
+        simpa [Prod.snd] using this
+      have hsum : x.2 + y.2 =  0 := by simpa [Prod.snd_add] using this
       have yle0 : y.2 ≤ 0 := by
         calc
           y.2 ≤ x.2 + y.2 := le_add_of_nonneg_left hx.1
-          _ = 0 := hsum0
+          _ = 0 := hsum
       exact le_antisymm yle0 hy.1
 
     -- λ = x_i, μ = y_i
@@ -298,11 +310,11 @@ end ExtremeRayExample
 end AffineToCone
 
 -- Completeness checks
-#print axioms affineAdmissible_isClosed
-#print axioms affineAdmissible_convex
-#print axioms mem_homCone
-#print axioms slice_one_iff
-#print axioms homCone_isClosed
-#print axioms homCone_convex
-#print axioms homCone_smul_nonneg
-#print axioms orthant_basis_extreme
+#print axioms AffineToCone.affineAdmissible_isClosed
+#print axioms AffineToCone.affineAdmissible_convex
+#print axioms AffineToCone.mem_homCone
+#print axioms AffineToCone.slice_one_iff
+#print axioms AffineToCone.homCone_isClosed
+#print axioms AffineToCone.homCone_convex
+#print axioms AffineToCone.homCone_smul_nonneg
+#print axioms AffineToCone.orthant_basis_extreme
