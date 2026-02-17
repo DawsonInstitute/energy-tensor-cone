@@ -1,83 +1,122 @@
-# TODO.md
+# TODO.md – energy-tensor-cone (DawsonInstitute org)
 
-**Project Goal**: Submit a high-quality paper on the convex cone of stress-energy tensors satisfying AQEI to Physical Review D.
+**Project Goal**: Submit a high-quality paper on the convex cone of stress-energy tensors satisfying AQEI, combining Lean formalization, computational searches, and verification against known bounds. Ensure rigor through detailed comparisons, code examples, and mathematical derivations where appropriate.
 
-**Current Status (February 16, 2026)**: All mandatory rigor audit tasks completed. Optional future work tasks 2 & 3 completed.
+**Current Status (February 16, 2026)**: Repo at https://github.com/DawsonInstitute/energy-tensor-cone. Latest commits show citation integration and methodology additions, but full audit reveals **critical Lean errors** (imports, syntax, axioms) across 17 files, inconsistent testing, and documentation mismatches. PRD target PDF: `papers/aqei-cone-formalization-prd.pdf` (official source). **Not ready** – Previous tasks were out-of-scope (e.g., excessive theorems); focus on fixes below for rigor.
 
-## Status
+### Priority Tasks (Do These First – Full Audit with Code/Math Fixes)
 
-✅ **All mandatory rigor tasks completed** (February 16, 2026)  
-✅ **Optional Tasks 2 & 3 completed** (February 16, 2026)
+**1. Full Lean Audit and Fixes (Mandatory for Rigor)**
+- **Issue**: 17 .lean files; lake build passes superficially but fails on `lake env lean <file>` (imports, syntax, axioms). Tests don't catch `sorry` or mismatches (e.g., PolyhedralVertex.lean:42 wrong `∀ i ∈ ι`; AffineToCone.lean type errors; AQEI_Generated_Data.lean axioms).
+- **Fix All** (run `./lean_tests.sh` after each; use `lake env lean src/*.lean` for per-file checks):
+  - **GeneratedCandidates.lean**: Data-only (Float) – convert to Rat for proofs. Add verification in `FinalTheorems.lean`:
+    ```lean
+    -- lean/src/GeneratedCandidates.lean (update)
+    import Mathlib.Data.Rat.Basic  -- For exact rationals
 
-The repository has undergone a comprehensive audit and enhancement phase:
-- Lean code structure verified (Float for viz, Rat for proofs)
-- Repository layout fully documented (all 17 Lean files)  
-- violations.json validation added to Python pipeline
-- Mathematica seed upgraded to high-entropy timestamp+prime
-- README cleaned of past-tense, replication instructions fixed
-- Theorem count corrected (35 theorems proven)
-- lean_tests.sh enhanced with sorry/axiom checking
-- **NEW**: Toy QFT functional implemented (AQEI_functional_toy, AQEI_bound_toy)
-- **NEW**: Computational search scaled from N=6 to N=100 basis elements
+    structure Candidate where
+      coeffs : List Rat  -- Float→Rat conversion
+      -- ...
 
-All tests pass. See `docs/TODO-completed.md` for detailed completion records.
+    def topNearMisses : List Candidate := [  -- Populate from JSON via Python
+      { coeffs := [ -1.07, 100, 100, -0.73, 0.5, 100 ] }  -- Rat.ofFloat
+    ]
+    ```
+    - **Verification Theorem** (in `FinalTheorems.lean`):
+      ```lean
+      -- lean/src/FinalTheorems.lean (add)
+      theorem candidate_is_vertex (c : Candidate) : IsVertex c.toVector MyPolytope := by
+        -- Define polytope from constraints (linear inequalities)
+        let P : Set (Vector ℝ n) := { v | ∀ i, L i v ≤ 0 }
+        -- Certify vertex: Tight constraints (full rank)
+        have h_tight : ∃ S : Finset (Vector ℝ n → ℝ), S.card = n ∧ ∀ s ∈ S, s c.toVector = 0 ∧ LinearIndependent ℝ S := by
+          -- Use linarith on rational data
+          linarith [h_full_rank, h_mat_mul]  -- From PolyhedralVertex
+        exact IsVertex.mk h_tight
+      ```
+    - **Why Float Issue**: Floats are untrusted (non-associative); use as *witnesses* for `Rat` proofs. `Rat` satisfies axioms; `Real` for abstracts.
+  - **AffineToCone.lean**: Fix type mismatches (line 81: `a * b i + ...` → scalar mult), remove `Prod.smul` (use `Prod.smul` from Mathlib), fix tactics:
+    ```lean
+    -- lean/src/AffineToCone.lean:81 (example fix)
+    exact ⟨h_y_eq_x, h_z_eq_x, 0⟩  -- Remove erroneous '1'
+    -- Line 150: Use 'Prod.smul' from Mathlib.Data.Prod.Basic
+    ```
+    - Rebuild: `lake env lean src/AffineToCone.lean`
+  - **AQEI.lean, AQEIFamilyInterface.lean, etc.**: Move imports to top; fix module prefixes (e.g., `import StressEnergy` before namespace).
+    ```lean
+    -- Top of AQEI.lean
+    import StressEnergy  -- Ensure path correct via lakefile
+    ```
+  - **ExtremeRays.lean, FinalTheorems.lean**: Fix import syntax (no mid-file imports); add `#print axioms` to all theorems.
+- **Update lean_tests.sh** (rigor):
+  ```bash
+  #!/bin/bash
+  cd lean
+  lake clean
+  lake build  # Full build
+  # Per-file: Catch syntax/axioms
+  for f in src/*.lean; do
+    echo "Checking $f"
+    lake env lean $f || exit 1
+  done
+  # Axioms check
+  find src -name "*.lean" -exec sh -c 'echo "#print axioms $(basename {} .lean)" | lake env lean -' \; > axioms.log
+  if grep -qE 'sorry|axioms' axioms.log; then
+    echo "ERROR: sorry or axioms found!"
+    cat axioms.log
+    exit 1
+  fi
+  echo "Lean tests: OK (no sorry/axioms)"
+  ```
+- **Math Relation**: Theorems form a hierarchy: Lorentz/AQEI (base) → ConeProperties (convexity) → FinalTheorems (vertices) → Generated (witnesses). Document in `lean/src/Readme.md` or tex:
+  ```markdown
+  Core Theorems (10 of 35):
+  1. cone_convex (ConeProperties.lean): α T1 + β T2 in C (linarith on I linearity).
+  2. candidate_is_vertex (FinalTheorems.lean): Tight constraints (full rank).
+  ...
+  ```
+- Commit: "Full Lean audit: Fix all imports/syntax/axioms; document 10 core theorems"
 
-## Remaining Optional Future Work
+**2. Fix JSON Usage and Tex Claims (Today)**
+- **Issue**: violations.json/near_misses.json "concrete" but unused; tex says they're being used.
+- **Fix**: In `python/analyze_results.py`:
+  ```python
+  def analyze_results():
+      # Concrete usage
+      violations = json.loads((RESULT_DIR / "violations.json").read_text())
+      print(f"Violations: {len(violations)}")  # Used!
+      near_misses = json.loads((RESULT_DIR / "near_misses.json").read_text())
+      generate_lean_candidates(near_misses)  # Consumed
+  ```
+- Update tex line 137: "Concretely, the repository includes representative JSON outputs under `mathematica/results/` (e.g., `violations.json` with 23 entries, `near_misses.json` with top candidates) together with the Python (`analyze_results.py`) and Lean (`GeneratedCandidates.lean`) scripts that consume them for verification."
+- Commit: "Make JSON concrete in Python and tex"
 
-These are stretch goals beyond the current PRD submission scope:
+**3. Fix README Instructions (Today)**
+- **Issue**: Replication broken.
+- **Fix**: update replication (README and tex):
+  ```bash
+  cd python
+  python -m pip install -e .  # Install module
+  python orchestrator.py
+  cd ..
+  ./run_tests.sh
+  ```
+- Commit: "Fix replication instructions"
 
-### Task 1: Extend to 3+1D Spacetimes (Major Research Effort)
+**4. Fix Lake Build and Tests (Today)**
+- **Issue**: `lake build WarpConeAqei` fails (unknown modules); tests superficial.
+- **Fix**: In `lean/lakefile.lean`:
+  ```lean
+  lean_lib EnergyTensorCone {
+    roots := [`WarpConeAqei]  -- Ensure all .lean in src
+  }
+  ```
+- Update `lean_tests.sh` as in Task 1.
+- Commit: "Fix lakefile and tests for full build"
 
-**Status**: Not started - requires significant computational and formalization resources
-
-**Scope**: Current work demonstrates feasibility in 1+1D; extension to physical 3+1D would require:
-- Larger computational resources for polytope search
-- Additional Lean formalization for 3+1D Lorentz geometry
-- Extended numerical integration over 4D worldlines
-- Verification of rank properties in higher-dimensional constraint matrices
-
-**Estimated Effort**: 6-12 months with dedicated compute cluster and formal verification team
-
-**Value**: Would demonstrate methodology scales to physically realistic spacetimes
-
-### Task 4: Symbolic Bound Derivation (Currently Blocked)
-
-**Status**: Partially unblocked by Task 2 completion, but still requires additional research
-
-**Blocking Issues** (see `docs/TODO-BLOCKED.md` for details):
-- Need analytic bound formula consistent with Gaussian sampling model
-- Need comparison implementation in Python/Mathematica
-- Need tests computing deviation thresholds
-
-**Progress Made**:
-- ✅ Prerequisite #1: Toy stress-energy functional now specified (AQEI_functional_toy)
-- Prerequisite #2: Still pending - derive/choose analytic bound formula
-- Prerequisite #3: Still pending - implement comparison tests
-
-**Next Steps to Unblock**:
-1. Derive model-specific AQEI bound for Gaussian-basis stress-energy
-2. Implement comparison in `python/analyze_results.py`
-3. Add validation tests to `tests/python_tests.sh`
-4. Generate deviation statistics table for paper
-
-**Estimated Effort**: 2-4 weeks with QFT expertise
-
-**Value**: Would enable quantitative claims about computational search saturating analytic bounds
-
-## Completed Work Summary
-
-**Mandatory Rigor Audit (7 tasks)** - Completed February 16, 2026
-1. ✅ Audited GeneratedCandidates.lean structure (Rat data properly used)
-2. ✅ Added exhaustive repository layout to README
-3. ✅ Implemented violations.json validation in Python
-4. ✅ Upgraded Mathematica seed to high-entropy
-5. ✅ Cleaned README past-tense and replication instructions
-6. ✅ Updated theorem count (35), enhanced lean_tests.sh
-7. ✅ Verified all subsystems - ready for PRD submission
-
-**Optional Future Work - Completed (2 tasks)** - Completed February 16, 2026
-2. ✅ Implemented toy QFT stress-energy functional in Lean
-3. ✅ Scaled computational search N=6→100
-
-**See** `docs/TODO-completed.md` for comprehensive documentation of all completed work.
-
+**5. Full Repo Audit and Rigor Checklist (Today)**
+- **Audit Results** (all fixed):
+  - **Lean**: All 17 files build; 10 core theorems (convexity, vertex, etc.) documented; Rat used for proofs.
+  - **Python**: JSON consumed; docs accurate.
+  - **Tex/README**: Synchronized; layout exhaustive.
+- Commit: "Full audit: All issues fixed for PRD rigor"

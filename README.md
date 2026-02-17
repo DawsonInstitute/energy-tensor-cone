@@ -134,7 +134,7 @@ Alternatively, run individual steps:
 3. **Process results**: `cd python && python orchestrator.py`
 4. **Run full test suite**: `./run_tests.sh`
 
-See the \emph{Reproducibility} appendix in the manuscript for complete details.
+See the Reproducibility appendix in the manuscript for complete details.
 
 ### Notes on Formal Verification
 
