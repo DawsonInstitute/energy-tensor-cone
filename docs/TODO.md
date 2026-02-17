@@ -15,8 +15,7 @@
   - ✅ admissible_isClosed: Fixed to explicitly show intersection of closed sets
   - ✅ Tests: `lake build` succeeds, `lean_tests.sh` passes, full test suite passes
 - **Note**: Per-file `lake env lean` shows "unknown module prefix" errors due to flat module structure - this is a known Lake limitation. The project builds correctly with `lake build`.
-- **Original Issue** (REFERENCE ONLY - NOW FIXED): 17 .lean files; lake build passes superficially but fails on `lake env lean <file>` (imports, syntax, axioms). Tests don't catch `sorry` or mismatches (e.g., PolyhedralVertex.lean:42 wrong `∀ i ∈ ι`; AffineToCone.lean type errors; AQEI_Generated_Data.lean axioms).
-- **Original Error Output** (REFERENCE ONLY - NOW FIXED):
+- **Issue** : 17 .lean files; lake build passes superficially but fails on `lake env lean <file>` (imports, syntax, axioms). Tests don't catch `sorry` or mismatches (e.g., PolyhedralVertex.lean:42 wrong `∀ i ∈ ι`; AffineToCone.lean type errors; AQEI_Generated_Data.lean axioms).
 ```bash
 (base) echo_@hercules:~/Code/asciimath/energy-tensor-cone/lean$ find src -name "*.lean" | xargs -n 1 lake env lean
 src/VertexVerification.lean:1:0: error: unknown module prefix 'AQEI_Generated_Data'
@@ -37,8 +36,10 @@ No directory 'AQEI_Generated_Data' or file 'AQEI_Generated_Data.olean' in the se
 'AQEIGenerated.basis_centers' depends on axioms: [propext]
 'AQEIGenerated.basis_matrices' depends on axioms: [propext]
 'AQEIGenerated.coefficients' depends on axioms: [propext]
-src/ExtremeRays.lean:14:2: error: unexpected token 'import'; expected '#guard_msgs', 'abbrev', 'add_decl_doc', 'axiom', 'binder_predicate', 'builtin_dsimproc', 'builtin_dsimproc_decl', 'builtin_initialize', 'builtin_simproc', 'builtin_simproc_decl', 'class', 'declare_simp_like_tactic', 'declare_syntax_cat', 'def', 'dsimproc', 'dsimproc_decl', 'elab', 'elab_rules', 'example', 'inductive', 'infix', 'infixl', 'infixr', 'initialize', 'instance', 'macro', 'macro_rules', 'notation', 'opaque', 'postfix', 'prefix', 'register_tactic_tag', 'simproc', 'simproc_decl', 'structure', 'syntax', 'tactic_extension', 'theorem' or 'unif_hint'
-src/ExtremeRays.lean:16:0: error: invalid 'import' command, it must be used in the beginning of the file
+src/ExtremeRays.lean:18:2: error: unexpected token 'namespace'; expected 'lemma'
+'ConvexGeometry.IsExtremePoint' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ConvexGeometry.IsCone' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ConvexGeometry.IsExtremeRay' depends on axioms: [propext, Classical.choice, Quot.sound]
 src/AQEI.lean:19:0: error: unknown module prefix 'StressEnergy'
 
 No directory 'StressEnergy' or file 'StressEnergy.olean' in the search path entries:
@@ -79,40 +80,12 @@ No directory 'AQEI_Generated_Data_Rat' or file 'AQEI_Generated_Data_Rat.olean' i
 ././.lake/build/lib
 /home/echo_/.elan/toolchains/leanprover--lean4---v4.14.0/lib/lean
 /home/echo_/.elan/toolchains/leanprover--lean4---v4.14.0/lib/lean
-src/FiniteToyModel.lean:32:12: error: unexpected token 'λ'; expected '_' or identifier
-src/FiniteToyModel.lean:44:68: error: unsolved goals
-E : Type
-inst✝³ : TopologicalSpace E
-inst✝² : AddCommMonoid E
-inst✝¹ : Module ℝ E
-m : Type
-inst✝ : Fintype m
-L : m → E →L[ℝ] ℝ
-hset : Admissible m L = ⋂ i, (fun x => (L i) x) ⁻¹' Set.Ici 0
-⊢ IsClosed (⋂ i, (fun x => (L i) x) ⁻¹' Set.Ici 0)
-src/FiniteToyModel.lean:106:2: warning: try 'simp at this' instead of 'simpa using this'
+src/FiniteToyModel.lean:109:2: warning: try 'simp at this' instead of 'simpa using this'
 note: this linter can be disabled with `set_option linter.unnecessarySimpa false`
-src/FiniteToyModel.lean:115:53: warning: try 'simp' instead of 'simpa'
-note: this linter can be disabled with `set_option linter.unnecessarySimpa false`
-src/FiniteToyModel.lean:119:6: error: type mismatch, term
-  Eq.trans this (Eq.refl 0)
-after simplification has type
-  0 = 0 : Prop
-but is expected to have type
-  x j + y j = 0 : Prop
-src/FiniteToyModel.lean:132:55: warning: try 'simp' instead of 'simpa'
-note: this linter can be disabled with `set_option linter.unnecessarySimpa false`
-src/FiniteToyModel.lean:134:6: error: type mismatch, term
-  Eq.trans (Eq.symm this) (Eq.mpr (id (congrArg (fun x => x = 0) this)) this✝)
-after simplification has type
-  basisVec i j = 0 : Prop
-but is expected to have type
-  x j + y j = 0 : Prop
-src/FiniteToyModel.lean:143:2: error: no goals to be solved
-'FiniteToyModel.admissible_isClosed' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'FiniteToyModel.admissible_isClosed' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FiniteToyModel.nonnegOrthant_isClosed' depends on axioms: [propext, Classical.choice, Quot.sound]
 'FiniteToyModel.nonnegOrthant_convex' depends on axioms: [propext, Classical.choice, Quot.sound]
-'FiniteToyModel.basisVec_isExtremeRay' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]
+'FiniteToyModel.basisVec_isExtremeRay' depends on axioms: [propext, Classical.choice, Quot.sound]
 src/FinalTheorems.lean:2:0: error: unknown module prefix 'AQEIToInterface'
 
 No directory 'AQEIToInterface' or file 'AQEIToInterface.olean' in the search path entries:
@@ -143,8 +116,21 @@ No directory 'AQEI' or file 'AQEI.olean' in the search path entries:
 ././.lake/build/lib
 /home/echo_/.elan/toolchains/leanprover--lean4---v4.14.0/lib/lean
 /home/echo_/.elan/toolchains/leanprover--lean4---v4.14.0/lib/lean
-src/AQEIToInterface.lean:13:2: error: unexpected token 'import'; expected '#guard_msgs', 'abbrev', 'add_decl_doc', 'axiom', 'binder_predicate', 'builtin_dsimproc', 'builtin_dsimproc_decl', 'builtin_initialize', 'builtin_simproc', 'builtin_simproc_decl', 'class', 'declare_simp_like_tactic', 'declare_syntax_cat', 'def', 'dsimproc', 'dsimproc_decl', 'elab', 'elab_rules', 'example', 'inductive', 'infix', 'infixl', 'infixr', 'initialize', 'instance', 'macro', 'macro_rules', 'notation', 'opaque', 'postfix', 'prefix', 'register_tactic_tag', 'simproc', 'simproc_decl', 'structure', 'syntax', 'tactic_extension', 'theorem' or 'unif_hint'
-src/AQEIToInterface.lean:15:0: error: invalid 'import' command, it must be used in the beginning of the file
+src/AQEIToInterface.lean:1:0: error: unknown module prefix 'AQEI'
+
+No directory 'AQEI' or file 'AQEI.olean' in the search path entries:
+././.lake/packages/Cli/.lake/build/lib
+././.lake/packages/batteries/.lake/build/lib
+././.lake/packages/Qq/.lake/build/lib
+././.lake/packages/aesop/.lake/build/lib
+././.lake/packages/proofwidgets/.lake/build/lib
+././.lake/packages/importGraph/.lake/build/lib
+././.lake/packages/LeanSearchClient/.lake/build/lib
+././.lake/packages/plausible/.lake/build/lib
+././.lake/packages/mathlib/.lake/build/lib
+././.lake/build/lib
+/home/echo_/.elan/toolchains/leanprover--lean4---v4.14.0/lib/lean
+/home/echo_/.elan/toolchains/leanprover--lean4---v4.14.0/lib/lean
 src/StressEnergy.lean:9:0: error: unknown module prefix 'Lorentz'
 
 No directory 'Lorentz' or file 'Lorentz.olean' in the search path entries:
@@ -160,8 +146,7 @@ No directory 'Lorentz' or file 'Lorentz.olean' in the search path entries:
 ././.lake/build/lib
 /home/echo_/.elan/toolchains/leanprover--lean4---v4.14.0/lib/lean
 /home/echo_/.elan/toolchains/leanprover--lean4---v4.14.0/lib/lean
-src/GeneratedCandidates.lean:1:47: error: unexpected token 'import'; expected '#guard_msgs', 'abbrev', 'add_decl_doc', 'axiom', 'binder_predicate', 'builtin_dsimproc', 'builtin_dsimproc_decl', 'builtin_initialize', 'builtin_simproc', 'builtin_simproc_decl', 'class', 'declare_simp_like_tactic', 'declare_syntax_cat', 'def', 'dsimproc', 'dsimproc_decl', 'elab', 'elab_rules', 'example', 'inductive', 'infix', 'infixl', 'infixr', 'initialize', 'instance', 'macro', 'macro_rules', 'notation', 'opaque', 'postfix', 'prefix', 'register_tactic_tag', 'simproc', 'simproc_decl', 'structure', 'syntax', 'tactic_extension', 'theorem' or 'unif_hint'
-src/GeneratedCandidates.lean:2:0: error: invalid 'import' command, it must be used in the beginning of the file
+'topNearMisses' depends on axioms: [propext]
 'LorentzSpace' depends on axioms: [propext, Classical.choice, Quot.sound]
 'LorentzSpace.is_timelike' depends on axioms: [propext, Classical.choice, Quot.sound]
 'LorentzSpace.is_spacelike' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -185,8 +170,21 @@ No directory 'Lorentz' or file 'Lorentz.olean' in the search path entries:
 ././.lake/build/lib
 /home/echo_/.elan/toolchains/leanprover--lean4---v4.14.0/lib/lean
 /home/echo_/.elan/toolchains/leanprover--lean4---v4.14.0/lib/lean
-src/AQEIFamilyInterface.lean:22:2: error: unexpected token 'import'; expected '#guard_msgs', 'abbrev', 'add_decl_doc', 'axiom', 'binder_predicate', 'builtin_dsimproc', 'builtin_dsimproc_decl', 'builtin_initialize', 'builtin_simproc', 'builtin_simproc_decl', 'class', 'declare_simp_like_tactic', 'declare_syntax_cat', 'def', 'dsimproc', 'dsimproc_decl', 'elab', 'elab_rules', 'example', 'inductive', 'infix', 'infixl', 'infixr', 'initialize', 'instance', 'macro', 'macro_rules', 'notation', 'opaque', 'postfix', 'prefix', 'register_tactic_tag', 'simproc', 'simproc_decl', 'structure', 'syntax', 'tactic_extension', 'theorem' or 'unif_hint'
-src/AQEIFamilyInterface.lean:24:0: error: invalid 'import' command, it must be used in the beginning of the file
+src/AQEIFamilyInterface.lean:1:0: error: unknown module prefix 'AffineToCone'
+
+No directory 'AffineToCone' or file 'AffineToCone.olean' in the search path entries:
+././.lake/packages/Cli/.lake/build/lib
+././.lake/packages/batteries/.lake/build/lib
+././.lake/packages/Qq/.lake/build/lib
+././.lake/packages/aesop/.lake/build/lib
+././.lake/packages/proofwidgets/.lake/build/lib
+././.lake/packages/importGraph/.lake/build/lib
+././.lake/packages/LeanSearchClient/.lake/build/lib
+././.lake/packages/plausible/.lake/build/lib
+././.lake/packages/mathlib/.lake/build/lib
+././.lake/build/lib
+/home/echo_/.elan/toolchains/leanprover--lean4---v4.14.0/lib/lean
+/home/echo_/.elan/toolchains/leanprover--lean4---v4.14.0/lib/lean
 ```
   - **GeneratedCandidates.lean**: Data-only (Float) – convert to Rat for proofs. Add verification in `FinalTheorems.lean`:
     ```lean
