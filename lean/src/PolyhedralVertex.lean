@@ -17,7 +17,7 @@ variable {k : Type} [LinearOrderedField k]
 variable {E : Type} [AddCommGroup E] [Module k E]
 
 /-- A polyhedron defined by a family of linear inequalities L_i(x) ≥ -B_i. -/
-def Polyhedron {ι : Type} (L : ι → E →L[k] k) (B : ι → k) : Set E :=
+def Polyhedron {ι : Type} (L : ι → E →ₗ[k] k) (B : ι → k) : Set E :=
   { x | ∀ i, L i x ≥ -B i }
 
 /--
@@ -28,7 +28,7 @@ def Polyhedron {ι : Type} (L : ι → E →L[k] k) (B : ι → k) : Set E :=
 -/
 theorem full_rank_active_implies_vertex
     {ι : Type}
-    (L : ι → E →L[k] k)
+    (L : ι → E →ₗ[k] k)
     (B : ι → k)
     (x : E)
     (active : Set ι)
@@ -37,45 +37,42 @@ theorem full_rank_active_implies_vertex
     -- The spanning condition: The only vector orthogonal to all active L_i is 0.
     -- This is equivalent to "L_i span the dual space".
     (h_full_rank : ∀ v : E, (∀ i ∈ active, L i v = 0) → v = 0) :
-    ConvexGeometry.IsExtremePoint (Polyhedron L B) x := by
+    ConvexGeometry.IsExtremePoint (k := k) (Polyhedron L B) x := by
   constructor
   · exact h_feasible
   · intros y z t hy hz ht0 ht1 h_convex_comb
-    -- We want to prove y = x and z = x.
-    -- Strategy: Show that y and z must also satisfy the active constraints with equality.
+    -- Strategy: Show that y and z must also satisfy the active constraints with equality,
+    -- then use full rank to conclude y = x and z = x.
 
     have h_segment_active : ∀ i ∈ active, L i y = -B i ∧ L i z = -B i := by
       intro i hi
-      -- We know L i y ≥ -B i and L i z ≥ -B i from feasibility
       have hy_ge : L i y ≥ -B i := hy i
       have hz_ge : L i z ≥ -B i := hz i
-
-      -- We know t * L i y + (1-t) * L i z = L i x = -B i
+      -- t * L i y + (1-t) * L i z = L i x = -B i
       have h_comb : t * L i y + (1 - t) * L i z = -B i := by
-        rw [← map_smul, ← map_smul, ← map_add, h_convex_comb, h_active_binding i hi]
-
-      -- A strictly convex combination of numbers >= K is equal to K
-      -- iff both numbers are equal to K.
-      exact Convex.combo_eq_bound_impl_eq hy_ge hz_ge ht0 ht1 h_comb
-
-    -- Now consider the difference vector v = y - x.
-    -- We want to show v = 0.
-    -- Since z = (x - t*y)/(1-t), if y=x then z=x.
+        have := congr_arg (L i) h_convex_comb
+        simp [map_add, map_smul] at this
+        linarith [h_active_binding i hi]
+      -- For reals a,b ≥ c and t*a + (1-t)*b = c with 0 < t < 1: a = c and b = c
+      constructor
+      · nlinarith [mul_nonneg (le_of_lt ht0) (sub_nonneg.mpr hy_ge),
+                   mul_nonneg (sub_nonneg.mpr (le_of_lt ht1)) (sub_nonneg.mpr hz_ge)]
+      · nlinarith [mul_nonneg (le_of_lt ht0) (sub_nonneg.mpr hy_ge),
+                   mul_nonneg (sub_nonneg.mpr (le_of_lt ht1)) (sub_nonneg.mpr hz_ge)]
 
     have h_y_eq_x : y = x := by
-      apply h_full_rank (y - x)
-      intro i hi
-      simp
-      -- L i (y - x) = L i y - L i x = -B i - (-B i) = 0
-      rw [(h_segment_active i hi).1, h_active_binding i hi]
-      sub_self _
+      have h0 : y - x = 0 := h_full_rank (y - x) (fun i hi => by
+        simp [map_sub]
+        rw [(h_segment_active i hi).1, h_active_binding i hi]
+        ring)
+      exact eq_of_sub_eq_zero h0
 
     have h_z_eq_x : z = x := by
-      apply h_full_rank (z - x)
-      intro i hi
-      simp
-      rw [(h_segment_active i hi).2, h_active_binding i hi]
-      sub_self _
+      have h0 : z - x = 0 := h_full_rank (z - x) (fun i hi => by
+        simp [map_sub]
+        rw [(h_segment_active i hi).2, h_active_binding i hi]
+        ring)
+      exact eq_of_sub_eq_zero h0
 
     exact ⟨h_y_eq_x, h_z_eq_x⟩
 

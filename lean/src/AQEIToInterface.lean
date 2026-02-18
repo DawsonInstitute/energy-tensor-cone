@@ -3,7 +3,7 @@ import AQEIFamilyInterface
 
 set_option autoImplicit false
 
-/--
+/-
   AQEIToInterface.lean
 
   This is the next "bridge" step:
@@ -50,7 +50,7 @@ variable {L : LorentzSpace V}
 
 variable {E : Type} [TopologicalSpace E] [AddCommMonoid E] [Module ℝ E]
 
-/--
+/-
   A chosen coefficient/topological model `E` for stress-energy tensors.
 
   `encode` is the (possibly non-injective) representation map from the physics-facing
@@ -88,9 +88,11 @@ abbrev admissibleE (bounds : AQEI.Bounds (V := V) (L := L)) : Set E :=
   `AQEIFamilyInterface` results to `AQEI.satisfies_AQEI`.
 -/
 theorem satisfies_AQEI_iff_encode_mem
-    (bounds : AQEI.Bounds (V := V) (L := L))
-    (hfac : FactorsThrough (V := V) (L := L) encode Lmap) (T : StressEnergy V L) :
-    AQEI.satisfies_AQEI (V := V) (L := L) (T := T) bounds ↔ encode T ∈ admissibleE (V := V) (L := L) (E := E) encode Lmap bounds := by
+    (Lmap' : ι (V := V) L → E →L[ℝ] ℝ)
+    (bounds : Worldline V L → SamplingFunction → ℝ)
+    (hfac : FactorsThrough (V := V) (L := L) encode Lmap') (T : StressEnergy V L) :
+    AQEI.satisfies_AQEI T bounds ↔
+    encode T ∈ Admissible (E := E) (ι := ι (V := V) L) Lmap' (bOfBounds (V := V) (L := L) bounds) := by
   constructor
   · intro h
     -- Unfold the admissible set and translate the inequality via the factorization.
@@ -105,7 +107,7 @@ theorem satisfies_AQEI_iff_encode_mem
   · intro h
     intro γ s
     -- Read off the inequality from membership and undo the `0 ≤` transformation.
-    have h0 : 0 ≤ (Lmap (γ, s)) (encode T) + bounds γ s := by
+    have h0 : 0 ≤ (Lmap' (γ, s)) (encode T) + bounds γ s := by
       have := h (γ, s)
       simpa [admissibleE, AQEIFamily.Admissible, AffineToCone.AffineAdmissible, bOfBounds] using this
     -- Replace `(Lmap ...) (encode T)` with `AQEI_functional` via factorization.

@@ -64,7 +64,7 @@ def AQEI_functional (γ : Worldline V L) (s : SamplingFunction) : StressEnergy V
     
     This toy version provides a computable model for finite basis systems
     and bridges to the Python/Mathematica numerical implementations. -/
-def AQEI_functional_toy (domain : ℝ) (n : ℕ) (γ : Worldline V L) (s : SamplingFunction) 
+noncomputable def AQEI_functional_toy (domain : ℝ) (n : ℕ) (γ : Worldline V L) (s : SamplingFunction) 
     (T : StressEnergy V L) : ℝ :=
   let dt := (2 * domain) / n
   let sample_points := List.range n |>.map (fun i => -domain + (i : ℝ) * dt)
@@ -83,7 +83,7 @@ def AQEI_functional_toy (domain : ℝ) (n : ℕ) (γ : Worldline V L) (s : Sampl
     
     This toy version computes a discretized approximation over n frequency samples.
     Used for comparison with computational search results. -/
-def AQEI_bound_toy (domain : ℝ) (n : ℕ) (s : SamplingFunction) : ℝ :=
+noncomputable def AQEI_bound_toy (domain : ℝ) (n : ℕ) (s : SamplingFunction) : ℝ :=
   let dω := (2 * domain) / n
   let freqs := List.range n |>.map (fun i => -domain + (i : ℝ) * dω)
   (1 / (2 * Real.pi)) * freqs.foldl (fun acc ω =>
@@ -96,13 +96,13 @@ def AQEI_bound_toy (domain : ℝ) (n : ℕ) (s : SamplingFunction) : ℝ :=
   ) 0
 
 /-- T satisfies the AQEI family if ∀γ,g: I(T,γ,g) ≥ -B(γ,g). -/
-def satisfies_AQEI (T : StressEnergy V L) (bounds : Bounds) : Prop :=
-  ∀ (γ : Worldline V L) (s : SamplingFunction), AQEI_functional (γ := γ) (s := s) T ≥ -bounds γ s
+noncomputable def satisfies_AQEI (T : StressEnergy V L) (bounds : Worldline V L → SamplingFunction → ℝ) : Prop :=
+  ∀ (γ : Worldline V L) (s : SamplingFunction), AQEI_functional (V := V) (L := L) (γ := γ) (s := s) T ≥ -bounds γ s
 
 /-- Toy version of AQEI satisfaction for discrete models. -/
-def satisfies_AQEI_toy (domain : ℝ) (n : ℕ) (T : StressEnergy V L) (bounds : Bounds) : Prop :=
+noncomputable def satisfies_AQEI_toy (domain : ℝ) (n : ℕ) (T : StressEnergy V L) (bounds : Worldline V L → SamplingFunction → ℝ) : Prop :=
   ∀ (γ : Worldline V L) (s : SamplingFunction), 
-    AQEI_functional_toy domain n γ s T ≥ -bounds γ s
+    AQEI_functional_toy (V := V) (L := L) domain n γ s T ≥ -bounds γ s
 
 end AQEI
 

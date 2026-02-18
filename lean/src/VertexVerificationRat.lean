@@ -17,21 +17,16 @@ open AQEIGeneratedRat
 -- Convert lists to Matrix
 def listToMatrix (rows : List (List Rat)) : Matrix (Fin 6) (Fin 6) Rat :=
   fun i j =>
-    match rows.get? i with
-    | some row =>
-      match row.get? j with
-      | some val => val
-      | none => 0
-    | none => 0
+    ((rows.getD i.val []).getD j.val 0)
 
 section LinearAlgebra
 
-abbrev Row := List Rat
-abbrev Matrix := List Row
+abbrev RatRow := List Rat
+abbrev RatMatrix := List RatRow
 
 -- Subtract projection of pivot from row
 -- row <- row - (row[col] / pivot[col]) * pivot
-def eliminate (pivot : Row) (row : Row) (col_idx : Nat) : Row :=
+def eliminate (pivot : RatRow) (row : RatRow) (col_idx : Nat) : RatRow :=
   match pivot.get? col_idx, row.get? col_idx with
   | some p_val, some r_val =>
     if p_val == 0 then row
@@ -41,11 +36,10 @@ def eliminate (pivot : Row) (row : Row) (col_idx : Nat) : Row :=
   | _, _ => row
 
 -- Exact Gaussian elimination to compute rank
-def compute_rank (m : Matrix) : Nat :=
-  let n_rows := m.length
+partial def compute_rank (m : RatMatrix) : Nat :=
   let n_cols := match m.head? with | some r => r.length | none => 0
 
-  let rec reduce (rows : Matrix) (c : Nat) (rank_acc : Nat) : Nat :=
+  let rec reduce (rows : RatMatrix) (c : Nat) (rank_acc : Nat) : Nat :=
     if c >= n_cols || rows.isEmpty then rank_acc
     else
       -- Find pivot in current column `c` (First non-zero)
@@ -70,7 +64,7 @@ def compute_rank (m : Matrix) : Nat :=
 
 end LinearAlgebra
 
-/--
+/-
   The Rational verification matrix.
   Rows 1..3: from `active_L` (AQEI constraints).
   Rows 4..6: from Box constraints.
@@ -87,28 +81,63 @@ def box_rows_list : List (List Rat) := [
 def verification_rows : List (List Rat) :=
   active_L ++ box_rows_list
 
+abbrev Vec6 := Fin 6 → Rat
+
+def row0 : Vec6 := fun j =>
+  match j.val with
+  | 0 => (18242171 : Rat) / 185310433
+  | 3 => (1686499 : Rat) / 783101748
+  | _ => 0
+
+def row1 : Vec6 := fun j =>
+  match j.val with
+  | 0 => (-61 : Rat) / 489973282
+  | 2 => (-33857 : Rat) / 815586094
+  | 3 => (-7864737 : Rat) / 141838453
+  | 4 => (-110132019 : Rat) / 383795849
+  | _ => 0
+
+def row2 : Vec6 := fun j =>
+  match j.val with
+  | 0 => (-29649869 : Rat) / 504524770
+  | 3 => (-188681736 : Rat) / 836755073
+  | 4 => (-178 : Rat) / 269582495
+  | 5 => (-320317 : Rat) / 94761543
+  | _ => 0
+
+def row3 : Vec6 := fun j => if j.val = 1 then 1 else 0
+def row4 : Vec6 := fun j => if j.val = 2 then 1 else 0
+def row5 : Vec6 := fun j => if j.val = 5 then 1 else 0
+
 def verification_matrix : Matrix (Fin 6) (Fin 6) Rat :=
-  listToMatrix verification_rows
+  fun i j =>
+    match i.val with
+    | 0 => row0 j
+    | 1 => row1 j
+    | 2 => row2 j
+    | 3 => row3 j
+    | 4 => row4 j
+    | 5 => row5 j
+    | _ => 0
 
 -- Evaluate the determinant
 def det_val : Rat := verification_matrix.det
 
-#eval det_val
-
-theorem det_nonzero : det_val ≠ 0 := by
-  -- We trust the #eval for the value.
-  -- In a fully rigorous proof without 'native_decide', we would need to provide the calculation step-by-step or use 'norm_num'.
-  -- Given the size, norm_num might be slow but let's assume native_decide is acceptable for this "Computational Verification".
-  native_decide
+theorem det_nonzero : det_val ≠ 0 := by native_decide
 
 theorem full_rank_kernel_trivial :
-    ∀ v : (Fin 6 → Rat), (verification_matrix *ᵥ v = 0) → v = 0 := by
+    ∀ v : (Fin 6 → Rat), (Matrix.mulVec verification_matrix v = 0) → v = 0 := by
+  intro v hv
   have h_det : verification_matrix.det ≠ 0 := det_nonzero
-  have h_unit : IsUnit verification_matrix := Matrix.isUnit_iff_isUnit_det.mpr (isUnit_iff_ne_zero.mpr h_det)
-  exact Matrix.isUnit_iff_isUnit_det.mp (Matrix.isUnit_iff_isUnit_det.mpr (isUnit_iff_ne_zero.mpr h_det)) |>.mulVec_eq_zero_iff_eq_zero.mp
+  have h_unit : IsUnit verification_matrix :=
+    (Matrix.isUnit_iff_isUnit_det verification_matrix).mpr (isUnit_iff_ne_zero.mpr h_det)
+  have h_inj : Function.Injective (Matrix.mulVec verification_matrix) :=
+    Matrix.mulVec_injective_iff_isUnit.mpr h_unit
+  have h0 : Matrix.mulVec verification_matrix 0 = 0 := Matrix.mulVec_zero _
+  exact h_inj (hv.trans h0.symm)
 
 end Phase2Rat
 
 -- Completeness checks
-#print axioms det_nonzero
-#print axioms full_rank_kernel_trivial
+#print axioms Phase2Rat.det_nonzero
+#print axioms Phase2Rat.full_rank_kernel_trivial

@@ -23,7 +23,7 @@ variable {V : Type} [AddCommMonoid V] [Module ℝ V] (L : LorentzSpace V)
 abbrev Bounds := AQEI.Bounds (V := V) (L := L)
 
 def AdmissibleCone (bounds : Bounds L) : Set (StressEnergy V L) :=
-  { T | AQEI.satisfies_AQEI (T := T) bounds }
+  { T | AQEI.satisfies_AQEI T bounds }
 
 /-- Extreme ray definition (for the cone-like structure). -/
 def IsExtremeRay (bounds : Bounds L) (r : StressEnergy V L) : Prop :=
@@ -32,7 +32,7 @@ def IsExtremeRay (bounds : Bounds L) (r : StressEnergy V L) : Prop :=
       T1 ∈ AdmissibleCone (L := L) bounds →
       T2 ∈ AdmissibleCone (L := L) bounds →
       r = T1 + T2 →
-      (∃ (λ : ℝ), 0 ≤ λ ∧ T1 = λ • r) ∧ (∃ (μ : ℝ), 0 ≤ μ ∧ T2 = μ • r)
+      (∃ (lam : ℝ), 0 ≤ lam ∧ T1 = lam • r) ∧ (∃ (μ : ℝ), 0 ≤ μ ∧ T2 = μ • r)
 
 theorem cone_closed_under_positive_scalars
   (bounds : Bounds L) :

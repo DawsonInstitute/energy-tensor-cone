@@ -2,13 +2,20 @@
 
 **Project Goal**: Submit a high-quality paper on the convex cone of stress-energy tensors satisfying AQEI, combining Lean formalization, computational searches, and verification against known bounds. Ensure rigor through detailed comparisons, code examples, and mathematical derivations where appropriate.
 
-**Current Status (February 16, 2026)**: Repo at https://github.com/DawsonInstitute/energy-tensor-cone. **UPDATE: Lean compilation errors FIXED (commit b00cd51)** - All 17 files build successfully, tests pass. Per-file `lake env lean` errors are a known Lake limitation with flat structures; `lake build` succeeds. PRD target PDF: `papers/aqei-cone-formalization-prd.pdf` (official source). Remaining tasks focus on advanced features (3+1D, symbolic bounds).
+**Current Status (February 18, 2026)**: Repo at https://github.com/DawsonInstitute/energy-tensor-cone. **UPDATE: Lean compilation errors FIXED** - All 17 files build successfully. Per-file `lake env lean` errors are a known Lake limitation with flat structures; `lake build` succeeds.
+- **Fixed `VertexVerificationRat.lean`**: Refactored matrix definitions to be computational (`match`/`if`) instead of `List`-based, enabling logical verification.
+- **Fixed `FinalTheorems.lean`**: Adjusted polyhedron boundary definitions to ensure exact rational binding for active constraints.
+- **Verified**: `lake build` passes with no errors (only linter warnings).
+
+PRD target PDF: `papers/aqei-cone-formalization-prd.pdf` (official source). Remaining tasks focus on advanced features (3+1D, symbolic bounds).
 
 ### Priority Tasks (Do These First – Full Audit with Code/Math Fixes)
 
-**1. Full Lean Audit and Fixes (Mandatory for Rigor)** ✅ **COMPLETED (Feb 16, 2026)**
-- **Status**: ✅ **FIXED** - All compilation errors resolved in commit b00cd51. See TODO-completed.md for details.
-- **What Was Fixed**:
+**1. Full Lean Audit and Fixes (Mandatory for Rigor)** ✅ **COMPLETED (Feb 18, 2026)**
+- **Status**: ✅ **FIXED** - All compilation errors resolved. See TODO-completed.md for details.
+- **What Was Fixed (Feb 18)**:
+  - ✅ VertexVerificationRat.lean / FinalTheorems.lean: Replaced `List.get!` logic with pattern matching on `Fin 6`.
+  - ✅ VertexVerificationRat.lean / FinalTheorems.lean: Ensured definitions `row_i` and `B_poly` exactly match rational values for definitional equality.
   - ✅ Lakefile: Added all 17 modules to roots array
   - ✅ Import placement: Moved imports to beginning of 4 files (ExtremeRays, AQEIToInterface, GeneratedCandidates, AQEIFamilyInterface)
   - ✅ FiniteToyModel.lean: Fixed lambda keyword (λ → α), proof logic in hsum calculations

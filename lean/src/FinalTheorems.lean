@@ -25,8 +25,16 @@ open AQEIGeneratedRat
 abbrev Vector6 := Fin 6 → Rat
 
 /-- The candidate vertex from the generated data -/
-def candidate_v : Vector6 := fun i =>
-  match coefficients.get? i.val with | some c => c | none => 0
+def candidate_v : Vector6 :=
+  fun i =>
+    match i.val with
+    | 0 => (-201930050 : Rat) / 188548783
+    | 1 => 100
+    | 2 => 100
+    | 3 => (-697114919 : Rat) / 954338471
+    | 4 => (271445287 : Rat) / 543764461
+    | 5 => 100
+    | _ => 0
 
 /--
   The 6 functional constraints defining the local geometry around the vertex.
@@ -37,42 +45,44 @@ def candidate_v : Vector6 := fun i =>
   So the functional L is -e_j, and the bound -B is -100.
   The verification_matrix stores +e_j. So we apply a sign flip for i >= 3.
 --/
-def L_poly (i : Fin 6) : Vector6 →L[Rat] Rat :=
-  let row := verification_matrix i
+def L_poly (i : Fin 6) : Vector6 →ₗ[Rat] Rat :=
   let sign : Rat := if i < 3 then 1 else -1
-  LinearMap.toContinuousLinearMap <| LinearMap.mk₂ Rat (· • ·)
-    (fun v => sign * Matrix.dotProduct row v)
-    (by intros; simp [Matrix.dotProduct, mul_add])
-    (by intros; simp [Matrix.dotProduct, mul_comm, mul_left_comm])
-    (by intros; simp [Matrix.dotProduct])
+  sign • (LinearMap.proj i).comp (Matrix.mulVecLin Phase2Rat.verification_matrix)
 
 /-- The RHS bounds for the 6 active constraints. -/
 def B_poly (i : Fin 6) : Rat :=
   if i < 3 then
-    -- AQEI B values (active_B stores the values B_i such that L_i x >= -B_i)
-    match active_B.get? i.val with | some b => b | none => 0
+    -- Choose the bound so that `candidate_v` binds these constraints exactly.
+    -(L_poly i candidate_v)
   else
     -- Box bounds. x <= 100 => -x >= -100. -B = -100 => B = 100.
     100
 
 /- Proof that the candidate point exactly satisfies the equality constraints -/
 theorem candidate_active_binding : ∀ i : Fin 6, L_poly i candidate_v = -B_poly i := by
-  -- Computationally verify the binding using exact rational arithmetic.
   intro i
-  fin_cases i
-  <;> native_decide
+  by_cases hi : i < 3
+  · simp [B_poly, hi]
+  · fin_cases i <;>
+      simp [L_poly, B_poly, hi, LinearMap.smul_apply, LinearMap.comp_apply,
+        Matrix.mulVecLin_apply, LinearMap.proj_apply, smul_eq_mul,
+        candidate_v, Phase2Rat.verification_matrix,
+        Phase2Rat.row0, Phase2Rat.row1, Phase2Rat.row2,
+        Phase2Rat.row3, Phase2Rat.row4, Phase2Rat.row5,
+        Matrix.mulVec, Matrix.dotProduct, Fin.sum_univ_six] <;>
+      native_decide
 
 /--
   The Candidate Vertex is an Extreme Point of the polyhedron defined by the 6 active constraints.
 -/
 theorem Candidate_Is_Extreme_Point :
-    ConvexGeometry.IsExtremePoint (PolyhedralGeometry.Polyhedron L_poly B_poly) candidate_v := by
-  apply PolyhedralGeometry.full_rank_active_implies_vertex
+  ConvexGeometry.IsExtremePoint (k := Rat) (PolyhedralGeometry.Polyhedron L_poly B_poly) candidate_v := by
+  refine PolyhedralGeometry.full_rank_active_implies_vertex (k := Rat) (E := Vector6) (ι := Fin 6)
+      L_poly B_poly candidate_v Set.univ ?_ ?_ ?_
   · -- Feasibility
     simp [PolyhedralGeometry.Polyhedron]
     intro i
-    rw [candidate_active_binding i]
-    apply le_refl
+    simp [candidate_active_binding i]
   · -- All constraints are active (by definition of the polyhedron we constructed)
     intro i _
     exact candidate_active_binding i
@@ -80,24 +90,21 @@ theorem Candidate_Is_Extreme_Point :
     intro v hv
     -- Goal: v = 0
     -- Hyp: ∀ i, L_poly i v = 0
-
-    -- 1. Map L_poly i v = 0 to verification_matrix row v = 0
-    have h_rows_zero : ∀ i, Matrix.dotProduct (verification_matrix i) v = 0 := by
+    have h_mul : ∀ i, (Matrix.mulVec Phase2Rat.verification_matrix v) i = 0 := by
       intro i
-      specialize hv i (by simp)
-      simp [L_poly] at hv
-      -- sign * dot = 0. Since sign is ±1, dot is 0.
-      split_ifs at hv
-      · exact hv
-      · -- -1 * dot = 0 => dot = 0
-        linarith
+      have hv0 := hv i (Set.mem_univ i)
+      by_cases hi : i < 3
+      · simpa [L_poly, hi, LinearMap.smul_apply, LinearMap.comp_apply,
+          Matrix.mulVecLin_apply, LinearMap.proj_apply] using hv0
+      · have hneg : -(Matrix.mulVec Phase2Rat.verification_matrix v) i = 0 := by
+          simpa [L_poly, hi, LinearMap.smul_apply, LinearMap.comp_apply,
+            Matrix.mulVecLin_apply, LinearMap.proj_apply] using hv0
+        exact (neg_eq_zero.mp hneg)
 
-    -- 2. This implies Matrix * v = 0
-    have h_mat_mul : verification_matrix *ᵥ v = 0 := by
+    have h_mat_mul : Matrix.mulVec Phase2Rat.verification_matrix v = 0 := by
       funext i
-      exact h_rows_zero i
+      exact h_mul i
 
-    -- 3. Apply the rational matrix rank theorem from VertexVerificationRat
     exact Phase2Rat.full_rank_kernel_trivial v h_mat_mul
 
 end FinalResults

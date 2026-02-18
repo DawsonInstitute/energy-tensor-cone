@@ -2,7 +2,7 @@ import AffineToCone
 
 set_option autoImplicit false
 
-/--
+/-
   AQEIFamilyInterface.lean
 
   Bridge layer between the physics-facing AQEI story and the math-facing
