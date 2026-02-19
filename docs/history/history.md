@@ -1354,3 +1354,20 @@ All done. Here's the final state:
 **`lake build` status**: All 17 Lean files replay successfully. The main conjecture is supported by mechanically verified theorems — closure and convexity in `AffineToCone.lean`/`AQEIFamilyInterface.lean`, and the nontrivial extreme-ray certificate (`Candidate_Is_Extreme_Point`) in `FinalTheorems.lean`.
 <!-- ------ -->
 ---
+Completed: *Write all findings to TODO.md* (3/8)
+
+All findings are now in docs/TODO.md. Here's the summary:
+
+**3 HIGH severity issues:**
+
+1. **H1 – `B_poly` circularity**: The most critical finding. In FinalTheorems.lean, `B_poly` for AQEI constraints is defined as `-(L_poly i candidate_v)`, making `candidate_active_binding` trivially true. I verified numerically that the stored `active_B` rationals do NOT equal `L·v` in exact arithmetic (diffs ~$10^{-11}$), confirming the circularity was a workaround for float→rat inconsistency. The proof certifies a vertex of a *constructed* polyhedron, not the *computed* one.
+
+2. **H2 – N=6 vs N=100**: Section 4.1 says "N=6 basis, 50 constraints" but `search.m` uses N=100/500. The certified vertex has 6 components (from an old N=6 run). The code, paper, and data are from different configurations.
+
+3. **H3 – LP objective mismatch**: Paper Section 4.3 describes minimizing a violation margin $\sum \max(0, -I - B)$; the code solves a standard LP minimizing $c \cdot a$ (energy density at origin).
+
+**8 MEDIUM severity issues** including non-functional Mathematica tests (env vars ignored, expected JSONs not exported), dead axiom checking, non-deterministic seed, `verify_vertex.py` never invoked, no CI, unused `active_B`, no data consistency tests, and unquantified integration error budget.
+
+**6 LOW severity issues** including dead code, unnormalized basis, unlisted "10 critical theorems", undisclosed intentional `sorry`, untested plotting scripts, and duplicated matrix rows across files.
+<!-- ------ -->
+---
