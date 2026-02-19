@@ -1430,3 +1430,6 @@ The stale JSONs (`summary.json`, `near_misses.json`, `top_near_misses.json`, `vi
 The only remaining future-work items in TODO.md are intentionally deferred: **M7** (data consistency diff test) and **L2** (unnormalized Gaussian basis note).
 <!-- ------ -->
 ---
+Done. TODO.md is now 44 lines — a compact table of all 18 completed items with their commit hashes, plus the Future Work section. The 276 lines of completed issue descriptions were already fully captured in TODO-completed.md (Batch 1 and Batch 2 entries), so nothing was lost. Committed as `b16fd90`.
+<!-- ------ -->
+---
