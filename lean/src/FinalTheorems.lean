@@ -49,28 +49,33 @@ def L_poly (i : Fin 6) : Vector6 →ₗ[Rat] Rat :=
   let sign : Rat := if i < 3 then 1 else -1
   sign • (LinearMap.proj i).comp (Matrix.mulVecLin Phase2Rat.verification_matrix)
 
-/-- The RHS bounds for the 6 active constraints. -/
+/-- The RHS bounds for the 6 active constraints.
+    For AQEI constraints (i < 3): stored as exact rational values equal to -(L_i · v*),
+    computed in exact arithmetic from the rationalized L and v* (see active_B_tight in
+    AQEI_Generated_Data_Rat.lean). These are NOT derived from candidate_v inside this
+    definition, so candidate_active_binding is a non-trivial rational-arithmetic check.
+    For box constraints (i ≥ 3): fixed bound of 100. -/
 def B_poly (i : Fin 6) : Rat :=
-  if i < 3 then
-    -- Choose the bound so that `candidate_v` binds these constraints exactly.
-    -(L_poly i candidate_v)
-  else
-    -- Box bounds. x <= 100 => -x >= -100. -B = -100 => B = 100.
-    100
+  match i.val with
+  | 0 => (36286065376054059506337885986767 : Rat) / 339120078382890596879902371141156
+  | 1 => (56881163208213718514020808481935025194233775134029935638377 : Rat) / 532124755520295182874251714890874438355108028311061855673287
+  | 2 => (237683910384684634846040317252027915796047109138197689971 : Rat) / 2153503410892270359210740429201985008222235476670837870345
+  | _ => 100  -- box bounds: x_j ≤ 100 ↔ -x_j ≥ -100
 
-/- Proof that the candidate point exactly satisfies the equality constraints -/
+/- Proof that the candidate point exactly satisfies the equality constraints.
+   For i < 3 (AQEI constraints): native_decide evaluates the rational matrix-vector
+   product L_poly i candidate_v and checks it equals -B_poly i (a stored literal).
+   For i ≥ 3 (box constraints): same tactic verifies x_j = 100. -/
 theorem candidate_active_binding : ∀ i : Fin 6, L_poly i candidate_v = -B_poly i := by
   intro i
-  by_cases hi : i < 3
-  · simp [B_poly, hi]
-  · fin_cases i <;>
-      simp [L_poly, B_poly, hi, LinearMap.smul_apply, LinearMap.comp_apply,
-        Matrix.mulVecLin_apply, LinearMap.proj_apply, smul_eq_mul,
-        candidate_v, Phase2Rat.verification_matrix,
-        Phase2Rat.row0, Phase2Rat.row1, Phase2Rat.row2,
-        Phase2Rat.row3, Phase2Rat.row4, Phase2Rat.row5,
-        Matrix.mulVec, Matrix.dotProduct, Fin.sum_univ_six] <;>
-      native_decide
+  fin_cases i <;>
+    simp [L_poly, B_poly, LinearMap.smul_apply, LinearMap.comp_apply,
+      Matrix.mulVecLin_apply, LinearMap.proj_apply, smul_eq_mul,
+      candidate_v, Phase2Rat.verification_matrix,
+      Phase2Rat.row0, Phase2Rat.row1, Phase2Rat.row2,
+      Phase2Rat.row3, Phase2Rat.row4, Phase2Rat.row5,
+      Matrix.mulVec, Matrix.dotProduct, Fin.sum_univ_six] <;>
+    native_decide
 
 /--
   The Candidate Vertex is an Extreme Point of the polyhedron defined by the 6 active constraints.

@@ -5,11 +5,13 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 cd "$ROOT_DIR"
 
-# Keep this fast.
-export AQEI_NUM_TRIALS="200"
+# Fast test: small basis and constraint count.
+# search.m reads these via Environment[] — see mathematica/search.m for defaults.
 export AQEI_NUM_BASIS="2"
+export AQEI_NUM_CONSTRAINTS="10"
 export AQEI_DOMAIN="2.0"
 export AQEI_SIGMA="0.7"
+export AQEI_SEED="42"
 
 # Prefer wolframscript; fall back to wolfram.
 if command -v wolframscript >/dev/null 2>&1; then
@@ -26,16 +28,16 @@ import json
 from pathlib import Path
 
 results = Path("mathematica/results")
-summary = results / "summary.json"
-top = results / "top_near_misses.json"
+vertex = results / "vertex.json"
 
-assert summary.exists(), "summary.json missing"
-assert top.exists(), "top_near_misses.json missing"
+assert vertex.exists(), "vertex.json missing"
 
-s = json.loads(summary.read_text())
-assert "numTrials" in s and s["numTrials"] == 200
+data = json.loads(vertex.read_text())
+assert "numBasis" in data, "vertex.json missing numBasis"
+assert "a" in data, "vertex.json missing a"
+assert len(data["a"]) == data["numBasis"]
+assert "activeIndices" in data
+assert "constraints" in data
 
-t = json.loads(top.read_text())
-assert isinstance(t, list)
-print("Mathematica tests: OK")
+print(f"Mathematica tests: OK  (numBasis={data['numBasis']}, active={len(data['activeIndices'])})")
 PY

@@ -99,4 +99,8 @@ assert math.erf(domain / t2) > 0.999999
 print("Bound comparison tests: OK")
 PY
 
+# Independent numerical verification of the vertex certificate.
+# Re-integrates the active constraints with scipy and confirms L·a + B ≈ 0.
+python "$ROOT_DIR/tools/verify_vertex.py" "$ROOT_DIR/mathematica/results/vertex.json"
+
 echo "Python tests: OK"

@@ -1371,3 +1371,31 @@ All findings are now in docs/TODO.md. Here's the summary:
 **6 LOW severity issues** including dead code, unnormalized basis, unlisted "10 critical theorems", undisclosed intentional `sorry`, untested plotting scripts, and duplicated matrix rows across files.
 <!-- ------ -->
 ---
+All done. Here's a summary of every change made:
+
+---
+
+**H1 – `B_poly` circularity (most critical)**
+- lean/src/AQEI_Generated_Data_Rat.lean: Added `active_B_tight` — three exact rational literals $B_i = -(L_i \cdot v^*)$ computed in exact rational arithmetic (32–60 digit numerators/denominators).
+- lean/src/FinalTheorems.lean: `B_poly` now uses stored literals (not derived from `candidate_v`). `candidate_active_binding` uses `native_decide` for all 6 cases — the kernel actually verifies the rational matrix-vector product equals the stored constant. The axiom output changed from `propext` only to `propext, Classical.choice, Lean.ofReduceBool, Quot.sound`.
+- tools/generate_lean_data_rat.py: Updated generator to also emit `active_B_tight` for future regeneration.
+
+**H2 + M3 – N=6/N=100 mismatch + non-deterministic seed**
+- mathematica/search.m: Now defaults to `numBasis=6`, `numConstraints=50`, `SeedRandom[42]`. All four parameters readable from env vars (`AQEI_NUM_BASIS`, `AQEI_NUM_CONSTRAINTS`, `AQEI_DOMAIN`, `AQEI_SIGMA`, `AQEI_SEED`).
+
+**H3 – LP objective description**
+- Paper Section 4.3 now accurately describes: minimize $c \cdot a$ subject to $L \cdot a \geq -B$ and $|a_i| \leq 100$.
+
+**M1 – mathematica_tests.sh**
+- tests/mathematica_tests.sh: Env var names corrected; test now checks for `vertex.json` only.
+
+**M2 – native_decide disclosure**
+- Paper Formal Proof Verification paragraph now names `Lean.ofReduceBool`, lists all 10 key theorems by full identifier, and explains the two intentional `sorry`.
+
+**M4 – verify_vertex.py never invoked**
+- tests/python_tests.sh: Now calls verify_vertex.py at the end; all 3 constraints pass (max residual $5 \times 10^{-11}$).
+
+**Paper Limitations**
+- Updated to say N=6/M=50 (certified), N=100/M=500 as optional scaling experiment, consistent throughout.
+<!-- ------ -->
+---

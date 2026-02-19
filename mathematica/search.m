@@ -11,23 +11,19 @@
 ClearAll["Global`*"];
 
 (* Parameters *)
-numBasis = 100;  (* Scaled up from 6 for richer geometric exploration *)
-numConstraints = 500; (* Scaled proportionally - more constraints for larger polytope *)
-domain = 5.0;
-σ = 0.5;
+(* Default N=6/M=50 matches the certified vertex in lean/src/AQEI_Generated_Data_Rat.lean.
+   Set AQEI_NUM_BASIS / AQEI_NUM_CONSTRAINTS env vars to override, e.g. for scaling
+   experiments (N=100, M=500 was used for exploratory runs; see Limitations section). *)
+numBasis = If[StringQ[Environment["AQEI_NUM_BASIS"]], ToExpression[Environment["AQEI_NUM_BASIS"]], 6];
+numConstraints = If[StringQ[Environment["AQEI_NUM_CONSTRAINTS"]], ToExpression[Environment["AQEI_NUM_CONSTRAINTS"]], 50];
+domain = If[StringQ[Environment["AQEI_DOMAIN"]], ToExpression[Environment["AQEI_DOMAIN"]], 5.0];
+σ = If[StringQ[Environment["AQEI_SIGMA"]], ToExpression[Environment["AQEI_SIGMA"]], 0.5];
 
-(* Note: N=100 with 500 constraints significantly increases computational time.
-   Constraint generation involves ~500 NIntegrate calls over the domain for each
-   of 100 basis elements. Consider reducing numConstraints for faster iteration
-   or enabling parallel evaluation. For testing, numBasis=20, numConstraints=100
-   provides a reasonable intermediate scale. *)
-
-(* Better seed: Timestamp + large prime for high entropy.
-   Multiplying by a large prime (10000019) ensures better scrambling
-   of the Mersenne Twister state space. This avoids low-entropy issues
-   with simple fixed seeds while maintaining reproducibility within
-   a timestamped run. *)
-SeedRandom[Hash[DateList[]] * 10000019];
+(* Reproducible fixed seed.  The certified vertex.json was generated with seed 42.
+   Override by setting AQEI_SEED in the environment. *)
+rawSeed = If[StringQ[Environment["AQEI_SEED"]], ToExpression[Environment["AQEI_SEED"]], 42];
+SeedRandom[rawSeed];
+Print["Seed: ", rawSeed, "  numBasis: ", numBasis, "  numConstraints: ", numConstraints];
 
 resultsDir = FileNameJoin[{DirectoryName[$InputFileName], "results"}];
 If[!DirectoryQ[resultsDir], CreateDirectory[resultsDir]];

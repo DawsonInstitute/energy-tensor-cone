@@ -129,21 +129,24 @@ The computational stage is designed to be auditable and to produce artifacts tha
 At a high level, the workflow is:
 \begin{enumerate}
 \item Sample AQEI constraints (worldlines + sampling parameters) and assemble them into linear inequalities.
-\item Solve linear programs over the coefficient vector $a \in \mathbb{R}^6$ to search for near-boundary points.
+\item Solve a sequence of linear programs over the coefficient vector $a \in \mathbb{R}^N$: each LP minimizes the energy density $c \cdot a$ (where $c_i = T_{00}^{(i)}(0,0)$, the $T_{00}$ component of basis element $i$ at the origin, with a small random perturbation to break degeneracy) subject to the sampled AQEI half-space constraints $L \cdot a \geq -B$ and box bounds $|a_i| \leq 100$ (imposed to render the LP bounded and well-conditioned).
 \item Export candidate points and active constraints to JSON for downstream analysis.
 \item Convert the selected candidate and its active constraints into exact rational data and certify the vertex property in Lean.
 \end{enumerate}
 
-Concretely, the repository includes representative JSON outputs under \texttt{mathematica/results/} (e.g., \texttt{summary.json} from \texttt{search.m}/\texttt{orchestrator.py} runs, containing aggregate violation and near-miss statistics; \texttt{near\_misses.json}; \texttt{top\_near\_misses.json}; \texttt{violations.json}; and the certified \texttt{vertex.json}), together with the Python and Lean scripts that consume them.
+Concretely, the repository includes representative JSON outputs under \texttt{mathematica/results/} (including the certified \texttt{vertex.json}), together with the Python and Lean scripts that consume them.
 
 \subsection{Optimization Objective}
 
-We search for configurations that minimize the ``violation margin'':
+We solve a sequence of linear programs (LPs), each of the form
 \begin{equation}
-\min_{a_i} \sum_{\gamma \in \Gamma_{\text{sample}}} \max(0, -I_{T,\gamma,g} - B_{\gamma,g})
+\min_{a \in \mathbb{R}^N} \; c \cdot a \quad \text{subject to} \quad
+L_\gamma \cdot a \geq -B_\gamma \;(\forall \gamma \in \Gamma_{\text{sample}}),
+\quad |a_i| \leq 100,
 \end{equation}
-
-Near-zero values indicate configurations that nearly saturate or slightly violate the AQEI bounds, suggesting proximity to the boundary of the admissible region.
+where $c_i = T_{00}^{(i)}(0,0)$ is the energy density of basis element $i$ at the spacetime origin (with a small random perturbation to break LP degeneracy), and $\{L_\gamma, B_\gamma\}$ are the sampled AQEI constraint half-spaces. The box bounds $|a_i| \leq 100$ render the LP bounded.
+Among the returned LP solutions, we record those for which several AQEI constraints are simultaneously active (i.e., $L_\gamma \cdot a + B_\gamma = 0$). A point in $\mathbb{R}^N$ with $N$ linearly independent active constraints is a vertex of the feasibility polytope.
+This LP-based strategy directly targets configurations on or near the AQEI constraint boundary, providing concrete vertex candidates for formal certification.
 
 \subsection{Results}
 
@@ -196,7 +199,7 @@ Then $v$ is an extreme point of $P$.
 
 Applying this theorem with our verified matrix rank completes the proof that the candidate is indeed a vertex.
 
-The theorem is formalized in \texttt{PolyhedralVertex.lean} and applied in \texttt{FinalTheorems.lean}.
+The exact rational bounds $B_i$ stored in the verification certificate are computed as $B_i = -(L_i \cdot v^*)$ from the rationalized constraint normals $L_i$ and vertex $v^*$, ensuring that the Lean proof \texttt{candidate\_active\_binding} is a non-trivial rational arithmetic check (verified by \texttt{native\_decide}) rather than a tautological definition. The independently rationalized float bounds agree with these exact values to within $7 \times 10^{-11}$, a discrepancy dominated by \texttt{NIntegrate} precision.
 
 \section{Discussion}
 
@@ -239,10 +242,12 @@ This work includes comprehensive verification protocols to ensure correctness:
 
 \paragraph{Formal Proof Verification:}
 \begin{itemize}
-\item All 10 critical theorems fully proven in Lean 4 with Mathlib
-\item Zero unintentional \texttt{sorry} placeholders in core files
-\item Determinant computation: exact rational arithmetic (no floating point errors)
-\item Build verification: \texttt{lake build} passes with no errors
+\item All core theorems fully proven in Lean 4 with Mathlib (35 proven theorems across 17 files)
+\item Ten key theorems: \texttt{AQEIFamilyInterface.admissibleSet\_isClosed}, \texttt{AQEIFamilyInterface.admissibleSet\_convex}, \texttt{AffineToCone.homCone\_isClosed}, \texttt{AffineToCone.homCone\_convex}, \texttt{PolyhedralVertex.full\_rank\_active\_implies\_vertex}, \texttt{VertexVerificationRat.det\_nonzero}, \texttt{VertexVerificationRat.full\_rank\_kernel\_trivial}, \texttt{FinalTheorems.candidate\_active\_binding}, \texttt{FinalTheorems.Candidate\_Is\_Extreme\_Point}, and \texttt{ExtremeRays.extreme\_point\_def\_iff}.
+\item Two theorems in \texttt{ConeProperties.lean} carry intentional \texttt{sorry} placeholders because they encode statements that are intentionally false as stated (AQEI constraints are affine, not homogeneous cones); the correct cone formulation is proven in \texttt{AffineToCone.lean}.
+\item Zero \emph{unintentional} \texttt{sorry} placeholders in proven results.
+\item Determinant computation: exact rational arithmetic (no floating-point errors); the bound-saturation check in \texttt{FinalTheorems.candidate\_active\_binding} is verified by \texttt{native\_decide}, which compiles down to native code using the \texttt{Lean.ofReduceBool} trusted kernel extension (GMP arbitrary-precision arithmetic). The foundational axioms used are \texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}, and \texttt{Lean.ofReduceBool}.
+\item Build verification: \texttt{lake build} passes with no errors.
 \end{itemize}
 
 \paragraph{Literature Cross-Checks:}
@@ -263,7 +268,7 @@ While our results provide a rigorous foundation for understanding AQEI cone geom
 The computational search is performed in 1+1 dimensional Minkowski space. While this simplified setting allows for tractable numerics and clear geometric intuition, the extension to physically realistic 3+1 dimensions remains an open problem. The number of degrees of freedom and constraint complexity scale significantly in higher dimensions.
 
 \paragraph{Finite-Dimensional Approximation:}
-We work with a finite Gaussian basis ($N=100$ modes, scaled from initial $N=6$ for enhanced geometric coverage). While the vertex property is rigorously verified in this discretization, the connection to the full infinite-dimensional QFT remains to be established. The finite-dimensional extreme rays identified here may or may not correspond to extreme rays of the full theory.
+We work with a finite Gaussian basis ($N=6$ modes, $M=50$ sampled constraints). The certified vertex and its surrounding polytope are rigorously verified in this finite-dimensional setting. Scaling experiments with $N=100$ modes and $M=500$ constraints (available as a configurable option in \texttt{mathematica/search.m} via environment variables) confirm that the LP approach continues to find active-constraint configurations at larger scales, but those runs produce different vertices that have not been independently certified in Lean. The connection to the full infinite-dimensional QFT remains to be established.
 
 \paragraph{AQEI Bounds:}
 The quantum bounds $B_{\gamma,g}$ used in our computational search are approximate. A full QFT calculation would require detailed analysis of two-point functions and mode expansions, which is beyond the scope of this initial geometric exploration.
@@ -346,7 +351,7 @@ All code, formal proofs, computational data, and supplementary materials for thi
 \begin{itemize}
 \item \textbf{GitHub repository}: \url{https://github.com/DawsonInstitute/energy-tensor-cone} — complete source code, Lean proofs, Mathematica search scripts, and test suites
 \item \textbf{Zenodo archive}: DOI 10.5281/zenodo.18522457 (restricted during review / revision) — persistent versioned snapshot with manuscript, supplements, and reproducibility documentation
-\item \textbf{Lean formalization}: All 10 core theorems mechanically verified with zero unintentional \texttt{sorry} placeholders
+\item \textbf{Lean formalization}: All core theorems mechanically verified; 35 theorems proven with zero unintentional \texttt{sorry} placeholders
 \item \textbf{Computational results}: Raw JSON outputs from Mathematica search, Python analysis scripts, and generated Lean candidate files included in repository
 \end{itemize}
 

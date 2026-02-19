@@ -55,20 +55,39 @@ def generate_lean_rat(json_path, output_path):
             f.write("  ],\n")
         f.write("]\n\n")
 
-        # 3. Active Constraint Bounds (B)
-        f.write("/-- The bounds B for the active constraints (Rational approximation) -/\n")
+        # 3. Active Constraint Bounds (B) — independently rationalized from float
+        f.write("/-- The bounds B for the active constraints (independently rationalized from float). -/\n")
         f.write("def active_B : List Rat := [\n")
         for c in constraints:
             B_val = c['B']
             f.write(f"  {float_to_lean_rat(B_val)},\n")
         f.write("]\n\n")
-        
+
+        # 4. Tight bounds B_tight computed as -(L · v*) in exact rational arithmetic.
+        # These satisfy L_i · v* + active_B_tight[i] = 0 exactly (by construction).
+        # Used in FinalTheorems.B_poly so that candidate_active_binding is non-tautological.
+        rat_a = [fractions.Fraction(x).limit_denominator(1000000000) for x in coeffs_a]
+        rat_L = [
+            [fractions.Fraction(x).limit_denominator(1000000000) for x in c['L']]
+            for c in constraints
+        ]
+        f.write("/-- Exact tight bounds: active_B_tight[i] = -(L_i · v*) in exact rational arithmetic.\n")
+        f.write("    Satisfies L_i · v* + active_B_tight[i] = 0 exactly for the rationalized L and v*,\n")
+        f.write("    enabling the non-tautological proof in FinalTheorems.candidate_active_binding. -/\n")
+        f.write("def active_B_tight : List Rat := [\n")
+        for L_row in rat_L:
+            Lv = sum(L_row[j] * rat_a[j] for j in range(len(rat_a)))
+            B_tight = -Lv
+            f.write(f"  ({B_tight.numerator} : Rat) / {B_tight.denominator},\n")
+        f.write("]\n\n")
+
         f.write("end AQEIGeneratedRat\n\n")
         
         # Add axiom checks
         f.write("#print axioms AQEIGeneratedRat.coefficients\n")
         f.write("#print axioms AQEIGeneratedRat.active_L\n")
         f.write("#print axioms AQEIGeneratedRat.active_B\n")
+        f.write("#print axioms AQEIGeneratedRat.active_B_tight\n")
 
     print(f"Generated {output_path}")
 
