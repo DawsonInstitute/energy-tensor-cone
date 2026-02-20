@@ -1487,3 +1487,6 @@ All tests pass. The two expected `ConeProperties.lean` sorry warnings appear ear
 The only items remaining are the optional Future Work entries in TODO.md — M7, L2, 3+1D extension, symbolic bounds, and infinite-dimensional theory connection.
 <!-- ------ -->
 ---
+The root cause: lake emits **two-line warnings** for primed-name declarations in Mathlib packages. The old filter caught line 1 (which has the `.lake/packages/` path), but line 2 — `"Declarations whose name ends with a \`'\`…"` — has no path prefix and slipped through. The fix pipes through a second `grep -v 'Declarations whose name ends with'` in build_lean.sh.
+<!-- ------ -->
+---

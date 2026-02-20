@@ -22,6 +22,10 @@ cd "$ROOT_DIR/lean"
 # src/ files are shown.
 tmpout=$(mktemp)
 lake build >"$tmpout" 2>&1; ec=$?
-grep -v '\.lake/packages/' "$tmpout" || true
+# Filter lines from Mathlib's cached packages, and their multi-line linter
+# continuation text (which has no path prefix and would otherwise slip through).
+grep -v '\.lake/packages/' "$tmpout" \
+  | grep -v 'Declarations whose name ends with' \
+  || true
 rm -f "$tmpout"
 [ $ec -eq 0 ] || { echo "lake build failed (exit $ec)" >&2; exit $ec; }
