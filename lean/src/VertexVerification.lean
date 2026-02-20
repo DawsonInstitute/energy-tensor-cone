@@ -46,12 +46,11 @@ def eliminate (pivot : Row) (row : Row) (col_idx : Nat) : Row :=
 -- Very simple Gaussian elimination to check for linear independence
 -- Returns the number of non-zero rows (rank)
 partial def compute_rank (m : Matrix) (tolerance : Float := 1e-9) : Nat :=
-  let n_rows := m.length
   let n_cols := match m.head? with | some r => r.length | none => 0
 
   -- Recursive elimination
   let rec reduce (rows : Matrix) (c : Nat) (rank_acc : Nat) : Nat :=
-    if h : c >= n_cols || rows.isEmpty then rank_acc
+    if c >= n_cols || rows.isEmpty then rank_acc
     else
       -- Find pivot in current column `c`
       let pivot_idx_opt := rows.findIdx? (fun r => match r.get? c with | some v => v.abs > tolerance | none => false)

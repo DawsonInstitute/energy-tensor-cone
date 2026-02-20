@@ -222,7 +222,7 @@ theorem orthant_basis_extreme {n : Nat} (i : Fin n) :
     intro h
     have := congrArg (fun p => p.1 i) h
     -- (basisVec i) i = 1, so contradiction.
-    simpa [basisVec] using this
+    simp [basisVec] at this
   · -- membership
     refine ⟨by simp, ?_⟩
     intro j

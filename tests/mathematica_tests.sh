@@ -13,6 +13,12 @@ export AQEI_DOMAIN="2.0"
 export AQEI_SIGMA="0.7"
 export AQEI_SEED="42"
 
+# Redirect search.m output to a temp directory so it doesn't overwrite the
+# certified vertex.json used by the Python and Lean test suites.
+MATH_TMP=$(mktemp -d)
+trap 'rm -rf "$MATH_TMP"' EXIT
+export AQEI_RESULTS_DIR="$MATH_TMP"
+
 # Prefer wolframscript; fall back to wolfram.
 if command -v wolframscript >/dev/null 2>&1; then
   wolframscript -file "$ROOT_DIR/mathematica/search.m"
@@ -23,16 +29,14 @@ else
   exit 1
 fi
 
-python - <<'PY'
-import json
+python - "$MATH_TMP/vertex.json" <<'PY'
+import json, sys
 from pathlib import Path
 
-results = Path("mathematica/results")
-vertex = results / "vertex.json"
+vertex_path = Path(sys.argv[1])
+assert vertex_path.exists(), f"vertex.json missing at {vertex_path}"
 
-assert vertex.exists(), "vertex.json missing"
-
-data = json.loads(vertex.read_text())
+data = json.loads(vertex_path.read_text())
 assert "numBasis" in data, "vertex.json missing numBasis"
 assert "a" in data, "vertex.json missing a"
 assert len(data["a"]) == data["numBasis"]

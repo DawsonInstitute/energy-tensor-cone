@@ -50,7 +50,7 @@ abbrev Bounds := Worldline V L → SamplingFunction → ℝ
     functional, so the placeholder suffices for Lean proofs.
     For a computable finite-dimensional approximation, see `AQEI_functional_toy`
     below and `mathematica/search.m` (Mathematica) / `python/orchestrator.py` (Python). -/
-def AQEI_functional (γ : Worldline V L) (s : SamplingFunction) : StressEnergy V L → ℝ :=
+def AQEI_functional (_γ : Worldline V L) (_s : SamplingFunction) : StressEnergy V L → ℝ :=
   fun _T => 0
 
 /-- Toy discrete AQEI functional for finite-dimensional approximations.
@@ -77,7 +77,6 @@ noncomputable def AQEI_functional_toy (domain : ℝ) (n : ℕ) (γ : Worldline V
   let dt := (2 * domain) / n
   let sample_points := List.range n |>.map (fun i => -domain + (i : ℝ) * dt)
   sample_points.foldl (fun acc t =>
-    let pos := γ.γ t
     let vel := γ.u t
     let energy := T.T vel vel  -- Energy density: T(u,u)
     let weight := s.g t        -- Sampling weight
@@ -91,7 +90,7 @@ noncomputable def AQEI_functional_toy (domain : ℝ) (n : ℕ) (γ : Worldline V
     
     This toy version computes a discretized approximation over n frequency samples.
     Used for comparison with computational search results. -/
-noncomputable def AQEI_bound_toy (domain : ℝ) (n : ℕ) (s : SamplingFunction) : ℝ :=
+noncomputable def AQEI_bound_toy (domain : ℝ) (n : ℕ) (_s : SamplingFunction) : ℝ :=
   let dω := (2 * domain) / n
   let freqs := List.range n |>.map (fun i => -domain + (i : ℝ) * dω)
   (1 / (2 * Real.pi)) * freqs.foldl (fun acc ω =>
@@ -105,7 +104,7 @@ noncomputable def AQEI_bound_toy (domain : ℝ) (n : ℕ) (s : SamplingFunction)
 
 /-- T satisfies the AQEI family if ∀γ,g: I(T,γ,g) ≥ -B(γ,g). -/
 noncomputable def satisfies_AQEI (T : StressEnergy V L) (bounds : Worldline V L → SamplingFunction → ℝ) : Prop :=
-  ∀ (γ : Worldline V L) (s : SamplingFunction), AQEI_functional (V := V) (L := L) (γ := γ) (s := s) T ≥ -bounds γ s
+  ∀ (γ : Worldline V L) (s : SamplingFunction), AQEI_functional (V := V) (L := L) γ s T ≥ -bounds γ s
 
 /-- Toy version of AQEI satisfaction for discrete models. -/
 noncomputable def satisfies_AQEI_toy (domain : ℝ) (n : ℕ) (T : StressEnergy V L) (bounds : Worldline V L → SamplingFunction → ℝ) : Prop :=

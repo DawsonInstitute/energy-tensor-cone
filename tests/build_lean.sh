@@ -17,4 +17,11 @@ fi
 cd "$ROOT_DIR/lean"
 
 # Fetch dependencies if any (none by default), then build.
-lake build
+# Filter out warnings replayed from Mathlib's own cached packages — those come
+# from Mathlib internals and cannot be fixed here.  Only warnings from our own
+# src/ files are shown.
+tmpout=$(mktemp)
+lake build >"$tmpout" 2>&1; ec=$?
+grep -v '\.lake/packages/' "$tmpout" || true
+rm -f "$tmpout"
+[ $ec -eq 0 ] || { echo "lake build failed (exit $ec)" >&2; exit $ec; }

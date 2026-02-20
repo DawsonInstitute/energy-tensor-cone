@@ -25,7 +25,10 @@ rawSeed = If[StringQ[Environment["AQEI_SEED"]], ToExpression[Environment["AQEI_S
 SeedRandom[rawSeed];
 Print["Seed: ", rawSeed, "  numBasis: ", numBasis, "  numConstraints: ", numConstraints];
 
-resultsDir = FileNameJoin[{DirectoryName[$InputFileName], "results"}];
+resultsDir = With[{env = Environment["AQEI_RESULTS_DIR"]},
+  If[env === $Failed || env === "",
+    FileNameJoin[{DirectoryName[$InputFileName], "results"}],
+    env]];
 If[!DirectoryQ[resultsDir], CreateDirectory[resultsDir]];
 
 (* --- 1. Define Basis --- *)

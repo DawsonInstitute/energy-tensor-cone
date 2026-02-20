@@ -332,6 +332,38 @@ Despite these limitations, the hybrid formal/computational approach demonstrates
 \item Scale computational searches to larger basis sets (thousands of modes)
 \end{itemize}
 
+\subsection{Potential Applications}
+
+Beyond its purely theoretical contribution, the framework developed here
+has several concrete near-term uses.
+
+\paragraph{Constraint filter for quantum-optical simulations.}
+The AQEI admissible set $\mathcal{A}$ provides a machine-checkable design
+constraint for proposals that manipulate squeezed or other non-classical
+electromagnetic states -- for example, metamaterial designs that attempt to
+engineer negative-index behaviour via quantum field effects.  A trial
+stress-energy tensor can be tested for membership in $\mathcal{A}$ by
+evaluating the certified linear inequalities $L_i \cdot a \geq -B_i$ (from
+\texttt{VertexVerificationRat.lean}); failure immediately identifies the
+proposal as non-physical without requiring a full simulation run.
+
+\paragraph{Reference bound for precision measurement.}
+The rational-arithmetic vertex certificate provides a floating-point-free
+bound on the AQEI functional for the discretised 1+1D model.  In precision
+interferometric experiments that use squeezed vacuum to suppress quantum
+noise, the theoretical noise floor is governed by the same energy inequalities
+formalised here.  The exact rational bound serves as a calibration reference
+that is independent of numerical precision choices, complementing
+instrument-level characterisation.
+
+\paragraph{Foundation for physics-constrained optimisation.}
+The convexity proof (Theorem~\ref{thm:admissible_convex}) guarantees that the
+admissible set is a valid feasible region for convex optimisation.  This
+makes the Lean certificate directly usable as a hard constraint in
+optimisation pipelines that search over stress-energy configurations -- for
+instance, in automated discovery of materials or plasma configurations --
+replacing soft penalty terms with a provably correct membership oracle.
+
 \section{Conclusion}
 
 We have established a rigorous formal framework for the convex geometry of AQEI constraints and demonstrated the existence of extreme rays in a concrete finite-dimensional discretization. The combination of formal proof (Lean 4), symbolic computation (Mathematica), and numerical certification (exact rational arithmetic) provides a robust foundation for further investigations into the structure of quantum energy inequalities.

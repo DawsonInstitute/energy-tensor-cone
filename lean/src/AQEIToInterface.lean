@@ -72,7 +72,7 @@ abbrev functionalCLM : ι (V := V) L → E →L[ℝ] ℝ :=
 def FactorsThrough
     (Lmap : ι (V := V) L → E →L[ℝ] ℝ) : Prop :=
   ∀ (γ : Worldline V L) (s : SamplingFunction) (T : StressEnergy V L),
-    AQEI_functional (V := V) (L := L) (γ := γ) (s := s) T = (Lmap (γ, s)) (encode T)
+    AQEI_functional (V := V) (L := L) γ s T = (Lmap (γ, s)) (encode T)
 
 variable (Lmap : ι (V := V) L → E →L[ℝ] ℝ)
 
@@ -98,9 +98,9 @@ theorem satisfies_AQEI_iff_encode_mem
     -- Unfold the admissible set and translate the inequality via the factorization.
     intro i
     rcases i with ⟨γ, s⟩
-    have hineq : AQEI_functional (V := V) (L := L) (γ := γ) (s := s) T ≥ -bounds γ s := h γ s
+    have hineq : AQEI_functional (V := V) (L := L) γ s T ≥ -bounds γ s := h γ s
     -- Convert to the `0 ≤ ... + ...` form.
-    have : 0 ≤ AQEI_functional (V := V) (L := L) (γ := γ) (s := s) T + bounds γ s := by
+    have : 0 ≤ AQEI_functional (V := V) (L := L) γ s T + bounds γ s := by
       linarith
     -- Use factorization.
     simpa [admissibleE, AQEIFamily.Admissible, AffineToCone.AffineAdmissible, bOfBounds, hfac γ s T] using this
@@ -111,7 +111,7 @@ theorem satisfies_AQEI_iff_encode_mem
       have := h (γ, s)
       simpa [admissibleE, AQEIFamily.Admissible, AffineToCone.AffineAdmissible, bOfBounds] using this
     -- Replace `(Lmap ...) (encode T)` with `AQEI_functional` via factorization.
-    have h1 : 0 ≤ AQEI_functional (V := V) (L := L) (γ := γ) (s := s) T + bounds γ s := by
+    have h1 : 0 ≤ AQEI_functional (V := V) (L := L) γ s T + bounds γ s := by
       simpa [hfac γ s T] using h0
     linarith
 
