@@ -13,8 +13,9 @@ lean/build.log
 # Mathematica search output (raw, not the certified vertex.json artifact)
 mathematica/results/search_candidate.json
 
-# Mathematica search output (raw, not the certified vertex.json artifact)
-mathematica/results/search_candidate.json
+# Python package build artifacts
+python/*.egg-info/
+
 *.olean
 *.ilean
 *.c
