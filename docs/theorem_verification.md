@@ -238,7 +238,7 @@ The convexity property is formally proven in `coeff_admissible_convex` using Mat
 | AffineToCone | 8 | 8 | 0 | ✅ Complete |
 | PolyhedralVertex | 1 | 1 | 0 | ✅ Complete |
 | VertexVerificationRat | 4 | 4 | 0 | ✅ Complete |
-| FinalTheorems | 2 | 2 | 0 | ✅ Complete |
+| FinalResults | 2 | 2 | 0 | ✅ Complete |
 | AQEIToInterface | 1 | 1 | 0 | ✅ Complete |
 | FiniteToyModel | 8 | 8 | 0 | ✅ Complete |
 | VertexVerification | 1 | 1 | 0 | ✅ Complete |

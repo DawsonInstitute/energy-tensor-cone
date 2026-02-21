@@ -1696,3 +1696,23 @@ Committed `c2b2db4`. Prompt 4 done.
 **supplements-README.md** — Python bullet listed only 2 of 7 Python files; `sanity_checks.py`, `check_rational_values.py`, plot_vertex_coefficients.py, `plot_bound_comparison.py` were missing.
 <!-- ------ -->
 ---
+The file lean/src/FinalTheorems.lean opens 'namespace FinalResults' and
+closes 'end FinalResults'. The file name and the namespace name differ.
+All documentation was using the wrong namespace-qualified names.
+
+Corrected in three files:
+- papers/aqei-cone-formalization-body.tex: FinalTheorems.candidate_active_binding
+  and FinalTheorems.Candidate_Is_Extreme_Point → FinalResults.* (two places)
+- README.md: FinalTheorems.Candidate_Is_Extreme_Point → FinalResults.*
+- docs/theorem_verification.md: table Component label 'FinalTheorems' → 'FinalResults'
+  (file is FinalTheorems.lean but the Lean namespace is FinalResults)" && git push
+
+Committed `e0d329f`. 
+
+**Prompt 5 fix**: FinalTheorems.lean has `namespace FinalResults` (not `FinalTheorems`). The file name and namespace name differ. Three docs were wrong:
+
+- aqei-cone-formalization-body.tex (2 places): `FinalTheorems.candidate_active_binding` / `FinalTheorems.Candidate_Is_Extreme_Point` → `FinalResults.*`
+- README.md: `FinalTheorems.Candidate_Is_Extreme_Point` → `FinalResults.Candidate_Is_Extreme_Point`
+- theorem_verification.md: table component label `FinalTheorems` → `FinalResults` (only the `FinalResults` namespace actually exists in Lean)
+<!-- ------ -->
+---
