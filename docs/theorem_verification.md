@@ -43,29 +43,28 @@ The file is named "ConeProperties" for historical reasons, but AQEI admissible s
 
 **Theorem: Closure**
 ```lean
-theorem coeff_admissible_isClosed 
-  (ι : Type) (coeff_fam : AQEIFamily ι E) : 
-  IsClosed (Admissible coeff_fam)
+-- Context: namespace AQEIFamily, section CoefficientModel
+-- (L : Family (Coeff n) ι) and (b : Bounds ι) are section variables.
+theorem coeff_admissible_isClosed :
+    IsClosed (Admissible (E := Coeff n) (ι := ι) L b)
 ```
 ✅ **PROVEN** - Uses intersection of closed half-spaces
 
 **Theorem: Convexity**
 ```lean
-theorem coeff_admissible_convex 
-  (ι : Type) (coeff_fam : AQEIFamily ι E) : 
-  Convex ℝ (Admissible coeff_fam)
+theorem coeff_admissible_convex :
+    Convex ℝ (Admissible (E := Coeff n) (ι := ι) L b)
 ```
 ✅ **PROVEN** - Uses pointwise convexity of affine functionals
 
-**Theorem: Convex Addition**
+**Theorem: Cone Convexity**
 ```lean
-theorem coeff_admissible_add 
-  (s t : E) (hs : s ∈ Admissible coeff_fam) 
-  (ht : t ∈ Admissible coeff_fam) 
-  (α β : ℝ) (hα : 0 ≤ α) (hβ : 0 ≤ β) (hab : α + β = 1) :
-  α • s + β • t ∈ Admissible coeff_fam
+theorem coeff_cone_convex :
+    Convex ℝ (AdmissibleCone (E := Coeff n) (ι := ι) L b)
 ```
-✅ **PROVEN** - Follows from convexity
+✅ **PROVEN** - Follows from `homCone_convex` via `AffineToCone`
+
+*(Note: `coeff_admissible_add` does not exist in the codebase — it was a fabricated name. The convexity of the admissible set is `coeff_admissible_convex`; the separate addition-closure property is a consequence, not a separately named theorem.)*
 
 ---
 
@@ -73,29 +72,28 @@ theorem coeff_admissible_add
 
 **Theorem: Homogenized Cone is Closed**
 ```lean
-theorem cone_of_affine_is_closed 
-  (ι : Type) (family : AQEIFamily ι E) : 
-  IsClosed (cone_of_affine family)
+-- Context: namespace AffineToCone, section General
+theorem homCone_isClosed (L : ι → E →L[ℝ] ℝ) (b : ι → ℝ) :
+    IsClosed (HomCone (E := E) L b)
 ```
-✅ **PROVEN** - Embeds affine set into R × E
+✅ **PROVEN** - Embeds affine constraints into `E × ℝ` and takes closed intersection
 
 **Theorem: Homogenized Cone is Convex**
 ```lean
-theorem cone_of_affine_convex 
-  (ι : Type) (family : AQEIFamily ι E) : 
-  Convex ℝ (cone_of_affine family)
+theorem homCone_convex (L : ι → E →L[ℝ] ℝ) (b : ι → ℝ) :
+    Convex ℝ (HomCone (E := E) L b)
 ```
 ✅ **PROVEN** - Uses convexity of affine set
 
 **Theorem: Cone Scaling**
 ```lean
-theorem cone_of_affine_smul_nonneg 
-  (ι : Type) (family : AQEIFamily ι E) 
-  (x : ℝ × E) (hx : x ∈ cone_of_affine family) 
-  (λ : ℝ) (hλ : 0 ≤ λ) : 
-  λ • x ∈ cone_of_affine family
+theorem homCone_smul_nonneg (L : ι → E →L[ℝ] ℝ) (b : ι → ℝ) :
+    ∀ (p : E × ℝ) (α : ℝ), p ∈ HomCone (E := E) L b → 0 ≤ α →
+      (α • p) ∈ HomCone (E := E) L b
 ```
 ✅ **PROVEN** - Genuine cone property after homogenization
+
+*(Note: `cone_of_affine_is_closed`, `cone_of_affine_convex`, `cone_of_affine_smul_nonneg` do not exist in the codebase — they were fabricated names from the original draft. The real theorem names are `homCone_isClosed`, `homCone_convex`, `homCone_smul_nonneg` in the `AffineToCone` namespace, and they operate on `HomCone` not `cone_of_affine`.)*
 
 ---
 
@@ -103,12 +101,14 @@ theorem cone_of_affine_smul_nonneg
 
 **Theorem: Full Rank Implies Vertex**
 ```lean
-theorem full_rank_active_implies_vertex 
-  (v : E) 
-  (h_feasible : v ∈ Polyhedron L B)
-  (h_active : ∀ i : ι, L i v = -B i)
-  (h_full_rank : ∀ w : E, (∀ i : ι, L i w = 0) → w = 0) :
-  ConvexGeometry.IsExtremePoint (Polyhedron L B) v
+-- Context: namespace PolyhedralGeometry
+theorem full_rank_active_implies_vertex
+    (L : ι → E →ₗ[k] k) (B : ι → k) (x : E)
+    (active : Set ι)
+    (h_feasible : x ∈ Polyhedron L B)
+    (h_active_binding : ∀ i ∈ active, L i x = -B i)
+    (h_full_rank : ∀ v : E, (∀ i ∈ active, L i v = 0) → v = 0) :
+    ConvexGeometry.IsExtremePoint (k := k) (Polyhedron L B) x
 ```
 ✅ **PROVEN** - Generic polyhedral vertex characterization
 
@@ -131,10 +131,14 @@ theorem full_rank_kernel_trivial :
 
 **Theorem: Row Consistency (L6)**
 ```lean
+-- Note: rows_match_active_L is defined at top level (outside Phase2Rat namespace)
 theorem rows_match_active_L :
-  ∀ i : Fin 3, ∀ j : Fin 6,
-    AQEIGeneratedRat.verification_matrix i j =
-    (AQEIGeneratedRat.active_L.getD i.val []).getD j.val 0
+    (∀ j : Fin 6, Phase2Rat.row0 j =
+        ((AQEIGeneratedRat.active_L.getD 0 []).getD j.val 0)) ∧
+    (∀ j : Fin 6, Phase2Rat.row1 j =
+        ((AQEIGeneratedRat.active_L.getD 1 []).getD j.val 0)) ∧
+    (∀ j : Fin 6, Phase2Rat.row2 j =
+        ((AQEIGeneratedRat.active_L.getD 2 []).getD j.val 0))
 ```
 ✅ **PROVEN** - Checks all 18 rational values via `fin_cases j <;> native_decide`
 

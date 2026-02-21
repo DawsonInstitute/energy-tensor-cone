@@ -1649,3 +1649,50 @@ Committed `3b549de`. Prompt 3 done.
 **aqei-cone-formalization-body.tex Key Files section** — "Data processing" bullet named only `orchestrator.py` and analyze_results.py. Both `sanity_checks.py` (C20) and `check_rational_values.py` (C-batch) are part of the pipeline and are explicitly called in run_tests.sh, but weren't listed.
 <!-- ------ -->
 ---
+AQEIFamilyInterface section:
+- Remove coeff_admissible_add (never existed)
+- Replace wrong signatures (AQEIFamily ι E, coeff_fam) with actual:
+    coeff_admissible_isClosed: IsClosed (Admissible (E := Coeff n) (ι := ι) L b)
+    coeff_admissible_convex: Convex ℝ (Admissible ...)
+    coeff_cone_convex: Convex ℝ (AdmissibleCone ...)
+
+AffineToCone section:
+- cone_of_affine_is_closed → homCone_isClosed (L : ι → E →L[ℝ] ℝ) (b : ι → ℝ)
+- cone_of_affine_convex    → homCone_convex
+- cone_of_affine_smul_nonneg → homCone_smul_nonneg
+- None of the three 'cone_of_affine_*' names ever existed in the codebase
+
+PolyhedralVertex section:
+- Add missing (active : Set ι) parameter
+- h_active → h_active_binding; ∀ i : ι → ∀ i ∈ active
+- Add (k := k) type annotation to match actual signature
+
+VertexVerificationRat rows_match_active_L section:
+- Old: ∀ i : Fin 3, ∀ j : Fin 6, AQEIGeneratedRat.verification_matrix i j = ...
+  (AQEIGeneratedRat.verification_matrix doesn't exist; verification_matrix is
+  Phase2Rat.verification_matrix, not indexed as a function of row)
+- New: correct conjunction of 3 statements about Phase2Rat.row0/1/2
+
+supplements-README.md:
+- Python bullet: add sanity_checks.py, check_rational_values.py,
+  plot_vertex_coefficients.py, plot_bound_comparison.py" && git push
+
+Committed `c2b2db4`. Prompt 4 done.
+
+**What was actually wrong this round:**
+
+**theorem_verification.md Section 2 — the entire code-snippet block was fabricated** (the worst lies in the repo, surviving since the original February 6 document):
+
+1. **`coeff_admissible_add`** — never existed anywhere in the codebase. Removed and replaced with `coeff_cone_convex` which does exist.
+
+2. **All AQEIFamilyInterface signatures** used `(ι : Type) (coeff_fam : AQEIFamily ι E)` — `AQEIFamily` is a *namespace*, not a type. `coeff_fam` was a hallucinated parameter name. Actual theorems in the `CoefficientModel` section take no explicit parameters (section variables).
+
+3. **Three AffineToCone theorem names were completely fabricated**: `cone_of_affine_is_closed`, `cone_of_affine_convex`, `cone_of_affine_smul_nonneg`. These don't exist anywhere. Real names: `homCone_isClosed`, `homCone_convex`, `homCone_smul_nonneg`, all operating on `HomCone` not `cone_of_affine`.
+
+4. **`full_rank_active_implies_vertex`** — was missing the `(active : Set ι)` parameter entirely, and `h_active` / `∀ i : ι` were wrong (real: `h_active_binding` / `∀ i ∈ active`).
+
+5. **`rows_match_active_L`** — showed `∀ i : Fin 3, ∀ j : Fin 6, AQEIGeneratedRat.verification_matrix i j = ...` but `AQEIGeneratedRat.verification_matrix` doesn't exist as that type. The actual theorem is a conjunction of 3 statements about `Phase2Rat.row0`, `Phase2Rat.row1`, `Phase2Rat.row2`.
+
+**supplements-README.md** — Python bullet listed only 2 of 7 Python files; `sanity_checks.py`, `check_rational_values.py`, plot_vertex_coefficients.py, `plot_bound_comparison.py` were missing.
+<!-- ------ -->
+---

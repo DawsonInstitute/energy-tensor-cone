@@ -4,7 +4,7 @@ Computational + formalization scaffold for exploring **Averaged Quantum Energy I
 
 This repository contains:
 - **Mathematica** (`mathematica/search.m`) - Randomized finite-Gaussian-basis search in 1+1 Minkowski, exports results to JSON
-- **Python** (`python/orchestrator.py`, `python/analyze_results.py`) - Runs search, parses JSON, generates Lean code
+- **Python** (`python/orchestrator.py`, `python/analyze_results.py`, `python/sanity_checks.py`, `python/check_rational_values.py`, `python/plot_vertex_coefficients.py`, `python/plot_bound_comparison.py`) - Runs search, parses JSON, generates Lean code, runs pre-flight checks, and produces figures
 - **Lean 4** (`lean/src/*.lean`) - Definitional skeleton (Lorentzian bilinear form, stress-energy, AQEI family, admissible set / "cone", extreme rays)
 
 ## Key Files
