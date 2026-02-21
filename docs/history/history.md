@@ -1539,3 +1539,14 @@ All tests passed successfully, and the changes have been committed and pushed to
 | D11 | `vertex.json`: regenerate from AQEI_Generated_Data.lean — `activeIndices` now `[23,27,50]`, saturation residuals ≤ 6.7e-15 |
 <!-- ------ -->
 ---
+All done. Here's what happened and what was fixed:
+
+---
+
+**Root cause of the `Export::jsonstrictencoding` crash**: The variable name `objectiveC_base` contains an underscore. In Mathematica, `name_suffix` is **always parsed as a Pattern expression** — `Pattern[objectiveC, Blank[base]]` — never as a plain symbol named `objectiveC_base`. So `N[objectiveC_base]` evaluated to the unevaluated `N[Pattern[...]]`, which JSON export rightfully refused.
+
+**Fix**: Renamed `objectiveC_base` → `objectiveCBase` (camelCase) in two places in search.m.
+
+**Committed as** `e16ed26` (E1–E19 main batch) + `c14ebdc` (gitignore cleanup). Pushed to remote.
+<!-- ------ -->
+---
