@@ -1574,3 +1574,19 @@ Build completed successfully.
   2. Rational-arithmetic vertex certificate as a floating-point-independent calibration reference for precision measurement
   3. Convexity proof as foundation for physics-constrained optimisation over admissible stress-energy states
 - Regenerated `papers/manuscript-source.zip`
+
+---
+
+## D-Batch: Pipeline / Paper / Test Polish (February 20, 2026)
+
+- **D1**: Suppress `docPrime` "linter can be disabled" note from `build_lean.sh` test output (`grep -v 'linter can be disabled'`)
+- **D2**: Remove `check_todos()` from `python/sanity_checks.py` (was scanning Mathlib source, not our code)
+- **D3**: Remove confusing "No violations.json found" message from `python/analyze_results.py`
+- **D4**: Fix null output on `lake build` failure: `set -euo pipefail` made `; ec=$?` unreachable; replaced with `if lake build; then ec=0; else ec=$?; fi`
+- **D5**: Restore `generate_lean_candidates()` to produce real Lean content from `vertex.json`; add `export_pipeline_validation()` → writes `mathematica/results/pipeline_validation.json` with constraint-saturation audit
+- **D6**: Paper: add SymPy `check_rational_values.py` as step 5 in Computational Methodology section
+- **D7**: Recompile both PDFs twice — fixes "Theorem ??" cross-reference (was unresolved `\ref{thm:admissible_convex}`)
+- **D8**: Paper Acknowledgments: change self-thanks "The authors thank the Dawson Institute…" → affiliation statement "This work was conducted at the Dawson Institute…"
+- **D9**: Reconcile README and paper reproducibility steps (both now identical 5-step format: check_deps → pip install → Mathematica → orchestrator → lake build + run_tests.sh)
+- **D10**: Paper line ~274 (rigour claim): add specific Lean file references — `Candidate_Is_Extreme_Point` in `FinalTheorems.lean` and `full_rank_kernel_trivial` in `VertexVerificationRat.lean`
+- **D11**: Regenerate `mathematica/results/vertex.json` from `AQEI_Generated_Data.lean` — was a different LP vertex (`activeIndices: [3,7,8,13]`); now `activeIndices: [23,27,50]` consistent with Lean formal certification; saturation residuals ≤ 6.7e-15

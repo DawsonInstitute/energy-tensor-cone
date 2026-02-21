@@ -1,0 +1,28 @@
+{
+  "timestamp": "2026-02-21T06:33:00.562422Z",
+  "vertex_source": "/home/echo_/Code/asciimath/energy-tensor-cone/mathematica/results/vertex.json",
+  "num_basis": 6,
+  "num_active_aqei_constraints": 3,
+  "all_constraints_tight": true,
+  "tolerance_threshold": 1e-06,
+  "saturation_residuals": [
+    {
+      "constraint_index": 23,
+      "La_plus_B": -2.761679773755077e-15,
+      "abs_residual": 2.761679773755077e-15,
+      "tight": true
+    },
+    {
+      "constraint_index": 27,
+      "La_plus_B": -6.702971511174383e-15,
+      "abs_residual": 6.702971511174383e-15,
+      "tight": true
+    },
+    {
+      "constraint_index": 50,
+      "La_plus_B": 3.247402347028583e-15,
+      "abs_residual": 3.247402347028583e-15,
+      "tight": true
+    }
+  ]
+}

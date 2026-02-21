@@ -20,7 +20,7 @@ def check_empty_files(root_dir, extensions=['.lean', '.py', '.tex']):
     print("\n--- Checking for Empty Files ---")
     empty = []
     for root, dirs, filenames in os.walk(root_dir):
-        if 'lake-packages' in root or '__pycache__' in root or '.git' in root:
+        if 'lake-packages' in root or '.lake' in root or '__pycache__' in root or '.git' in root:
             continue
         for f in filenames:
             if any(f.endswith(ext) for ext in extensions):
@@ -32,30 +32,6 @@ def check_empty_files(root_dir, extensions=['.lean', '.py', '.tex']):
     if empty:
         return False
     print("[OK] No empty source files found.")
-    return True
-
-def check_todos(root_dir, extensions=['.lean', '.py']):
-    print("\n--- Checking for TODOs ---")
-    found_todos = False
-    for root, dirs, filenames in os.walk(root_dir):
-        if 'lake-packages' in root or '__pycache__' in root or '.git' in root:
-            continue
-        for f in filenames:
-            if any(f.endswith(ext) for ext in extensions):
-                path = os.path.join(root, f)
-                try:
-                    with open(path, 'r', encoding='utf-8') as file:
-                        for i, line in enumerate(file):
-                            if "TODO" in line:
-                                print(f"[WARN] TODO found in {f}:{i+1}: {line.strip()}")
-                                found_todos = True
-                except Exception as e:
-                    print(f"[WARN] Could not read {path}: {e}")
-    
-    if not found_todos:
-        print("[OK] No TODOs found.")
-    else:
-        print("[INFO] TODOs exist. This is a warning, not a failure.")
     return True
 
 def main():
@@ -76,7 +52,6 @@ def main():
     
     files_ok = check_files_exist(root_dir, critical_files)
     empty_ok = check_empty_files(root_dir)
-    todos_checked = check_todos(root_dir)
     
     if not files_ok or not empty_ok:
         print("\n[FAILURE] Sanity Checks Failed!")

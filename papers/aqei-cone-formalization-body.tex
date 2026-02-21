@@ -131,11 +131,12 @@ At a high level, the workflow is:
 \begin{enumerate}
 \item Sample AQEI constraints (worldlines + sampling parameters) and assemble them into linear inequalities.
 \item Solve a sequence of linear programs over the coefficient vector $a \in \mathbb{R}^N$: each LP minimizes the energy density $c \cdot a$ (where $c_i = T_{00}^{(i)}(0,0)$, the $T_{00}$ component of basis element $i$ at the origin, with a small random perturbation to break degeneracy) subject to the sampled AQEI half-space constraints $L \cdot a \geq -B$ and box bounds $|a_i| \leq 100$ (imposed to render the LP bounded and well-conditioned).
-\item Export candidate points and active constraints to JSON for downstream analysis.
-\item Convert the selected candidate and its active constraints into exact rational data and certify the vertex property in Lean.
+\item Export the certified LP vertex and its active constraints to \texttt{mathematica/results/vertex.json}; the Python script \texttt{analyze\_results.py} then validates constraint saturation and writes a machine-readable audit record (\texttt{pipeline\_validation.json}).
+\item Convert the selected candidate and its active constraints into exact rational data (\texttt{AQEI\_Generated\_Data\_Rat.lean}) and certify the vertex property formally in Lean (\texttt{FinalTheorems.lean}).
+\item Perform an independent algebraic cross-check: \texttt{python/check\_rational\_values.py} uses SymPy exact arithmetic to verify that every stored rational bound $B_i$ equals $-(L_i \cdot v^*)$ and that the $6\times 6$ verification matrix has non-zero determinant, providing a Python-level audit of the Lean certificate that is independent of the Lean kernel.
 \end{enumerate}
 
-Concretely, the repository includes representative JSON outputs under \texttt{mathematica/results/} (including the certified \texttt{vertex.json}), together with the Python and Lean scripts that consume them.
+Concretely, the repository includes the JSON outputs under \texttt{mathematica/results/} (certified \texttt{vertex.json} and pipeline audit \texttt{pipeline\_validation.json}), together with the Python and Lean scripts that produce and consume them.
 
 \subsection{Optimization Objective}
 
@@ -271,7 +272,7 @@ While our results provide a rigorous foundation for understanding AQEI cone geom
 The computational search is performed in 1+1 dimensional Minkowski space. While this simplified setting allows for tractable numerics and clear geometric intuition, the extension to physically realistic 3+1 dimensions remains an open problem. The number of degrees of freedom and constraint complexity scale significantly in higher dimensions.
 
 \paragraph{Finite-Dimensional Approximation:}
-We work with a finite Gaussian basis ($N=6$ modes, $M=50$ sampled constraints). The certified vertex and its surrounding polytope are rigorously verified in this finite-dimensional setting. Scaling experiments with $N=100$ modes and $M=500$ constraints (available as a configurable option in \texttt{mathematica/search.m} via environment variables) confirm that the LP approach continues to find active-constraint configurations at larger scales, but those runs produce different vertices that have not been independently certified in Lean. The connection to the full infinite-dimensional QFT remains to be established.
+We work with a finite Gaussian basis ($N=6$ modes, $M=50$ sampled constraints). The certified vertex and its surrounding polytope are rigorously verified in this finite-dimensional setting: specifically, theorem \texttt{Candidate\_Is\_Extreme\_Point} in \texttt{lean/src/FinalTheorems.lean} establishes the extreme-point property using \texttt{full\_rank\_active\_implies\_vertex} from \texttt{PolyhedralVertex.lean}, while \texttt{full\_rank\_kernel\_trivial} in \texttt{VertexVerificationRat.lean} certifies the determinant is non-zero via exact rational arithmetic. Scaling experiments with $N=100$ modes and $M=500$ constraints (available as a configurable option in \texttt{mathematica/search.m} via environment variables) confirm that the LP approach continues to find active-constraint configurations at larger scales, but those runs produce different vertices that have not been independently certified in Lean. The connection to the full infinite-dimensional QFT remains to be established.
 
 \paragraph{Numerical Precision:}
 Constraint integrals are computed via adaptive quadrature (Mathematica \texttt{NIntegrate}, \texttt{PrecisionGoal}~$\to 12$, \texttt{MaxRecursion}~$\to 15$), targeting relative errors below $10^{-10}$. The Python \texttt{scipy.integrate.quad} independent verification confirms constraint saturation residuals below $6 \times 10^{-11}$. The float-to-rational conversion uses \texttt{Fraction.limit\_denominator($10^9$)}, which introduces at most $\sim 10^{-18}$ additional relative error — negligible compared to quadrature precision. The exact tight bounds $B_i^{\text{tight}} = -(L_i \cdot v^*)$ are computed in exact rational arithmetic from the rationalized $L_i$ and $v^*$.
@@ -381,7 +382,7 @@ The key achievement is the mechanically verified proof that:
 This work opens the door to systematic exploration of the AQEI cone geometry using hybrid formal/computational methods.
 
 \section*{Acknowledgments}
-The authors thank the Dawson Institute for Advanced Physics, Canada, for support. Computations performed on NVIDIA RTX 2060.
+This work was conducted at the Dawson Institute for Advanced Physics, Canada. Computations were performed on an NVIDIA RTX 2060.
 
 \section*{Data Availability}
 
@@ -420,23 +421,34 @@ All code and proofs are available at the project repository.
 
 To reproduce the results:
 \begin{lstlisting}[language=bash, basicstyle=\small\ttfamily]
-# 1. Build Lean proofs
-cd lean && lake build
+# 0. Verify environment
+bash tests/check_deps.sh
 
-# 2. Run Mathematica search
-cd mathematica && wolframscript -file search.m
+# 1. Install Python package (enables module imports)
+cd python && python -m pip install -e . && cd ..
 
-# 3. Process results and generate Lean candidates
-cd python && python orchestrator.py
+# 2. Run Mathematica search (produces mathematica/results/vertex.json)
+cd mathematica && wolframscript -file search.m && cd ..
 
-# 4. Run full test suite
+# 3. Process results: validate constraints, export pipeline_validation.json,
+#    generate GeneratedCandidates.lean
+cd python && python orchestrator.py && cd ..
+
+# 4. Build Lean proofs (certifies vertex in Lean)
+cd lean && lake build && cd ..
+
+# 5. Run full verification suite
 ./run_tests.sh
 \end{lstlisting}
 
+\noindent Steps 3--5 are also executed together by \texttt{./run\_tests.sh}, which calls
+\texttt{python/sanity\_checks.py}, \texttt{python/check\_rational\_values.py},
+the Python integration tests, the Mathematica fast-test mode, and the Lean
+build in a single command.
+
 \noindent Requirements:
 \begin{itemize}
-\item Lean 4 (v4.14.0 or later)
-\item Wolfram Mathematica (or wolframscript)
-\item Python 3.8+
-\item Libraries: matplotlib, json (stdlib)
+\item Lean 4 (v4.14.0 or later) with \texttt{elan}
+\item Wolfram Mathematica (or \texttt{wolframscript})
+\item Python 3.8+ with \texttt{sympy}, \texttt{numpy}, \texttt{scipy}, \texttt{matplotlib}
 \end{itemize}

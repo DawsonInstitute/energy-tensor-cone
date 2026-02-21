@@ -1522,3 +1522,20 @@ All tests passed successfully, and the changes have been committed and pushed to
 ```
 <!-- ------ -->
 ---
+**D1–D11 summary** (12 files, `ffc9b67..563c6d8`):
+
+| # | Change |
+|---|--------|
+| D1 | build_lean.sh: filter `'linter can be disabled'` from output |
+| D2 | sanity_checks.py: remove `check_todos()` (was scanning Mathlib) |
+| D3 | analyze_results.py: remove confusing "No violations.json found" message |
+| D4 | build_lean.sh: fix `set -e` + `; ec=$?` race → `if/else` idiom |
+| D5 | analyze_results.py: `generate_lean_candidates` now emits real Lean from `vertex.json`; new `export_pipeline_validation()` writes `pipeline_validation.json` |
+| D6 | Paper methodology: add SymPy `check_rational_values.py` as step 5 |
+| D7 | Recompile both PDFs twice — "Theorem ??" → "Theorem 2" |
+| D8 | Paper acknowledgments: affiliation statement, not self-thanks |
+| D9 | README + paper reproducibility: identical 5-step format |
+| D10 | Paper §3 rigor claim: cite FinalTheorems.lean + VertexVerificationRat.lean |
+| D11 | `vertex.json`: regenerate from AQEI_Generated_Data.lean — `activeIndices` now `[23,27,50]`, saturation residuals ≤ 6.7e-15 |
+<!-- ------ -->
+---

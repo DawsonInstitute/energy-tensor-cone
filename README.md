@@ -136,20 +136,29 @@ This runs:
 To reproduce the full computational + formal verification pipeline:
 
 ```bash
-# From repository root
-cd python
-python -m pip install -e .  # Install as module (fixes ModuleNotFoundError)
-python orchestrator.py      # Full search + analysis pipeline
-cd ..
-./run_tests.sh              # Verify all components
+# 0. Verify environment
+bash tests/check_deps.sh
+
+# 1. Install Python package (enables module imports)
+cd python && python -m pip install -e . && cd ..
+
+# 2. Run Mathematica search (produces mathematica/results/vertex.json)
+cd mathematica && wolframscript -file search.m && cd ..
+
+# 3. Process results: validate constraints, export pipeline_validation.json,
+#    generate GeneratedCandidates.lean
+cd python && python orchestrator.py && cd ..
+
+# 4. Build Lean proofs (certifies vertex in Lean)
+cd lean && lake build && cd ..
+
+# 5. Run full verification suite
+./run_tests.sh
 ```
 
-Alternatively, run individual steps:
-
-1. **Build Lean proofs**: `cd lean && lake build `
-2. **Run Mathematica search**: `cd mathematica && wolframscript -file search.m`
-3. **Process results**: `cd python && python orchestrator.py`
-4. **Run full test suite**: `./run_tests.sh`
+Steps 3–5 are also executed together by `./run_tests.sh`, which calls
+`python/sanity_checks.py`, `python/check_rational_values.py`, the Python
+integration tests, the Mathematica fast-test mode, and the Lean build.
 
 See the Reproducibility appendix in the manuscript for complete details.
 
