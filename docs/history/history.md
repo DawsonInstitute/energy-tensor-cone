@@ -1550,3 +1550,24 @@ All done. Here's what happened and what was fixed:
 **Committed as** `e16ed26` (E1–E19 main batch) + `c14ebdc` (gitignore cleanup). Pushed to remote.
 <!-- ------ -->
 ---
+- orchestrator.py: analyze_results() now imports and calls
+  export_pipeline_validation() so 'python orchestrator.py' actually
+  produces pipeline_validation.json as README/paper claim
+- README.md Notes on Terminology: replace nonexistent numTrials/AQEI_NUM_TRIALS
+  with correct numConstraints=50/AQEI_NUM_CONSTRAINTS
+- supplements-README.md: de-anonymize title ('Anonymized Supplements' -> 'Supplements');
+  update replication steps to current 5-step format with check_deps/pip/build_lean.sh;
+  update theorem count 10 -> 35; replace numTrials/AQEI_NUM_TRIALS with
+  numConstraints/AQEI_NUM_CONSTRAINTS" && git push 2>&1 | tail -5
+
+Completed: *Run tests + commit* (4/4)
+
+Three real lies fixed, committed `08b5701`, pushed:
+
+1. **orchestrator.py** — `analyze_results()` never called `export_pipeline_validation()`. The README and paper both say "Step 3: `python orchestrator.py` … export pipeline_validation.json" — that was a lie because the orchestrator only called `generate_lean_candidates`. Fixed.
+
+2. **README.md Notes on Terminology** — claimed `numTrials=20000` and `AQEI_NUM_TRIALS` as the way to override test speed. Neither variable exists in search.m. The actual variables are `numConstraints`/`AQEI_NUM_CONSTRAINTS`. Fixed.
+
+3. **supplements-README.md** — still titled "Anonymized Supplements" (CQG artifact), had old 4-step replication format (no `check_deps`, no `pip install`, no `bash tests/build_lean.sh`), said "10 critical theorems" instead of 35, and repeated the same `numTrials`/`AQEI_NUM_TRIALS` lie. Fixed all four.
+<!-- ------ -->
+---

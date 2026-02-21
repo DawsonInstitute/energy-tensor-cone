@@ -38,7 +38,7 @@ def run_mathematica(env: dict[str, str] | None = None) -> None:
 
 
 def analyze_results() -> None:
-    from python.analyze_results import generate_lean_candidates
+    from python.analyze_results import generate_lean_candidates, export_pipeline_validation
 
     summary = RESULT_DIR / "summary.json"
     if summary.exists():
@@ -52,6 +52,7 @@ def analyze_results() -> None:
         out_file=LEAN_DIR / "src" / "GeneratedCandidates.lean",
         top_k=5,
     )
+    export_pipeline_validation(results_dir=RESULT_DIR)
 
 
 def run_lean_build() -> None:

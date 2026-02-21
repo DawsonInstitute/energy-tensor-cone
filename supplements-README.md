@@ -1,4 +1,4 @@
-# Anonymized Supplements for "Convex Cone of Energy Tensors under AQEI"
+# Supplements for "Convex Cone of Energy Tensors under AQEI"
 
 Computational + formalization scaffold for exploring **Averaged Quantum Energy Inequality (AQEI)** constraints as an (approximate) intersection of half-spaces, and for feeding randomized search "near-misses" into a Lean 4 skeleton.
 
@@ -33,18 +33,35 @@ This runs:
 
 To reproduce the full computational + formal verification pipeline:
 
-1. **Build Lean proofs**: `cd lean && lake build`
-2. **Run Mathematica search**: `cd mathematica && wolframscript -file search.m`
-3. **Process results**: `cd python && python orchestrator.py`
-4. **Run full test suite**: `./run_tests.sh`
+```bash
+# 0. Verify environment
+bash tests/check_deps.sh
+
+# 1. Install Python dependencies (numpy, scipy, matplotlib, sympy)
+cd python && python -m pip install -e . && cd ..
+
+# 2. Run Mathematica search (produces mathematica/results/vertex.json)
+cd mathematica && wolframscript -file search.m && cd ..
+
+# 3. Process results: validate constraints, export pipeline_validation.json,
+#    generate GeneratedCandidates.lean
+cd python && python orchestrator.py && cd ..
+
+# 4. Build Lean proofs (certifies vertex in Lean)
+#    Filtered output written to lean/build.log for manual review.
+bash tests/build_lean.sh
+
+# 5. Run full verification suite
+./run_tests.sh
+```
 
 ## Formal Verification
 
-- **Core theorems proven**: All 10 critical theorems (closure, convexity, homogenization, vertex characterization) are fully proven in Lean with no placeholders.
+- **Core theorems proven**: 35 theorems proven across the Lean codebase, including closure/convexity results (AQEIFamilyInterface.lean), homogenization theorems (AffineToCone.lean), vertex characterization (PolyhedralVertex.lean, VertexVerificationRat.lean), and the main certificate theorem (FinalTheorems.Candidate_Is_Extreme_Point). No unintentional `sorry` placeholders in proven results.
 - **Intentional `sorry` statements**: Two theorems in `ConeProperties.lean` have `sorry` placeholders because they are intentionally false as stated (AQEI constraints are affine, not homogeneous). These document why bare AQEI regions are not true cones; the correct cone formulation is proven in `AffineToCone.lean`.
 - **Test validation**: See `docs/theorem_verification.md` for complete proof inventory.
 
 ## Notes on Terminology
 
-- The Mathematica search defaults to `numTrials=20000`, but tests override with `AQEI_NUM_TRIALS` to keep runs fast.
+- The Mathematica search defaults to `numConstraints=50` (constraint sample count); tests override with `AQEI_NUM_CONSTRAINTS` via environment variable to keep runs fast.
 - With a nonzero bound term $B_{\gamma,g}$, the admissible region is typically **convex** but not literally a cone under positive scaling unless extra homogeneity assumptions are imposed. The homogenized cone construction (proven in `AffineToCone.lean`) resolves this by embedding the affine constraints in a higher-dimensional space.

@@ -182,7 +182,7 @@ theorem cone_convex (L : Family E ι) (b : Bounds ι) :
 
 ### Notes on Terminology
 
-- The Mathematica search defaults to `numTrials=20000`, but tests override with `AQEI_NUM_TRIALS` to keep runs fast.
+- The Mathematica search defaults to `numConstraints=50` (constraint sample count), but tests override with `AQEI_NUM_CONSTRAINTS` via environment variable to keep runs fast.
 - With a nonzero bound term $B_{\gamma,g}$, the admissible region is typically **convex** but not literally a cone under positive scaling unless extra homogeneity assumptions are imposed. The homogenized cone construction (proven in `AffineToCone.lean`) resolves this by embedding the affine constraints in a higher-dimensional space.
 
 ## License
