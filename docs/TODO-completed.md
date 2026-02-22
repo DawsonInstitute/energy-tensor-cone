@@ -4,6 +4,17 @@ This document tracks tasks that have been completed for the energy-tensor-cone p
 
 ---
 
+## ✅ PRD Submission Stage — F-Batch (COMPLETED - February 21, 2026)
+
+- **F1**: Updated `README.md` badge and status block: DOI 18522457 → 18522456; added "Submitted to Physical Review D: February 21, 2026" and separate dataset DOI 18727839; removed old "target" wording.
+- **F2**: Updated `.github/profile/README.md`: energy-tensor-cone section DOI → 18522456, target CMP → "Submitted: Physical Review D (February 2026)"; added dataset DOI; updated Recent Highlights theorem count (10 → 35) and added PRD submission bullet.
+- **F3**: Removed `~/Code/asciimath/DawsonInstitute-dot-github` duplicate clone; removed its folder entry from `energy/energy.code-workspace`.
+- **F4**: Updated `www/index.html`: energy-tensor-cone entry DOI → 18522456, description updated to 35 theorems, added PRD submission status and dataset DOI link.
+- **F5**: Updated `aqei-bridge/README.md`: "still-in-review CQG manuscript" → "submitted to PRD companion manuscript"; updated file path from `aqei-cone-formalization-cqg.tex` → `aqei-cone-formalization-prd.tex`.
+- **F6**: Updated `energy/README.md`: added `energy-tensor-cone` entry under DawsonInstitute repos with PRD submission status, DOI, and dataset DOI.
+
+---
+
 ## ✅ Lean Compilation Error Fixes (COMPLETED - February 16, 2026)
 
 **Project Goal**: Fix all Lean compilation errors reported in TODO.md lines 12-182, ensuring all 17 .lean files build correctly.

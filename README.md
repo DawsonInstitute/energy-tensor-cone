@@ -1,14 +1,16 @@
 # energy-tensor-cone
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18522457.svg)](https://doi.org/10.5281/zenodo.18522457)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18522456.svg)](https://doi.org/10.5281/zenodo.18522456)
 
 Computational + formalization scaffold for exploring **Averaged Quantum Energy Inequality (AQEI)** constraints as an (approximate) intersection of half-spaces, and for feeding randomized search "near-misses" into a Lean 4 skeleton.
 
 **Status**: 
-- **Published at Zenodo**: [DOI 10.5281/zenodo.18522457](https://doi.org/10.5281/zenodo.18522457)
+- **Submitted to Physical Review D**: February 21, 2026
+- **Published at Zenodo**: [DOI 10.5281/zenodo.18522456](https://doi.org/10.5281/zenodo.18522456)
+- **Dataset (code + proofs archive)**: [DOI 10.5281/zenodo.18727839](https://doi.org/10.5281/zenodo.18727839)
 - **Organization**: [DawsonInstitute/energy-tensor-cone](https://github.com/DawsonInstitute/energy-tensor-cone)
-- **Manuscript (PRD / Physical Review D target)**: REV\TeX wrapper at `papers/aqei-cone-formalization-prd.tex` with shared body `papers/aqei-cone-formalization-body.tex` (build artifact: `papers/aqei-cone-formalization-prd.pdf`)
-- **arXiv submission**: Planned (math-ph primary; secondary gr-qc, hep-th)
+- **Manuscript**: REV\TeX wrapper at `papers/aqei-cone-formalization-prd.tex` with shared body `papers/aqei-cone-formalization-body.tex` (build artifact: `papers/aqei-cone-formalization-prd.pdf`)
+- **arXiv submission**: Planned after PRD review (math-ph primary; secondary gr-qc, hep-th)
 
 This repo is intentionally minimal:
 - **Mathematica** (`mathematica/search.m`) runs a randomized finite-Gaussian-basis LP search (default: $N=6$ basis elements, $M=50$ constraints) in 1+1 Minkowski and exports `vertex.json`. All four parameters (`AQEI_NUM_BASIS`, `AQEI_NUM_CONSTRAINTS`, `AQEI_DOMAIN`, `AQEI_SIGMA`) plus the random seed (`AQEI_SEED`, default 42) are overridable via environment variables. *Note: Scaling experiments with $N=100$/$M=500$ are supported but produce uncertified vertices — this is a scope note, not a publication blocker; the certified vertex is the N=6 result.*

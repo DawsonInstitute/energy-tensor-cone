@@ -1716,3 +1716,21 @@ Committed `e0d329f`.
 - theorem_verification.md: table component label `FinalTheorems` → `FinalResults` (only the `FinalResults` namespace actually exists in Lean)
 <!-- ------ -->
 ---
+All done. Here's a summary of everything:
+
+---
+
+## Summary of Changes
+
+**Commits pushed:**
+- `energy-tensor-cone` `8690807` — F1: DOI badge `18522457→18522456`, submission status added, dataset DOI `18727839` added, TODO/completed updated
+- .github `d26166b` — F2: energy-tensor-cone PRD submission status, corrected DOI, 10→35 theorems, dataset DOI
+- `energy` `2e72eeb` — F3+F6: workspace entry removed, energy-tensor-cone entry added to README
+- `www` `82a4b67` — F4: DOI corrected, theorem count updated, PRD status and dataset DOI added
+- `aqei-bridge` `7c58bb7` — F5: CQG → PRD, file path updated
+
+**No-commit items:** `DawsonInstitute-dot-github` folder deleted locally (nothing was pending push there, as you confirmed).
+
+**aqei-bridge papers** (aqei-lean-formalization.tex, aqei-numerical-validation.tex): no changes needed — they don't contain direct references to the companion paper's journal target; only the README did.
+<!-- ------ -->
+---

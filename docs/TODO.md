@@ -6,10 +6,20 @@ See `TODO-completed.md` for the full history of completed tasks.
 
 ---
 
+## F-Batch: PRD Submission Stage (February 21, 2026)
+
+- **F1**: Update README.md badge and status: DOI 18522457 → 18522456; add submitted status ✅
+- **F2**: Update `.github/profile/README.md`: DOI, target venue CMP → PRD, submission status ✅
+- **F3**: Remove `DawsonInstitute-dot-github` duplicate clone; remove from `energy.code-workspace` ✅
+- **F4**: Update `www/index.html`: DOI, PRD submission status for energy-tensor-cone entry ✅
+- **F5**: Update `aqei-bridge/README.md`: CQG → PRD, update manuscript path reference ✅
+- **F6**: Update `energy/README.md`: add energy-tensor-cone entry under DawsonInstitute, update recent highlights ✅
+
+---
+
 ## Active Tasks
 
-No active tasks. Tasks E1–E19 were completed on February 21, 2026.
-See `TODO-completed.md`.
+See TODO-completed.md — F1–F6 completed February 21, 2026.
 
 ---
 
